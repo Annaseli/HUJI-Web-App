@@ -1,0 +1,12 @@
+.form {
+    display: grid;
+    gap: 23px;
+    margin: 15px auto;
+    width:440px;
+}
+
+.submit {
+    display: grid;
+    justify-content: center;
+    margin: 15px 0;
+}
