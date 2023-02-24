@@ -5,7 +5,7 @@ import { Menu as MenuIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
-        backgroundColor: '#1a1a1a',
+        backgroundColor: '#211D42',
     },
     menuButton: {
         marginRight: theme.spacing(2),

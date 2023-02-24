@@ -55,7 +55,7 @@ function NewReservation() {
     };
 
     const isRoomAvailable = (room) => {
-        return DB.isRoomAvailable(room, peopleNum)
+        return DB.isRoomAvailable(room, peopleNum) // date and time
 
     }
     const get_rooms = (rooms) => {
@@ -204,7 +204,7 @@ function NewReservation() {
                             {/*</LocalizationProvider>*/}
 
 
-                            {/*<Button type="submit" disabled={!isFormValid}>Find a Room</Button>*/}
+                            <Button type="submit" disabled={!isFormValid}>Find a Room</Button>
                         </form>
                     </div>
                 </div>
@@ -216,6 +216,8 @@ function NewReservation() {
                 <div className="rooms">
 
                     {get_rooms(rooms)}
+
+
                 </div>
             </div>
         </div>

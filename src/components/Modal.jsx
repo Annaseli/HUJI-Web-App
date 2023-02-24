@@ -23,7 +23,11 @@ export default function BasicModal(props) {
     const {title, date, startTime, endTime, people, available} = props;
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        // TODO: add a function that add a new book.
+        setOpen(false)
+
+    };
     const handleOpen_not_available = () => null;
 
     return (

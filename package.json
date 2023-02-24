@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.9",
     "@mui/x-data-grid": "^5.17.24",
     "@testing-library/jest-dom": "^5.16.5",
@@ -43,6 +44,8 @@
     ]
   },
   "devDependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@mui/x-date-pickers": "^5.0.19"
   }
 }

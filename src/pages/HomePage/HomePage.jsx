@@ -40,7 +40,7 @@ function a11yProps(index) {
 }
 
 export default function HomePage() {
-    const [value, setValue] = React.useState(0);
+    const [TabValue, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -50,15 +50,15 @@ export default function HomePage() {
         return (
             <Box sx={{width: '100%'}}>
                 <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    <Tabs value={TabValue} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Book A Reservation" {...a11yProps(0)} />
                         <Tab label="My Reservations" {...a11yProps(1)} />
                     </Tabs>
                 </Box>
-                <TabPanel value={value} index={0}>
+                <TabPanel value={TabValue} index={0}>
                     <NewReservation/>
                 </TabPanel>
-                <TabPanel value={value} index={1}>
+                <TabPanel value={TabValue} index={1}>
                     <Reservations/>
                 </TabPanel>
             </Box>
