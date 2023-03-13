@@ -1,9 +1,10 @@
 import { async } from '@firebase/util'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { projectAuth } from '../firebase/config'
 import { useAuthContext } from './useAuthContext'
 
 export const useSignup = () => {
+    const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     const { dispatch } = useAuthContext()
@@ -36,16 +37,27 @@ export const useSignup = () => {
             // dispatch login action
             dispatch({ type: 'LOGIN', payload: res.user })
 
-            setIsPending(false)
-            setError(null)
+            if (!isCancelled) {
+                setIsPending(false)
+                setError(null)
+            }   
         }
         // an error if the password is not copliance to a standart , email has already been taken...
         catch(error) {
-            console.log(error.message)
-            setError(error.message)
-            setIsPending(false)
+            if (!isCancelled) {
+                console.log(error.message)
+                setError(error.message)
+                setIsPending(false)
+            }            
         }
     }
+
+    // If we use the useLogout hook in a component then the useEffect function will fire just once
+    // because the dependency array is empty. Returning a cleanup function inside the useEffect.
+    // setIsCancelled will be fired only when unmounted
+    useEffect(() => {
+        return () => setIsCancelled(true)
+    }, [])
 
     return { signup, error, isPending }
 }
