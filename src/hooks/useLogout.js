@@ -1,7 +1,10 @@
 import { async } from '@firebase/util'
 import { useEffect, useState } from 'react'
+
+// firebase imports
 import { projectAuth } from '../firebase/config'
-import { useAuthContext } from './useAuthContext'
+import useAuthContext from './useAuthContext'
+import { signOut } from 'firebase/auth'
 
 export const useLogout = () => {
     const [isCancelled, setIsCancelled] = useState(false)
@@ -9,32 +12,40 @@ export const useLogout = () => {
     const [isPending, setIsPending] = useState(false)
     const { dispatch } = useAuthContext()
 
-    const logout = async () => {
+    const logout = () => {
         setError(null)
         setIsPending(true)
+        signOut(projectAuth)
+            .then(() => {
+                console.log('user signed out')     
+                dispatch({ type: 'LOGOUT' })         
+            })
+            .catch((err) => {
+                console.log(err.message)        
+            })
 
         // sign the user out
-        try {
-            await projectAuth.signOut()
+        // try {
+        //     await projectAuth.signOut()
 
-            // dispatch logout action
-            dispatch({ type: 'LOGOUT' })
+        //     // dispatch logout action
+        //     dispatch({ type: 'LOGOUT' })
 
-            // Any time we are using a hook that updates states in a component, we should use a clean up 
-            // function in case that component that uses that hook unmaunts (going to other component in the middle of of the process)
-            // update state
-            if (!isCancelled) {
-                setIsPending(false)
-                setError(null)
-            }           
-        }
-        catch(error) {
-            if (!isCancelled) {
-                console.log(error.message)
-                setError(error.message)
-                setIsPending(false)
-            }            
-        }
+        //     // Any time we are using a hook that updates states in a component, we should use a clean up 
+        //     // function in case that component that uses that hook unmaunts (going to other component in the middle of of the process)
+        //     // update state
+        //     if (!isCancelled) {
+        //         setIsPending(false)
+        //         setError(null)
+        //     }           
+        // }
+        // catch(error) {
+        //     if (!isCancelled) {
+        //         console.log(error.message)
+        //         setError(error.message)
+        //         setIsPending(false)
+        //     }            
+        // }
     }
 
     // If we use the useLogout hook in a component then the useEffect function will fire just once

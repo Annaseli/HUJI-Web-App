@@ -7,7 +7,7 @@ export default function UsersReservations() {
     const { user } = useAuthContext()
     const { docs, error } = useCollection('collection name')
 
-    return ()
+    //return ()
 
     
 }

@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from "react";
-import { db, timestamp } from "../firebase/config";
+import { db } from "../firebase/config";
 
 let initialState = {
     document: null,
@@ -27,7 +27,7 @@ export const useFirestore = (collection) => {
     const [isCancelled, setIsCancelled] = useState(false)
 
     // collection ref
-    const ref = db.collection(collection)
+    const ref = collection(collection)
 
     // only dispatch if not cancelled
     const dispatchIfNotCancelled = (action) => {
@@ -41,9 +41,9 @@ export const useFirestore = (collection) => {
         dispatch({ type: 'IS_PENDING' })
 
         try {
-            const createdAt = timestamp.fromDate(new Date())
+            //const createdAt = timestamp.fromDate(new Date())
             // will use createdAt to be able to order the docs when we retrieve them based on the timestamp
-            const addedDoc = await ref.add({ ...doc, createdAt })
+            const addedDoc = await ref.add({ ...doc })
             dispatchIfNotCancelled({ type: 'ADDED_DOC', payload: addedDoc })
         }
         catch (error) {

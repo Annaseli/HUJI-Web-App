@@ -5,6 +5,7 @@
 
 import { createContext, useEffect, useReducer } from 'react'
 import { projectAuth } from '../firebase/config'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export const AuthContext = createContext()
 
@@ -19,7 +20,7 @@ export const authReducer = (state, action) => {
         case 'LOGOUT':
             return { ...state, user: null }
         case 'AUTH_IS_READY':
-            return { ...state, user:  action.payload, authIsReady: true }
+            return { user: action.payload, authIsReady: true }
         default:
             return state
     }
@@ -39,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
         // Will communicate with firebase - it will let the function know when there is a change in
         // authentication status and then fire the func inside that inside her we take the user.
         // It will be fired once - only when we first connect to firebase.
-        const unsub = projectAuth.onAuthStateChanged((user) => {
+        const unsub = onAuthStateChanged(projectAuth, user => {
             dispatch( { type: 'AUTH_IS_READY', payload: user })
             // unsubscribe from firing each time there is an auth state change
             unsub()
