@@ -1,17 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { db } from "../firebase/config";
 
 // firebase imports
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 // Takes in a collection and updating the documents to match whatever documents are inside the collection 
 // in that moment in time.
-export const useCollection = (c) => {
+export const useCollection = (c, q) => {
     const [docs, setDocs] = useState(null)
     const [error, setError] = useState(null)
 
+    // If we don't use ref we would get an infinite loop in useEffect
+    // query is an array so it's pointer is different on every function call
+    const _q = useRef(q).current
+
     useEffect (() => {
         let ref = collection(db, c)
+
+        if(_q) {
+            ref = query(ref, where(..._q))
+        }
 
         // This function is gonna fire a function for us every time we get a snapshot back from firestore
         // collection. We get a snapshot back once initially when we first make the connection and it sends
@@ -37,7 +45,7 @@ export const useCollection = (c) => {
         // events i.e no longer updating states when we get them.
         return () => unsub()
 
-    }, [c])
+    }, [c, _q])
 
     return {docs, error}
 }

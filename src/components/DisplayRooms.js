@@ -1,6 +1,7 @@
 // styles
 
-export default function DisplayRooms({ rooms, setSelectedRoomNum, setSelectedRoomCapacity}) {
+export default function DisplayRooms({ rooms, setSelectedRoomNum, setSelectedRoomCapacity, 
+    roomsAvailable, setRoomsAvailable}) {
     return(
         <ul>
             {rooms.map((room) => (
@@ -10,8 +11,15 @@ export default function DisplayRooms({ rooms, setSelectedRoomNum, setSelectedRoo
                     <button
                         className="btn" 
                         onClick={() => {
-                            setSelectedRoomNum(room.roomNum)
-                            setSelectedRoomCapacity(room.capacity)
+                            if (roomsAvailable){
+                                const arr = Array.from(roomsAvailable);
+                                arr.push((room.roomNum, room.capacity))                        
+                                setRoomsAvailable(arr)
+                            }
+                            if(setSelectedRoomNum)
+                                setSelectedRoomNum(room.roomNum)
+                            if(setSelectedRoomCapacity)
+                                setSelectedRoomCapacity(room.capacity)                          
                             }}>
                         Select The Room
                     </button>

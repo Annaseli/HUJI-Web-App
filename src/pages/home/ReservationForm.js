@@ -28,7 +28,7 @@ export default function ReservationForm({ uid, selectedRoomNum}) {
             date,
             time,
             selectedRoomNum,
-            uid: uid
+            uid
         })
 
         setDuration('')
