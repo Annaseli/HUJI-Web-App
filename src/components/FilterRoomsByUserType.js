@@ -4,6 +4,13 @@ import { db } from "../firebase/config";
 import { doc, getDoc, collection, onSnapshot, query, where, getDocs } from "firebase/firestore";
 
 export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
+
+    const addKeyValuePair = (key, value) => {
+        setRoomsAv(prevState => ({
+          ...prevState,
+          [key]: value
+        }));
+    };
     
     //TODO: add a cleanup function
     useEffect(() => {
@@ -35,19 +42,20 @@ export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
             querySnapshot.forEach((d) => {
                 // d.data() is never undefined for query doc snapshots
                 //console.log(d.id, " => ", d.data());
-                setRoomsAv(d.data().roomsAvailable)
-                console.log("1")
-                console.log(roomsAv)
+                const rooms = d.data().roomsAvailable
+                Object.keys(rooms).forEach((roomNum) => {
+                    addKeyValuePair(roomNum, rooms[roomNum])
+                })
+                
             })
             // catch((error) => {
             // console.log('Error getting document:', error);
             // });        
         }
         fetchData();    
+        console.log(roomsAv)
     }, [])
-    console.log("2")
-    //setRoomsAvailable(roomsAvailable)
-    console.log(roomsAv)
+
 
     return (
         <div>

@@ -8,9 +8,12 @@ import TypeOfUserForm from "./TypeOfUserForm"
 import UsersForm from "./UsersForm"
 import FilterRoomsByUserType from "../../components/FilterRoomsByUserType"
 import MonthlyEmptyResvations from "./MonthlyEmptyResvations"
+import FilterRoomsByCapAndDur from "../../components/FilterRoomsByCapAndDur"
 
 // styles
 //import styles from './Home.module.css'
+
+//TODO: add the MonthlyEmptyResvations form when needed to check availability for a month that doesn't exist
 
 export default function Home() {
     const { user } = useAuthContext()
@@ -20,7 +23,7 @@ export default function Home() {
     // const [roomsAv, setRoomsAv] = useState(new Map());
     // const _roomsAv = useRef(roomsAv).current
     // const _setRoomsAv = useRef(setRoomsAv).current
-    const [roomsAv, setRoomsAv] = useState([]);
+    const [roomsAv, setRoomsAv] = useState({});
 
     return (       
         <>
@@ -29,10 +32,10 @@ export default function Home() {
             <ReservationForm uid={user.uid} selectedRoomNum={selectedRoomNum}/> 
             <RoomsForm />
             <TypeOfUserForm /> */}
-            {/* <UsersForm uid={user.uid} />           
-            <FilterRoomsByUserType uid={user.uid} roomsAv={roomsAv} setRoomsAv={setRoomsAv} /> */}
-            <MonthlyEmptyResvations year={'2023'} month={'17'}/>
-        </>
-           
+            {/* <UsersForm uid={user.uid} />            */}
+            {/* <FilterRoomsByUserType uid={user.uid} roomsAv={roomsAv} setRoomsAv={setRoomsAv} /> */}
+            <MonthlyEmptyResvations year={'2023'} month={'10'}/>
+            {/* <FilterRoomsByCapAndDur capacity={'3'} duration={'1'} year={'2023'} month={'13'} roomsAvailable={roomsAv} /> */}
+        </> 
     )
 }
