@@ -9,6 +9,9 @@ import UsersForm from "./UsersForm"
 import FilterRoomsByUserType from "../../components/FilterRoomsByUserType"
 import MonthlyEmptyResvations from "./MonthlyEmptyResvations"
 import FilterRoomsByCapAndDur from "../../components/FilterRoomsByCapAndDur"
+import { useMyState } from "../../hooks/useMyState"
+import FilterRoomsByDate from "../../components/FilterRoomsByDate"
+import FilterRoomsByDateAndTime from "../../components/FilterRoomsByDateAndTime"
 
 // styles
 //import styles from './Home.module.css'
@@ -25,6 +28,12 @@ export default function Home() {
     // const _setRoomsAv = useRef(setRoomsAv).current
     const [roomsAv, setRoomsAv] = useState({});
 
+    // const { resetState: resetRoomsAv } = useMyState({});
+    // const { resetState: resetDatesAv } = useMyState(new Set());
+
+    // resetRoomsAv()
+    // resetDatesAv()
+
     return (       
         <>
             <h2>Home</h2>   
@@ -33,9 +42,13 @@ export default function Home() {
             <RoomsForm />
             <TypeOfUserForm /> */}
             {/* <UsersForm uid={user.uid} />            */}
-            {/* <FilterRoomsByUserType uid={user.uid} roomsAv={roomsAv} setRoomsAv={setRoomsAv} /> */}
-            <MonthlyEmptyResvations year={'2023'} month={'10'}/>
-            {/* <FilterRoomsByCapAndDur capacity={'3'} duration={'1'} year={'2023'} month={'13'} roomsAvailable={roomsAv} /> */}
+            <FilterRoomsByUserType uid={user.uid} roomsAv={roomsAv} setRoomsAv={setRoomsAv} />
+            {/* <MonthlyEmptyResvations year={'2023'} month={'02'}/> */} 
+            {/* <FilterRoomsByCapAndDur capacity={'5'} duration={'4'} year={'2023'} month={'02'} roomsAvailable={roomsAv} setRoomsAvailable={setRoomsAv} />    */}
+            {/* <FilterRoomsByDate capacity={'5'} duration={'3'} year={'2023'} month={'02'} day={'2'} roomsAvailable={roomsAv} /> */}
+            <FilterRoomsByDateAndTime capacity={'5'} duration={'3'} year={'2023'} month={'02'} day={'2'} hour={'8'} roomsAvailable={roomsAv} />
+
         </> 
     )
+    
 }

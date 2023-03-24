@@ -26,14 +26,14 @@ export default function MonthlyEmptyResvations({ year, month}) {
         return ans;
     }
 
-    const [mapData, setMapData] = useState({})
+    // const [mapData, setMapData] = useState({})
 
-    const addKeyValuePair = (key, value) => {
-        setMapData(prevState => ({
-          ...prevState,
-          [key]: value
-        }));
-    };
+    // const addKeyValuePair = (key, value) => {
+    //     setMapData(prevState => ({
+    //       ...prevState,
+    //       [key]: value
+    //     }));
+    // };
 
     // when we have a successful response fire this function and reset it if it's true
     // useEffect(() => {
@@ -58,9 +58,9 @@ export default function MonthlyEmptyResvations({ year, month}) {
         // {year}{month}Reservations
         const subCollectionYMRef = collection(docYMRef, `${year}${month}Reservations`);
 
-        range(8, 18).forEach((hour) => {
-            addKeyValuePair(hour, {1: "2"})
-        })
+        // range(8, 18).forEach((hour) => {
+        //     addKeyValuePair(hour, {1: "2"})
+        // })
 
         
 
@@ -73,10 +73,14 @@ export default function MonthlyEmptyResvations({ year, month}) {
             // create a collection inside the doc with the id {year}{month}{day} that called 
             // {year}{month}{day}Reservations
             const subCollectionYMDRef = collection(docYMDRef, `${year}${month}${day}Reservations`);
-            
+
+            const resByHours = new Map()
+            range(8, 18).forEach((hour) => {
+                resByHours.set(hour, {})
+            })           
             rooms.forEach(async (room) => {
                 await addDoc(subCollectionYMDRef, {
-                    resByHours: mapData,
+                    resByHours: Object.fromEntries(resByHours),
                     roomNum: room.roomNum,
                     roomCapacity: room.capacity
                 })

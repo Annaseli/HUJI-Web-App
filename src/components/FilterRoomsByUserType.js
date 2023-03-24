@@ -11,6 +11,7 @@ export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
           [key]: value
         }));
     };
+
     
     //TODO: add a cleanup function
     useEffect(() => {
@@ -53,7 +54,7 @@ export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
             // });        
         }
         fetchData();    
-        console.log(roomsAv)
+        //console.log(roomsAv)
     }, [])
 
 
