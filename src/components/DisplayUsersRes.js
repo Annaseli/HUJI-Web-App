@@ -7,19 +7,19 @@ import { doc, getDoc, collection, onSnapshot, query, where, getDocs } from "fire
 
 export default function DisplayUsersRes({ uid }) {
 
-    const [resListFromCurDay, setResListFromCurDay] = useState({})
+    const [resMapFromCurDay, setResMapFromCurDay] = useState({})
 
     
     //TODO: add a cleanup function
     useEffect(() => {
         async function fetchData() {
             console.log("DisplayUsersRes")
-            const docRefInUsers = doc(db, "Users", uid);
+            const docRefInUsers = doc(collection(db, "Users"), uid);
             //console.log(docRefInUsers)  
             const docInUsersSnap = await getDoc(docRefInUsers)
             if (docInUsersSnap.exists) {
                 const data = docInUsersSnap.data();
-                setResListFromCurDay([data.resListFromCurDay])
+                setResMapFromCurDay({...resMapFromCurDay, ...data.resMapFromCurDay})
             } else {
                 console.log('No such document!');
             }
@@ -27,13 +27,13 @@ export default function DisplayUsersRes({ uid }) {
         fetchData();    
     }, [])
 
-    console.log(resListFromCurDay)
+    console.log(resMapFromCurDay)
     return (
         <div>
         <h2>users reservations</h2>
-            {resListFromCurDay.map(res => (
-                <div key={res}>
-                    {res}
+            {Object.keys(resMapFromCurDay).map(key => (
+                <div key={key}>
+                    {key}
                 </div>
             ))}
         </div>

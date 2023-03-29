@@ -6,16 +6,16 @@ import { useCollection } from "../../hooks/useCollection"
 import { db } from "../../firebase/config";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 
-export default function UsersForm({ uid }) {
+export default function ConfirmedUsersForm() {
     const [userType, setUserType] = useState('')
-    const [resMapFromCurDay , setResMapFromCurDay] = useState({})
+    const [email, setEmail] = useState('')
     //const { addDoc, response } = useFirestore('DateTimeRes')
-    console.log("users form")
+    console.log("confirmed users form")
 
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        const ref = collection(db, 'Users')       
+        const ref = collection(db, 'ConfirmedUsers')       
 
         // await addDoc(ref, {
         //     // check for invalid data
@@ -28,13 +28,12 @@ export default function UsersForm({ uid }) {
         //     resListFromCurDay
         // })
 
-        await setDoc(doc(db, "Users", uid), {
-            userType,
-            resMapFromCurDay
+        await setDoc(doc(ref, email), {
+            userType
         })
 
         setUserType('')
-        setResMapFromCurDay([])
+        setEmail('')
     }
 
     // when we have a successful response fire this function and reset it if it's true
@@ -56,8 +55,17 @@ export default function UsersForm({ uid }) {
     //and capacity that I have from the room he selected
     return(
         <>
-            <h2>Users Form</h2>
+            <h2>Confirmed Users Form</h2>
             <form onSubmit={handleSubmit}>
+            <label>
+                <span> Email:</span>
+                <input
+                    required
+                    type="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                />
+            </label>
             <label>
                 <span> User Type:</span>
                 <input

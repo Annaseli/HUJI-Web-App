@@ -4,7 +4,7 @@ import { useCollection } from "../../hooks/useCollection"
 
 // firebase imports
 import { db } from "../../firebase/config";
-import { doc, collection, addDoc, setDoc } from "firebase/firestore";
+import { doc, collection, addDoc, setDoc, updateDoc } from "firebase/firestore";
 
 export default function MonthlyEmptyResvations({ year, month}) {
     //const { addDoc, response } = useFirestore('DateTimeRes')
@@ -72,18 +72,17 @@ export default function MonthlyEmptyResvations({ year, month}) {
 
             // create a collection inside the doc with the id {year}{month}{day} that called 
             // {year}{month}{day}Reservations
-            const subCollectionYMDRef = collection(docYMDRef, `${year}${month}${day}Reservations`);
+            const subCollectionYMDRef = collection(docYMDRef, `${year}${month}${day}Reservations`)
 
-            const resByHours = new Map()
-            range(8, 18).forEach((hour) => {
-                resByHours.set(hour, {})
-            })           
             rooms.forEach(async (room) => {
-                await addDoc(subCollectionYMDRef, {
-                    resByHours: Object.fromEntries(resByHours),
+                const docRef = await addDoc(subCollectionYMDRef, {
                     roomNum: room.roomNum,
                     roomCapacity: room.capacity
                 })
+                
+                range(8, 18).forEach(async (hour) => {
+                    await updateDoc(docRef, {[hour]: {}})
+                })                
             })
 
             // rooms.forEach(async (room) => {

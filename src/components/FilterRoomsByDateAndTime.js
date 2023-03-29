@@ -5,11 +5,19 @@ import { doc, getDoc, collection, onSnapshot, query, where, getDocs, limit } fro
 import { useMyState } from "../hooks/useMyState";
 
 export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year, month, day, hour, roomsAvailable }) {
-    const [roomsAv, setRoomsAv] = useState({}) 
+    const [roomsAv, setRoomsAv] = useState({})  
  
     const addKeyValuePair = (key, value) => { 
         setRoomsAv(prevState => ({...prevState, [key]: value}));
-    };
+    }
+
+    function range(start, end) {
+        var ans = [];
+        for (let i = start; i <= end; i++) {
+            ans.push(i);
+        }
+        return ans;
+    } 
     
     //TODO: add a cleanup function
     //TODO: how to make the component to be re-created so roomsAv would be new Obj and new set. otherwise it's the previous one.
@@ -32,17 +40,14 @@ export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year
             Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
                 const docRefOfYearMonthDayRoom = query(collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`), where("roomNum", "==", `${roomNum}`))
                 const querySnapshot = await getDocs(docRefOfYearMonthDayRoom)
-                let roomCapacity;  
-                let resByHours;
-                querySnapshot.forEach((d) => {  
-                    const data = d.data();
-                    roomCapacity = data.roomCapacity;
-                    resByHours = data.resByHours;                                         
-                })       
+                const queryDoc = querySnapshot.docs[0] 
+                const data = queryDoc.data();
+                const roomCapacity = data.roomCapacity; 
+
                 let roomIsAv = true  
                 for (let i = 0; i < duration; i++) {
-                    // this hour is available             
-                    if (Object.keys(resByHours[parseInt(hour) + i]).length !== 0) {
+                    // this hour is available          
+                    if (Object.keys(data[parseInt(hour) + i]).length !== 0) {                     
                         roomIsAv = false  
                         break 
                     } 

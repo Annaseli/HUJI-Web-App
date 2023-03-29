@@ -43,7 +43,7 @@ export default function FilterRoomsByCapAndDur({ uid, capacity, duration, year, 
                 if (roomCapacity >= capacity){ 
                     roomsAvailableByCapacity[roomNum] = roomCapacity
                 }
-            })
+            }) 
             // for each day in the given month, for each available room, find all the hours that are available         
             range(1, 31).forEach((day) => {
                 const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
@@ -51,22 +51,15 @@ export default function FilterRoomsByCapAndDur({ uid, capacity, duration, year, 
                 Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
                     const docRefOfYearMonthDayRoom = query(collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`), where("roomNum", "==", `${roomNum}`))
                     const querySnapshot = await getDocs(docRefOfYearMonthDayRoom)
-                    let roomCapacity;  
-                    let resByHours;
-                    querySnapshot.forEach((d) => {  
-                        const data = d.data();
-                        roomCapacity = data.roomCapacity;
-                        //resByHours = new Map(Object.entries(data.resByHours));  
-                        resByHours = data.resByHours;                                         
-                    })
+                    const queryDoc = querySnapshot.docs[0] 
+                    const data = queryDoc.data();
+                    const roomCapacity = data.roomCapacity; 
                     
                     let durationCounter = 0
-                    const hours = Object.keys(resByHours)              
+                    const hours = range(8, 18)    
                     for (let i = 0; i < hours.length; i++) {
-                        // this hour is available             
-                        if (Object.keys(resByHours[hours[i]]).length === 0) {
-                            if (day == 1)
-                                console.log("hour:", hours[i])   
+                        // this hour is available                                     
+                        if (Object.keys(data[hours[i]]).length    === 0) {                             
                             durationCounter++
                             if (durationCounter == duration){
                                 addKeyValuePair(roomNum, roomCapacity)
@@ -83,9 +76,9 @@ export default function FilterRoomsByCapAndDur({ uid, capacity, duration, year, 
         fetchData();   
     }, [])
 
-    console.log("roomsAv:", roomsAv)   
+    console.log("roomsAv:", roomsAv)    
     console.log("datesAv:", datesAv) 
- 
+   
     return (
         <div>
         <h2>roomsAvailable And datesAvailable</h2>

@@ -3,7 +3,7 @@ import { useFirestore } from "../../hooks/useFirestore";
 
 // firebase imports
 import { db } from "../../firebase/config";
-import { collection, addDoc } from "firebase/firestore";
+import { doc, getDoc, collection, onSnapshot, query, where, getDocs, updateDoc, setDoc } from "firebase/firestore";
 
 export default function ReservationForm({ uid }) {
     const [duration, setDuration] = useState('')
@@ -11,74 +11,67 @@ export default function ReservationForm({ uid }) {
     const [year, setYear] = useState('')
     const [month, setMonth] = useState('')
     const [day, setDay] = useState('')
-    const [time, setTime] = useState('')
+    const [hour, setHour] = useState('')
     const [selectedRoomNum, setSelectedRoomNum] = useState('')
     console.log("reservation form")
 
+    const resId = `${year}${month}${day}${hour}${selectedRoomNum}`
+
+    async function addResToReservations() {                    
+        // for the given date and time, find all the rooms that are available         
+        const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
+        const docRefOfYearMonthDay = doc(collection(docRefOfYearMonth, `${year}${month}Reservations`), `${year}${month}${day}`)
+        const collectionRef = collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`)
+        const docRefOfYearMonthDayRoom = query(collectionRef, where("roomNum", "==", `${selectedRoomNum}`))
+        const querySnapshot = await getDocs(docRefOfYearMonthDayRoom)
+        const queryDoc = querySnapshot.docs[0] 
+        const docRef = doc(collectionRef, queryDoc.id)
+       
+        for (let i = 0; i < duration; i++) {        
+            const updateMap = {
+                [`${parseInt(hour) + i}`]: {resId: resId, uid: uid, checkedIn: false}
+            }
+            await updateDoc(docRef, updateMap)
+        }           
+    }
+
+    async function addResToUsers() {                    
+        // for the given date and time, find all the rooms that are available         
+        const docRef = doc(collection(db, "Users"), uid)
+
+        const updateMap = {
+            [resId]: {
+              year: year,
+              month: month,
+              day: day,
+              duration: duration,
+              roomNum: selectedRoomNum
+            }
+          };
+        
+        // await updateDoc(docRef, {
+        //     resMapFromCurDay: updateMap
+        //   });    
+          
+        await setDoc(docRef, {
+            resMapFromCurDay: updateMap
+        }, { merge: true });
+    }
+    
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        //TODO: add a cleanup function
-        //TODO: how to make the component to be re-created so roomsAv would be new Obj and new set. otherwise it's the previous one.
-        //TODO: need a way to use the roomsAv that was calculated in the previous components and pass it here
-        useEffect(() => {
-            async function fetchData() {                    
-                // for the given date and time, find all the rooms that are available         
-                const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
-                const docRefOfYearMonthDay = doc(collection(docRefOfYearMonth, `${year}${month}Reservations`), `${year}${month}${day}`)
-                const docRefOfYearMonthDayRoom = query(collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`), where("roomNum", "==", `${selectedRoomNum}`))
-                const querySnapshot = await getDocs(docRefOfYearMonthDayRoom)
-                let resByHours;
-                querySnapshot.forEach((d) => {  
-                    const data = d.data();
-                    resByHours = data.resByHours;                                         
-                })  
+        addResToReservations()
+        addResToUsers()
 
-                const resId = `${year}${month}${day}${selectedRoomNum}${time}`
-
-                let updateMap = {
-                    resByHours: {
-                        {time}: {{resId}: [uid, dateTimeCreated, checkedIn]}
-                    }
-                  };
-
-                await updateDoc(documentRef, updateMap)
-
-
-                Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
-                    
-                         
-                    let roomIsAv = true  
-                    for (let i = 0; i < duration; i++) {
-                        // this hour is available             
-                        if (Object.keys(resByHours[parseInt(hour) + i]).length !== 0) {
-                            roomIsAv = false  
-                            break 
-                        } 
-                    }
-                    if (roomIsAv){
-                        addKeyValuePair(roomNum, roomCapacity)
-                    }
-                })
-            }
-            fetchData();   
-        }, [])
-
-        await addDoc(ref, {
-            // check for invalid data
-            duration,
-            capacity,
-            date,
-            time,
-            selectedRoomNum,
-            uid
-        })
-
-        setDuration('')
-        setCapacity('')
-        setDate('')
-        setTime('')
-        }
+        // setDuration('')
+        // setCapacity('')
+        // setYear('')
+        // setMonth('')
+        // setDay('')
+        // setHour('')
+        // setSelectedRoomNum('')
+    }
 
     // when we have a successful response fire this function and reset it if it's true
     // useEffect(() => {
@@ -100,7 +93,7 @@ export default function ReservationForm({ uid }) {
                 <span> Num of people:</span>
                 <input
                     required
-                    type="num"
+                    type="text"
                     onChange={(e) => setCapacity(e.target.value)}
                     value={capacity}
                 />
@@ -109,7 +102,7 @@ export default function ReservationForm({ uid }) {
                 <span> Duration:</span>
                 <input
                     required
-                    type="num"
+                    type="text"
                     onChange={(e) => setDuration(e.target.value)}
                     value={duration}
                 />
@@ -118,7 +111,7 @@ export default function ReservationForm({ uid }) {
                 <span> Year:</span>
                 <input
                     required
-                    type="num"
+                    type="text"
                     onChange={(e) => setYear(e.target.value)}
                     value={year}
                 />
@@ -127,7 +120,7 @@ export default function ReservationForm({ uid }) {
                 <span> Month:</span>
                 <input
                     required
-                    type="num"
+                    type="text"
                     onChange={(e) => setMonth(e.target.value)}
                     value={month}
                 />
@@ -136,32 +129,31 @@ export default function ReservationForm({ uid }) {
                 <span> Day:</span>
                 <input
                     required
-                    type="num"
+                    type="text"
                     onChange={(e) => setDay(e.target.value)}
                     value={day}
                 />
             </label>
             <label>
-                <span> Time:</span>
+                <span> Hour:</span>
                 <input
                     required
-                    type="time"
-                    onChange={(e) => setTime(e.target.value)}
-                    value={time}
+                    type="text"
+                    onChange={(e) => setHour(e.target.value)}
+                    value={hour}
                 />
             </label>
             <label>
                 <span> Room:</span>
                 <input
                     required
-                    type="num"
+                    type="text"
                     onChange={(e) => setSelectedRoomNum(e.target.value)}
                     value={selectedRoomNum}
                 />
             </label>
             <button>Reserve a room</button>
         </form>
-        </>
-        
+        </>       
     )
 }

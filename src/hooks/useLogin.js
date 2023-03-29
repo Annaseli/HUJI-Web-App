@@ -12,17 +12,16 @@ export const useLogin = () => {
     const [isPending, setIsPending] = useState(false)
     const { dispatch } = useAuthContext()
 
-    const login = (email, password) => {
+    const login = async (email, password) => {
         setError(null)
         setIsPending(true)
-        signInWithEmailAndPassword(projectAuth, email, password)
-            .then((res) => {
-                console.log('user logged in:', res.user)
-                dispatch({ type: 'LOGIN', payload: res.user })
-            })
-            .catch((err) => {
-                setError(err.message)
-            })
+        try {
+            const res = await signInWithEmailAndPassword(projectAuth, email, password);
+            console.log('user logged in:', res.user);
+            dispatch({ type: 'LOGIN', payload: res.user });
+        } catch (err) {
+            setError(err.message);
+        }
 
         // // sign the user out
         // try {
