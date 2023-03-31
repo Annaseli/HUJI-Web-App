@@ -18,6 +18,9 @@ import CenterContentForm from "./CenterContentForm"
 import UserAprovalByAdmin from "../../components/UserAprovalByAdmin"
 import DisplayDelUsersResForm from "./DisplayDelUsersResForm"
 import ResetPassword from "../../components/ResetPassword"
+import DisplayDelAllUsersResForm from "./DisplayDelAllUsersResForm"
+import DisplayDelAllUsers from "./DisplayDelAllUsers"
+//import DownloadResToCsvForm from "./DownloadResToCsvForm"
 
 // styles
 //import styles from './Home.module.css'
@@ -25,12 +28,14 @@ import ResetPassword from "../../components/ResetPassword"
 //TODO: add the MonthlyEmptyResvations form when needed to check availability for a month that doesn't exist
 
 export default function Home() {
-    const { user } = useAuthContext()
-    const { docs: rooms } = useCollection('Rooms')
+    //const { user } = useAuthContext()
+    //const { docs: rooms } = useCollection('Rooms')
     console.log("home")
-    const [ selectedRoomNum, setSelectedRoomNum ] = useState('');
 
-    const [roomsAvailable, setRoomsAvailable] = useState({1:5, 3:10, 4:10});
+    // const [ selectedRoomNum, setSelectedRoomNum ] = useState('');
+    // const [roomsAvailable, setRoomsAvailable] = useState({1:5, 3:10, 4:10});
+
+
     //let roomsAvailable = {}
 
     // const { resetState: resetRoomsAv } = useMyState({});
@@ -59,7 +64,10 @@ export default function Home() {
             {/* <CenterContentForm /> */}
             {/* < UserAprovalByAdmin /> */}
             {/* <DisplayDelUsersResForm uid={user.uid} /> */}
-            <ResetPassword uid={'mr3kIK2hhBdupBj0IjQ8x1RLbUx1'} />
+            {/* <ResetPassword uid={'mr3kIK2hhBdupBj0IjQ8x1RLbUx1'} /> */}
+            {/* <DisplayDelAllUsersResForm /> */}
+            {/* <DisplayDelAllUsers /> */}
+            {/* <DownloadResToCsvForm /> */}
         </> 
     )
     

@@ -7,7 +7,7 @@ import GetUsersRes from "../../components/GetUsersRes";
 import { db } from "../../firebase/config";
 import { collection, addDoc, deleteDoc, doc, setDoc, deleteField , updateDoc, query, where, getDocs, getDoc  } from "firebase/firestore";
 
-export default function DisplayDelUsersResForm({ uid }) {
+export default function DisplayDelUsersResForm({ uid, displayCheckIn=true }) {
     //const [resId, setUid] = useState('')
     const [resMapFromCurDay, setResMapFromCurDay] = useState({})
     const [checkIn, setCheckIn] = useState('')
@@ -131,7 +131,7 @@ export default function DisplayDelUsersResForm({ uid }) {
     
     return(
         <>
-            <h2>DisplayDelUsersResForm</h2>
+            <h2>DisplayDelUsersResForm</h2> 
             {<GetUsersRes uid={uid} resMapFromCurDay={resMapFromCurDay} setResMapFromCurDay={setResMapFromCurDay} />}
             {resMapFromCurDay && Object.keys(resMapFromCurDay).map(key => (
                 <div key={key}>
@@ -139,7 +139,7 @@ export default function DisplayDelUsersResForm({ uid }) {
                     <form onSubmit={handleSubmitDelete} id={key}>                       
                         <button>Delete Reservation</button>
                     </form>
-                    <form onSubmit={handleSubmitCheckIn} id={key}>  
+                    {displayCheckIn && <form onSubmit={handleSubmitCheckIn} id={key}>  
                         <label>
                             <span> Check In Code:</span>
                             <input
@@ -149,7 +149,7 @@ export default function DisplayDelUsersResForm({ uid }) {
                             />
                         </label>                     
                         <button>Check In</button>
-                    </form>
+                    </form>}
                 </div>
             ))}
 

@@ -49,9 +49,6 @@ export const AuthContextProvider = ({ children }) => {
 
     console.log('AuthContext state:', state)
 
-    //dispatch({ type: 'LOG_IN'})
-    //TODO back: add all the rest
-
     return (
         // the children will be the entire app so the entire app will be surrounded by 
         // our AuthContextProvider

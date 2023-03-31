@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom"
 import { useLogout } from '../hooks/useLogout'
 import useAuthContext from "../hooks/useAuthContext"
+import { db, projectAuth } from "../firebase/config"
 
 // styles
 //import styles from 
 
 export default function Navbar() {
     const { logout } = useLogout()
-    const { user } = useAuthContext()
+    //const { user } = useAuthContext()
+    const user = projectAuth.currentUser
 
     return (
         //<nav className={StyleSheet.navbar}>

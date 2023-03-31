@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import useAuthContext from './hooks/useAuthContext';
 import { useContext } from "react"
 import { AuthContext } from "./context/AuthContext"
+import { db, projectAuth } from './firebase/config';
 
 // pages & components
 import Home from './pages/home/Home';
@@ -10,11 +11,14 @@ import Signup from './pages/signup/Signup';
 import Navbar from './components/Navbar';
 
 export default function App() {
-  const { user, authIsReady } = useAuthContext()
+  //const { user, authIsReady } = useAuthContext()
+  console.log("app")
+  const user = projectAuth.currentUser
+  console.log("currentUser", user)
 
   return (   
     <div className="App">  
-      { authIsReady && (
+      {/* { authIsReady && ( */}
         <BrowserRouter>
           <Navbar />
           <Routes>
@@ -32,7 +36,7 @@ export default function App() {
             />                            
           </Routes>
         </BrowserRouter>    
-      )} 
+      {/* )}  */}
       
     </div>
   );

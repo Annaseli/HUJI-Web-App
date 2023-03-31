@@ -7,7 +7,7 @@ import { doc, getDoc, collection, onSnapshot, query, where, getDocs } from "fire
 
 export default function DisplayCenterContent({ contentType }) {
 
-    const [content, useContent] = useState([])
+    const [content, setContent] = useState([])
 
     //TODO: add a cleanup function
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function DisplayCenterContent({ contentType }) {
             const querySnapshot = await getDocs(docRef)
             querySnapshot.forEach((d) => {
                 const data = d.data();
-                useContent([...content, data.content])
+                setContent([...content, data.content])
             })             
         }
         fetchData();    
