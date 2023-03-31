@@ -4,20 +4,13 @@ import { db } from "../firebase/config";
 import { doc, getDoc, collection, onSnapshot, query, where, getDocs, limit } from "firebase/firestore";
 import { useMyState } from "../hooks/useMyState";
 
-export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year, month, day, hour, roomsAvailable }) {
+export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year, month, day, hour, roomsAvailable, setRoomsAvailable }) {
     const [roomsAv, setRoomsAv] = useState({})  
+    let roomsAvailableByCapacity = roomsAvailable
  
     const addKeyValuePair = (key, value) => { 
         setRoomsAv(prevState => ({...prevState, [key]: value}));
     }
-
-    function range(start, end) {
-        var ans = [];
-        for (let i = start; i <= end; i++) {
-            ans.push(i);
-        }
-        return ans;
-    } 
     
     //TODO: add a cleanup function
     //TODO: how to make the component to be re-created so roomsAv would be new Obj and new set. otherwise it's the previous one.
@@ -25,14 +18,6 @@ export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year
     useEffect(() => {
         async function fetchData() {
             console.log("FilterRooms4")     
-            // filter out rooms that their capacity is less then the given capacity
-            let roomsAvailableByCapacity = {}
-            Object.keys(roomsAvailable).forEach((roomNum) => {
-                const roomCapacity = roomsAvailable[roomNum]             
-                if (roomCapacity >= capacity){ 
-                    roomsAvailableByCapacity[roomNum] = roomCapacity
-                }
-            })  
             
             // for the given date and time, find all the rooms that are available         
             const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
@@ -61,6 +46,8 @@ export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year
     }, [])
 
     console.log("roomsAv:", roomsAv)     
+    setRoomsAvailable(roomsAv)
+    console.log("roomsAvailable:", roomsAvailable)     
  
     return (
         <div>

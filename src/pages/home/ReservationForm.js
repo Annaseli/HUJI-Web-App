@@ -17,8 +17,7 @@ export default function ReservationForm({ uid }) {
 
     const resId = `${year}${month}${day}${hour}${selectedRoomNum}`
 
-    async function addResToReservations() {                    
-        // for the given date and time, find all the rooms that are available         
+    async function addResToReservations() {                         
         const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
         const docRefOfYearMonthDay = doc(collection(docRefOfYearMonth, `${year}${month}Reservations`), `${year}${month}${day}`)
         const collectionRef = collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`)
@@ -35,8 +34,7 @@ export default function ReservationForm({ uid }) {
         }           
     }
 
-    async function addResToUsers() {                    
-        // for the given date and time, find all the rooms that are available         
+    async function addResToUsers() {                            
         const docRef = doc(collection(db, "Users"), uid)
 
         const updateMap = {

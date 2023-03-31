@@ -4,9 +4,11 @@ import { db } from "../firebase/config";
 import { doc, getDoc, collection, onSnapshot, query, where, getDocs, limit } from "firebase/firestore";
 import { useMyState } from "../hooks/useMyState";
 
-export default function FilterRoomsByDate({ uid, capacity, duration, year, month, day, roomsAvailable }) {
+export default function FilterRoomsByDate({ uid, capacity, duration, year, month, day, roomsAvailable, setRoomsAvailable }) {
     const [roomsAv, setRoomsAv] = useState({}) 
     const [hoursAv, setHoursAv] = useState(new Set()) 
+    let roomsAvailableByCapacity = roomsAvailable
+    console.log("roomsAvailableByCapacity:", roomsAvailableByCapacity) 
 
     const addKeyValuePair = (key, value) => { 
         setRoomsAv(prevState => ({...prevState, [key]: value}));
@@ -30,16 +32,6 @@ export default function FilterRoomsByDate({ uid, capacity, duration, year, month
     useEffect(() => {
         async function fetchData() {
             console.log("FilterRooms3")     
-            // filter out rooms that their capacity is less then the given capacity
-            let roomsAvailableByCapacity = {}
-            Object.keys(roomsAvailable).forEach((roomNum) => {
-                const roomCapacity = roomsAvailable[roomNum]
-                
-                if (roomCapacity >= capacity){ 
-                    roomsAvailableByCapacity[roomNum] = roomCapacity
-                }
-            })
-            console.log("roomsAvailableByCapacity:", roomsAvailableByCapacity)    
             
             // for the given date, for each available room, find all the hours that are available         
             const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
@@ -91,15 +83,17 @@ export default function FilterRoomsByDate({ uid, capacity, duration, year, month
 
     console.log("roomsAv:", roomsAv)    
     console.log("hoursAv:", hoursAv)   
+    setRoomsAvailable(roomsAv)
+    console.log("roomsAvailable2:", roomsAvailable) 
  
     return (
         <div>
         <h2>roomsAvailable And hoursAvailable</h2>
-            {/* {Object.keys(roomsAv).map(key => (
+            {Object.keys(roomsAv).map(key => (
                 <div key={key}>
                     {key}: {roomsAv[key]}
                 </div>
-            ))} */}
+            ))}
             {/* {datesAv.map(date => (
                 <div key={date}>
                     {date}

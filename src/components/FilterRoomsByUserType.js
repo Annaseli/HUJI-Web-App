@@ -3,7 +3,10 @@ import { useState, useEffect } from "react"
 import { db } from "../firebase/config";
 import { doc, getDoc, collection, onSnapshot, query, where, getDocs } from "firebase/firestore";
 
-export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
+export default function FilterRoomsByUserType({ uid, roomsAvailable, setRoomsAvailable }) {
+
+    const [roomsAv, setRoomsAv] = useState({});
+    //console.log("roomsAv", roomsAv) 
 
     const addKeyValuePair = (key, value) => {
         setRoomsAv(prevState => ({
@@ -12,14 +15,13 @@ export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
         }));
     };
 
-    
     //TODO: add a cleanup function
-    useEffect(() => {
+    useEffect(() => { 
         async function fetchData() {
-            console.log("FilterRooms")
+            console.log("FilterRooms") 
             //const { docs: userDoc } = useCollection('Users', ["uid", "==", uid])      
             let userType;
-            //const [roomsAvailable, setRoomsAvailable] = useState(new Map());
+               
 
             // search in Users for the current user id and gets it's doc for finding it's userType.
             const docRefInUsers = doc(db, "Users", uid);
@@ -46,18 +48,21 @@ export default function FilterRoomsByUserType({ uid, roomsAv, setRoomsAv}) {
                 const rooms = d.data().roomsAvailable
                 Object.keys(rooms).forEach((roomNum) => {
                     addKeyValuePair(roomNum, rooms[roomNum])
+                    //roomsAvailable[roomNum] = rooms[roomNum]
                 })
                 
             })
             // catch((error) => {
             // console.log('Error getting document:', error);
-            // });        
+            // });       
         }
         fetchData();    
-        //console.log(roomsAv)
-    }, [])
+               
+    }, [])   
 
-
+    setRoomsAvailable(roomsAv)
+    //console.log("roomsAvailable", roomsAvailable)
+    //roomsAvailable = roomsAv
     return (
         <div>
         <h2>roomsAvailable</h2>

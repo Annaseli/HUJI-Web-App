@@ -12,10 +12,12 @@ import FilterRoomsByCapAndDur from "../../components/FilterRoomsByCapAndDur"
 import { useMyState } from "../../hooks/useMyState"
 import FilterRoomsByDate from "../../components/FilterRoomsByDate"
 import FilterRoomsByDateAndTime from "../../components/FilterRoomsByDateAndTime"
-import DisplayUsersRes from "../../components/DisplayUsersRes"
+import GetUsersRes from "../../components/GetUsersRes"
 import ConfirmedUsersForm from "./ConfirmedUsersForm"
 import CenterContentForm from "./CenterContentForm"
 import UserAprovalByAdmin from "../../components/UserAprovalByAdmin"
+import DisplayDelUsersResForm from "./DisplayDelUsersResForm"
+import ResetPassword from "../../components/ResetPassword"
 
 // styles
 //import styles from './Home.module.css'
@@ -27,10 +29,9 @@ export default function Home() {
     const { docs: rooms } = useCollection('Rooms')
     console.log("home")
     const [ selectedRoomNum, setSelectedRoomNum ] = useState('');
-    // const [roomsAv, setRoomsAv] = useState(new Map());
-    // const _roomsAv = useRef(roomsAv).current
-    // const _setRoomsAv = useRef(setRoomsAv).current
-    const [roomsAv, setRoomsAv] = useState({});
+
+    const [roomsAvailable, setRoomsAvailable] = useState({1:5, 3:10, 4:10});
+    //let roomsAvailable = {}
 
     // const { resetState: resetRoomsAv } = useMyState({});
     // const { resetState: resetDatesAv } = useMyState(new Set());
@@ -38,6 +39,7 @@ export default function Home() {
     // resetRoomsAv()
     // resetDatesAv()
 
+    
     return (       
         <>
             <h2>Home</h2>   
@@ -46,16 +48,18 @@ export default function Home() {
             <RoomsForm />
             <TypeOfUserForm /> */}
             {/* <UsersForm uid={user.uid} />            */}
-            {/* <FilterRoomsByUserType uid={user.uid} roomsAv={roomsAv} setRoomsAv={setRoomsAv} /> */}
+            {/* <FilterRoomsByUserType uid={user.uid} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} />  */}
             {/* <MonthlyEmptyResvations year={'2023'} month={'04'}/>  */}
-            {/* <FilterRoomsByCapAndDur capacity={'5'} duration={'4'} year={'2023'} month={'04'} roomsAvailable={roomsAv} />    */}
-            {/* <FilterRoomsByDate capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} roomsAvailable={roomsAv} /> */}
-            {/* <FilterRoomsByDateAndTime capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} hour={'8'} roomsAvailable={roomsAv} /> */}
+            {/* <FilterRoomsByCapAndDur capacity={'5'} duration={'4'} year={'2023'} month={'04'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} />    */}
+            {/* <FilterRoomsByDate capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} /> */}
+            {/* <FilterRoomsByDateAndTime capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} hour={'8'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} /> */}
             {/* <ReservationForm uid={user.uid} /> */}
             {/* <DisplayUsersRes uid={user.uid} /> */}
             {/* <ConfirmedUsersForm /> */}
             {/* <CenterContentForm /> */}
-            < UserAprovalByAdmin />
+            {/* < UserAprovalByAdmin /> */}
+            {/* <DisplayDelUsersResForm uid={user.uid} /> */}
+            <ResetPassword uid={'mr3kIK2hhBdupBj0IjQ8x1RLbUx1'} />
         </> 
     )
     

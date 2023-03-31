@@ -73,7 +73,7 @@ export default function TypeOfUserForm({ user }) {
                         />}
             <button>Add a user type</button>
             </form>
-            </>
+        </>
         
     )
 }
