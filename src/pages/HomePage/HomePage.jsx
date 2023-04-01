@@ -8,7 +8,9 @@ import Reservations from '../myReservations/Reservations';
 import LogIn from '../LogIn/LogIn';
 import NewReservation from '../NewReservation/NewReservation';
 import SignUp from "../SignUp/SignUp";
-import Admin from '../Admin/Admin';
+import ApproveUsers from '../Admin/ApproveUsers';
+import AboutUs from "../AboutUs/AboutUs";
+import ManegeUsers from "../Admin/ManegeUsers";
 
 
 
@@ -45,7 +47,7 @@ export default function HomePage() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const a = "reservations"
+    const a = "ManegeUseres"
     if (a === "reservations") {
         return (
             <Box sx={{width: '100%'}}>
@@ -65,16 +67,28 @@ export default function HomePage() {
 
         );
 
-    } else if (a === "Admin") {
+    } else if (a === "ApproveUsers") {
         return (
-            <Admin/>
+            <ApproveUsers/>
+        );
+    } else if (a === "ManegeUseres") {
+        return (
+            <ManegeUsers/>
         );
     }
     else if (a === "log in") {
             return (
                 <LogIn/>
             )
-    } else {
+    }
+    else if (a === "aboutus"){
+        return  (
+            <AboutUs/>
+        )
+
+    }
+
+    else {
         return (
             <SignUp/>
         )

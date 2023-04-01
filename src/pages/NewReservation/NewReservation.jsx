@@ -11,6 +11,10 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import Stack from '@mui/material/Stack';
 import {DatePicker, DesktopTimePicker, MobileTimePicker} from "@mui/x-date-pickers";
+import Box from "@mui/material/Box";
+import {InputLabel, Select} from "@material-ui/core";
+import MenuItem from "@mui/material/MenuItem";
+import {add, isSameDay} from 'date-fns';
 
 function NewReservation() {
     const [rooms, setrooms] = useState(DB.getRooms());
@@ -26,8 +30,39 @@ function NewReservation() {
     const [DateAndTime, setDateAndTime] = React.useState(dayjs('2022-08-18T21:11:54'));
     const [isFormValid, setIsFormValid] = useState(false);
 
+    const [startTimes, setStartTimes] = useState([
+        {label: '7:00', value: 7},
+        {label: '8:00', value: 8},
+        {label: '9:00', value: 9},
+        {label: '10:00', value: 10},
+        {label: '11:00', value: 11},
+        {label: '12:00', value: 12},
+        {label: '13:00', value: 13},
+        {label: '14:00', value: 14},
+        {label: '15:00', value: 15},
+        {label: '16:00', value: 16},
+    ]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const currentDate = new Date();
+    const maxDate = add(currentDate, {months: 3});
+
+    const disabledDates_arr = [
+        new Date('2023-04-03'),
+        new Date('2023-04-04'),
+        new Date('2023-04-02'),
+        new Date('2023-05-10')
+    ];
+
+    function disableDates(date) {
+        const d = new Date(date);
+        let day = d.getDay();
+        return day === 5 || day === 6 || disabledDates_arr.some(disable_date => isSameDay(d, disable_date));
+    }
+
+    const handleStartTimeChange = (event) => {
+        setStartTime(event.target.value);
+    };
 
     const handleChangeDateAndTime = (newValue) => {
         setDateAndTime(newValue);
@@ -36,18 +71,6 @@ function NewReservation() {
     const handleSubmit = (e) => {
         console.log(date, peopleNum, startTime, endTime)
         // e.preventDefault();
-    };
-
-    const handleChangeDate = (e) => {
-        setDate(e.target.value);
-    };
-
-    const handleChangeStartTime = (e) => {
-        setStartTime(e.target.value);
-    };
-
-    const handleChangeEndTime = (e) => {
-        setEndTime(e.target.value);
     };
 
     const handleChangePeople = (e) => {
@@ -93,7 +116,7 @@ function NewReservation() {
 
     const pickerProps = {
         // ampm: false,
-        minutesStep: 15,
+        minutesStep: 60,
     };
     return (
         <div className="test">
@@ -103,38 +126,6 @@ function NewReservation() {
                     <div className="form2">
                         <form action="" onSubmit={handleSubmit}>
 
-                            <label htmlFor="book-date">Date</label>
-                            <input
-                                type="date"
-                                name=""
-                                id="book-date"
-                                onChange={handleChangeDate}
-                                ref={dateInputRef}
-                            />
-
-
-                            <label htmlFor="book-startTime">Start Time</label>
-                            <input
-                                type="time"
-                                name=""
-                                id="book-startTime"
-                                step="3600000"
-                                min="08:00"
-                                max="18:00"
-                                onChange={handleChangeStartTime}
-                                ref={startTimeInputRef}
-                            />
-                            <label htmlFor="book-endTime">End Time</label>
-                            <input
-                                type="time"
-                                name=""
-                                id="book-endTime"
-                                step="3600000"
-                                min="8"
-                                max="18"
-                                onChange={handleChangeEndTime}
-                                ref={endTimeInputRef}
-                            />
                             <label htmlFor="book-people">Number of People</label>
                             <input
                                 type="number"
@@ -146,65 +137,40 @@ function NewReservation() {
                                 ref={peopleInputRef}
                             />
 
-                            {/*<LocalizationProvider dateAdapter={AdapterDayjs}                   >*/}
-                            {/*    <DatePicker*/}
-                            {/*        label="Start Date"*/}
-                            {/*        value={startDate}*/}
-                            {/*        onChange={handleStartDateChange}*/}
-                            {/*        renderInput={(params) => <TextField {...params} />}*/}
-                            {/*        sx={{ display: 'flex', marginTop: '5px' }}*/}
-                            {/*    />*/}
-                            {/*    <TimePickerComponent*/}
-                            {/*        label="Start Time"*/}
-                            {/*        value={startDate}*/}
-                            {/*        onChange={handleStartDateChange}*/}
-                            {/*        renderInput={(params) => <TextField {...params} />}*/}
-                            {/*        {...pickerProps}*/}
-                            {/*        sx={{ display: 'flex', marginTop: '5px' }}*/}
-                            {/*    />*/}
-                            {/*    <TimePickerComponent*/}
-                            {/*        label="End Time"*/}
-                            {/*        value={endDate}*/}
-                            {/*        onChange={handleEndDateChange}*/}
-                            {/*        renderInput={(params) => <TextField {...params} />}*/}
-                            {/*        {...pickerProps}*/}
-                            {/*        sx={{ display: 'flex', marginTop: '5px' }}*/}
-                            {/*    />*/}
-                            {/*    <label htmlFor="book-people">Number of People</label>*/}
-                            {/*    <input*/}
-                            {/*        type="number"*/}
-                            {/*        name=""*/}
-                            {/*        id="book-people"*/}
-                            {/*        min="1"*/}
-                            {/*        max="10"*/}
-                            {/*        onChange={handleChangePeople}*/}
-                            {/*        ref={peopleInputRef}*/}
-                            {/*    />*/}
-                            {/*<DateTimePicker*/}
-                            {/*    label="Date&Time picker"*/}
-                            {/*    value={DateAndTime}*/}
-                            {/*    onChange={handleChangeDateAndTime}*/}
-                            {/*    renderInput={(params) => <TextField {...params} />}*/}
-                            {/*    {...pickerProps}*/}
-                            {/*    sx={{*/}
-                            {/*        boxSizing: 'border-box',*/}
-                            {/*        margin: '10px 0',*/}
-                            {/*        padding: '15px 30px',*/}
-                            {/*        outline: 'none',*/}
-                            {/*        // border:' 1px solid #ccc';*/}
-                            {/*        borderRadius: '5px',*/}
-                            {/*        width: '100%',*/}
-                            {/*        display: 'flex',*/}
-                            {/*        flexDirection: 'column',*/}
-                            {/*        justifyContent: 'center',*/}
-                            {/*        alignItems: 'stretch',*/}
-                            {/*        marginTop: '5px',*/}
-                            {/*    }}*/}
-                            {/*/>*/}
-                            {/*</LocalizationProvider>*/}
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <Box sx={{marginTop: '15px', marginBottom: '15px'}}>
+                                    <label htmlFor="startDate">Date</label>
+                                    <DatePicker
+                                        type="date"
+                                        id="startDate"
+                                        value={startDate}
+                                        onChange={handleStartDateChange}
+                                        renderInput={(params) => <TextField {...params} />}
+                                        sx={{display: 'flex', marginTop: '15px'}}
+                                        minDate={currentDate}
+                                        maxDate={maxDate}
+                                        shouldDisableDate={disableDates}
+                                    />
+                                </Box>
+                            </LocalizationProvider>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <label style={{marginBottom: '5px'}}>Available Hours </label>
+                                <select
+                                    onChange={handleStartTimeChange}
+                                    style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
+                                    disabled={!startDate} // disable the select input if startDate is not set
+                                    value={startTime}
+                                >
+                                    {startTimes.map((time) => (
+                                        <option key={time.value} value={time.value
+                                        }>
+                                            {time.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-
-                            <Button type="submit" disabled={!isFormValid}>Find a Room</Button>
+                            {/*<Button type="submit" disabled={!isFormValid}>Find a Room</Button>*/}
                         </form>
                     </div>
                 </div>
