@@ -11,11 +11,13 @@ const root = createRoot(rootElement);
 
 root.render(
   // Any component now can access auth context - a global prop
-  <StrictMode>
-    <AuthContextProvider>
-      <App />
-    </AuthContextProvider>
-  </StrictMode>,
+  // <StrictMode>
+  //   {/* <AuthContextProvider> */}
+  //     <App />
+  //   {/* </AuthContextProvider> */}
+  // </StrictMode>
+
+  <App />
 );
 
 // If you want to start measuring performance in your app, pass a function

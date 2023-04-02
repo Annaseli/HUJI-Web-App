@@ -1,8 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import useAuthContext from './hooks/useAuthContext';
-import { useContext } from "react"
+import { useContext, useState, useEffect } from "react"
 import { AuthContext } from "./context/AuthContext"
-import { db, projectAuth } from './firebase/config';
+import { projectAuth } from './firebase/config';
 
 // pages & components
 import Home from './pages/home/Home';
@@ -11,34 +10,47 @@ import Signup from './pages/signup/Signup';
 import Navbar from './components/Navbar';
 
 export default function App() {
-  //const { user, authIsReady } = useAuthContext()
-  console.log("app")
-  const user = projectAuth.currentUser
-  console.log("currentUser", user)
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = projectAuth.onAuthStateChanged((user) => {
+      setUser(user);
+      console.log("currentUser", user);
+    });
+
+    setTimeout(() => {
+      setIsLoading(false); // set isLoading to false when done
+    }, 2000);
+
+    return () => unsubscribe();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (   
     <div className="App">  
-      {/* { authIsReady && ( */}
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route 
-              path="/" 
-              element={ user ? <Home /> : <Navigate to="/login" />}
-            />
-            <Route 
-              path="/login" 
-              element={ user ? <Navigate to="/" /> : <Login />}
-            />
-            <Route 
-              path="/signup" 
-              element={ user ? <Navigate to="/" /> : <Signup />}
-            />                            
-          </Routes>
-        </BrowserRouter>    
-      {/* )}  */}
-      
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route 
+            path="/" 
+            element={ user ? <Home /> : <Navigate to="/login" />}
+          />
+          <Route 
+            path="/login" 
+            element={ user ? <Navigate to="/" /> : <Login />}
+          />
+          <Route 
+            path="/signup" 
+            element={ user ? <Navigate to="/" /> : <Signup />}
+          />                            
+        </Routes>
+      </BrowserRouter>  
     </div>
   );
 }
+
 

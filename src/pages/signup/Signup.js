@@ -11,7 +11,7 @@ export default function Signup() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        signup(email, password)
+        signup(email, password, displayName)
     }
 
     return (
@@ -42,9 +42,9 @@ export default function Signup() {
                     value={displayName}
                 />
             </label>
-            {/* {!isPending && <button className="btn">Signup</button>}
-            {isPending && <button className="btn" disabled>loading...</button>} */}
-            <button className="btn">Signup</button>
+            {/* <button className="btn">Signup</button> */}
+            {!isPending && <button className="btn">Signup</button>}
+            {isPending && <button className="btn" disabled>loading...</button>}           
             {error && <p>{error}</p>}
         </form>
     )

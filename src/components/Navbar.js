@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { useLogout } from '../hooks/useLogout'
-import useAuthContext from "../hooks/useAuthContext"
+//import useAuthContext from "../hooks/useAuthContext"
 import { db, projectAuth } from "../firebase/config"
 
 // styles
@@ -25,7 +25,7 @@ export default function Navbar() {
                 )}              
                 {user && (
                     <>
-                        <li>hello, {user.displayName}</li>
+                        {user.displayName && <li>hello, {user.displayName}</li>}
                         <li>
                             <button className="btn" onClick={logout}>Logout</button>
                         </li>
