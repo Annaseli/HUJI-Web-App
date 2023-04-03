@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useFirestore } from "../../hooks/useFirestore";
+import { useCollection } from "../../hooks/useCollection";
+//import { useMonthlyEmptyResvations } from "../../hooks/useMonthlyEmptyResvations";
 
 // firebase imports
 import { db } from "../../firebase/config";
-import { doc, getDoc, collection, onSnapshot, query, where, getDocs, updateDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, query, where, getDocs, updateDoc, setDoc } from "firebase/firestore";
 
 export default function ReservationForm({ uid }) {
     const [duration, setDuration] = useState('')
@@ -13,11 +15,66 @@ export default function ReservationForm({ uid }) {
     const [day, setDay] = useState('')
     const [hour, setHour] = useState('')
     const [selectedRoomNum, setSelectedRoomNum] = useState('')
+    const { docs: rooms } = useCollection('Rooms')
+    //const { login, error, isPending } = useMonthlyEmptyResvations('')
     console.log("reservation form")
+    console.log("uid", uid)
+
+    function range(start, end) {
+        var ans = [];
+        for (let i = start; i <= end; i++) {
+            ans.push(i);
+        }
+        return ans;
+    }
+
+    async function fetchData(year, month, rooms) {
+        console.log("MonthlyEmptyResvations form")
+        // create a doc in the Reservations collection with id {year}{month}
+        console.log("rooms", rooms)
+        const resCollectionRef = collection(db, 'Reservations');
+        const docYMRef = doc(resCollectionRef, `${year}${month}`);
+        await setDoc(docYMRef, {})
+
+        // create a collection inside the doc with the id {year}{month} that called {year}{month}Reservations
+        const subCollectionYMRef = collection(docYMRef, `${year}${month}Reservations`);
+        console.log("4")
+        // create a doc for each day for the current month in the {year}{month}Reservations 
+        // collection with id {year}{month}{day}
+        range(1, 31).forEach(async (day) => {
+            const docYMDRef = doc(subCollectionYMRef, `${year}${month}${day}`);
+            await setDoc(docYMDRef, {})
+            console.log("5")
+            // create a collection inside the doc with the id {year}{month}{day} that called {year}{month}{day}Reservations
+            const subCollectionYMDRef = collection(docYMDRef, `${year}${month}${day}Reservations`)
+
+            rooms.forEach(async (room) => {
+                const docRef = await addDoc(subCollectionYMDRef, {
+                    roomNum: room.roomNum,
+                    roomCapacity: room.capacity
+                })
+                
+                range(8, 18).forEach(async (hour) => {
+                    await updateDoc(docRef, {[hour]: {}})
+                })                
+            })
+        }) 
+    }
 
     const resId = `${year}${month}${day}${hour}${selectedRoomNum}`
 
-    async function addResToReservations() {                         
+    async function addResToReservations() {          
+        
+        const checkDoc = doc(collection(db, "Reservations"), `${year}${month}`)
+        console.log("checkDoc", checkDoc)
+        const docSnap = await getDoc(checkDoc)
+        console.log("docSnap", docSnap)
+        if (!docSnap.exists()) {
+            console.log("creating MonthlyEmptyResvations")           
+            await fetchData(year, month, rooms)
+        }
+
+        console.log("5")
         const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
         const docRefOfYearMonthDay = doc(collection(docRefOfYearMonth, `${year}${month}Reservations`), `${year}${month}${day}`)
         const collectionRef = collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`)
@@ -26,7 +83,7 @@ export default function ReservationForm({ uid }) {
         const queryDoc = querySnapshot.docs[0] 
         const docRef = doc(collectionRef, queryDoc.id)
        
-        for (let i = 0; i < duration; i++) {        
+        for (let i = 0; i < duration; i++) {         
             const updateMap = {
                 [`${parseInt(hour) + i}`]: {resId: resId, uid: uid, checkedIn: false}
             }
@@ -46,10 +103,6 @@ export default function ReservationForm({ uid }) {
               roomNum: selectedRoomNum
             }
           };
-        
-        // await updateDoc(docRef, {
-        //     resMapFromCurDay: updateMap
-        //   });    
           
         await setDoc(docRef, {
             resMapFromCurDay: updateMap
@@ -62,13 +115,13 @@ export default function ReservationForm({ uid }) {
         addResToReservations()
         addResToUsers()
 
-        // setDuration('')
-        // setCapacity('')
-        // setYear('')
-        // setMonth('')
-        // setDay('')
-        // setHour('')
-        // setSelectedRoomNum('')
+        setDuration('')
+        setCapacity('')
+        setYear('')
+        setMonth('')
+        setDay('')
+        setHour('')
+        setSelectedRoomNum('')
     }
 
     // when we have a successful response fire this function and reset it if it's true

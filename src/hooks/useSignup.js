@@ -61,13 +61,13 @@ export const useSignup = () => {
                 console.log('No such email in ConfirmedUsers collection!');
 
                 // disable the user from Authentication
-                try {
-                    //await getAuth().updateUser(user.uid, {disabled: true})
-                    await admin.auth().setCustomUserClaims(user.uid, { disabled: true });
-                    console.log("user disabled successfuly")
-                } catch (error) {
-                    console.log("an error in disabling the user", error.message)
-                }  
+                // try {
+                //     //await getAuth().updateUser(user.uid, {disabled: true})
+                //     await admin.auth().setCustomUserClaims(user.uid, { disabled: true });
+                //     console.log("user disabled successfuly")
+                // } catch (error) {
+                //     console.log("an error in disabling the user", error.message)
+                // }  
                   
             }
 

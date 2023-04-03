@@ -1,4 +1,5 @@
 import { useState, useRef } from "react"
+import { db, projectAuth } from "../../firebase/config"
 import useAuthContext from "../../hooks/useAuthContext"
 import ReservationForm from "./ReservationForm"
 import RoomsForm from "./RoomsForm"
@@ -7,7 +8,7 @@ import { useCollection } from "../../hooks/useCollection"
 import TypeOfUserForm from "./TypeOfUserForm"
 import UsersForm from "./UsersForm"
 import FilterRoomsByUserType from "../../components/FilterRoomsByUserType"
-import MonthlyEmptyResvations from "./MonthlyEmptyResvations"
+import MonthlyEmptyResvations from "../../hooks/useMonthlyEmptyResvations"
 import FilterRoomsByCapAndDur from "../../components/FilterRoomsByCapAndDur"
 import { useMyState } from "../../hooks/useMyState"
 import FilterRoomsByDate from "../../components/FilterRoomsByDate"
@@ -58,7 +59,7 @@ export default function Home() {
             {/* <FilterRoomsByCapAndDur capacity={'5'} duration={'4'} year={'2023'} month={'04'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} />    */}
             {/* <FilterRoomsByDate capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} /> */}
             {/* <FilterRoomsByDateAndTime capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} hour={'8'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} /> */}
-            {/* <ReservationForm uid={user.uid} /> */}
+            <ReservationForm uid={projectAuth.currentUser.uid} />
             {/* <DisplayUsersRes uid={user.uid} /> */}
             {/* <ConfirmedUsersForm /> */}
             {/* <CenterContentForm /> */}
