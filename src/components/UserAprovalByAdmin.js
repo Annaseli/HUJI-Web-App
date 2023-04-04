@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { db } from "../firebase/config";
 import { getAuth, deleteUser, updateUser, getUser } from "firebase/auth";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
@@ -6,6 +6,9 @@ import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 
 // TODO - back: the user enable, getUser and delete user doesn't work.
 export default function UserAprovalByAdmin() {
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
+
     // parse email
     let email;
     let userType;
@@ -53,11 +56,19 @@ export default function UserAprovalByAdmin() {
             try {
                 await deleteUser(user)
                 console.log("user deleted successfuly")
-            } catch (error) {
-                console.log("an error in deleting the user", error.message)
+                if (!isCancelled) {
+                    setError(null)
+                }
             }
+            catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }            
+            }                  
         }
-        fetchData();
+        fetchData(); 
+        return () => setIsCancelled(true)
     }, []) 
 }
 

@@ -1,35 +1,12 @@
-import { useCollection } from "../hooks/useCollection"
+import { range } from "lodash";
 import { useState, useEffect } from "react"
-import { db } from "../firebase/config";
-import { doc, getDoc, collection, onSnapshot, query, where, getDocs, limit } from "firebase/firestore";
-import { useMyState } from "../hooks/useMyState";
+import { getDocRefFromReservations } from "./getDocRefFromReservations";
 
-export default function FilterRoomsByCapAndDur({ uid, capacity, duration, year, month, roomsAvailable, setRoomsAvailable }) {
+export default function FilterRoomsByCapAndDur({ capacity, duration, year, month, roomsAvailable, setRoomsAvailable }) {
     const [roomsAv, setRoomsAv] = useState({}) 
     const [datesAv, setDatesAv] = useState(new Set())  
-    console.log("roomsAvailable:", roomsAvailable) 
-
-    // const { state: roomsAv, setState: setRoomsAv, resetState: resetRoomsAv } = useMyState({});
-    // const { state: datesAv, setState: setDatesAv, resetState: resetDatesAv } = useMyState(new Set());
-
-    // resetRoomsAv()
-    // resetDatesAv()
-
-    const addKeyValuePair = (key, value) => { 
-        setRoomsAv(prevState => ({...prevState, [key]: value}));
-    }; 
-
-    const addValToArr = (value) => {
-        setDatesAv(prevState => new Set([...prevState, value])); 
-    };
-
-    function range(start, end) {
-        var ans = [];
-        for (let i = start; i <= end; i++) {
-            ans.push(i);
-        }
-        return ans;
-    }
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
 
     // filter out rooms that their capacity is less then the given capacity
     let roomsAvailableByCapacity = {}
@@ -39,62 +16,49 @@ export default function FilterRoomsByCapAndDur({ uid, capacity, duration, year, 
             roomsAvailableByCapacity[roomNum] = roomCapacity
         }
     }) 
-    //setRoomsAvailable({})
     
-    //TODO: add a cleanup function
-    //TODO: how to make the component to be re-created so roomsAv and datesAv would be new Obj and new set. otherwise it's the previous arrays.
     useEffect(() => {
         async function fetchData() {
-            console.log("FilterRooms2")  
-            
-            // for each day in the given month, for each available room, find all the hours that are available         
-            range(1, 31).forEach(async (day) => {
-                const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
-                const docRefOfYearMonthDay = doc(collection(docRefOfYearMonth, `${year}${month}Reservations`), `${year}${month}${day}`)
-                Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
-                    const docRefOfYearMonthDayRoom = query(collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`), where("roomNum", "==", `${roomNum}`))
-                    const querySnapshot = await getDocs(docRefOfYearMonthDayRoom)
-                    const queryDoc = querySnapshot.docs[0] 
-                    const data = queryDoc.data();
-                    const roomCapacity = data.roomCapacity; 
-                    
-                    let durationCounter = 0
-                    const hours = range(8, 18)    
-                    for (let i = 0; i < hours.length; i++) {
-                        // this hour is available                                     
-                        if (Object.keys(data[hours[i]]).length === 0) {                             
-                            durationCounter++
-                            if (durationCounter == duration){
-                                addKeyValuePair(roomNum, roomCapacity)
-                                addValToArr(`${day}/${month}/${year}`)
-                                break 
-                            } 
-                        } else {
-                            durationCounter = 0 
-                        }
-                    }
-                   
-                    
+            try {
+                console.log("FilterRooms2")                 
+                // for each day in the given month, for each available room, find all the hours that are available         
+                range(1, 31).forEach(async (day) => {               
+                    Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
+                        const { data } = await getDocRefFromReservations(year, month, day, roomNum)
+                        const roomCapacity = data.roomCapacity;                     
+                        let durationCounter = 0
+                        const hours = range(8, 18)    
+                        for (let i = 0; i < hours.length; i++) {
+                            // this hour is available                                     
+                            if (Object.keys(data[hours[i]]).length === 0) {                             
+                                durationCounter++
+                                if (durationCounter == duration){
+                                    setRoomsAv(prevState => ({...prevState, [roomNum]: roomCapacity}));
+                                    setDatesAv(prevState => new Set([...prevState, `${day}/${month}/${year}`])); 
+                                    break 
+                                } 
+                            } else {
+                                durationCounter = 0 
+                            }
+                        }                   
+                    })
                 })
-                
-            })
-
-            
+                if (!isCancelled) {
+                    setError(null)
+                }
+            }
+            catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }            
+            }                  
         }
-        fetchData();   
+        fetchData(); 
+        return () => setIsCancelled(true)  
     }, [])  
 
-    
-    
-    // Object.keys(roomsAv).forEach((roomNum) => {
-    //     setRoomsAvailable(prevState => ({...prevState, [roomNum]: roomsAv[roomNum]}));
-    // })
-    // console.log("roomsAvailable:", roomsAvailable)    
-
-    console.log("roomsAv:", roomsAv)      
-    console.log("datesAv:", datesAv) 
-    setRoomsAvailable(roomsAv)
-    console.log("roomsAvailable2:", roomsAvailable) 
+    //setRoomsAvailable(roomsAv)
    
     return (
         <div>
@@ -104,14 +68,11 @@ export default function FilterRoomsByCapAndDur({ uid, capacity, duration, year, 
                     {key}: {roomsAv[key]}
                 </div>
             ))}
-            {/* {datesAv.map(date => (
+            {/* {Object.keys(datesAv).map(date => (
                 <div key={date}>
                     {date}
                 </div>
-            ))} */} 
+            ))}  */}
         </div>
-    )  
-    
-
-    
+    )     
 }

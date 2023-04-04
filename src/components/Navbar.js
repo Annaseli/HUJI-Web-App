@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useLogout } from '../hooks/useLogout'
 //import useAuthContext from "../hooks/useAuthContext"
-import { db, projectAuth } from "../firebase/config"
+import { projectAuth } from "../firebase/config"
 
 // styles
 //import styles from 

@@ -1,31 +1,41 @@
-// Display user's reservations from current day
-
-import { useCollection } from "../hooks/useCollection"
 import { useState, useEffect } from "react"
 import { db } from "../firebase/config";
-import { doc, getDoc, collection, onSnapshot, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection } from "firebase/firestore";
 
+// Display user's reservations from current day
 export default function GetUsersRes({ uid, resMapFromCurDay, setResMapFromCurDay }) {
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
    
-    //TODO: add a cleanup function
     useEffect(() => {
         async function fetchData() {
-            console.log("DisplayUsersRes")
-            const docRefInUsers = doc(collection(db, "Users"), uid); 
-            //console.log(docRefInUsers)  
-            const docInUsersSnap = await getDoc(docRefInUsers)
-            if (docInUsersSnap.exists) {
-                const data = docInUsersSnap.data();
-                // const sortedRes = Object.keys(resMapFromCurDay).sort().reduce((objEntries, key) => {
-                //     objEntries[key] = resMapFromCurDay[key];                   
-                //     return objEntries;                 
-                //     }, {});
-                setResMapFromCurDay({...resMapFromCurDay, ...data.resMapFromCurDay})
-            } else {
-                console.log('No such document!');
+            try {
+                console.log("DisplayUsersRes")
+                const docRefInUsers = doc(collection(db, "Users"), uid); 
+                const docInUsersSnap = await getDoc(docRefInUsers)
+                if (docInUsersSnap.exists) {
+                    const data = docInUsersSnap.data();
+                    // const sortedRes = Object.keys(resMapFromCurDay).sort().reduce((objEntries, key) => {
+                    //     objEntries[key] = resMapFromCurDay[key];                   
+                    //     return objEntries;                 
+                    //     }, {});
+                    setResMapFromCurDay({...resMapFromCurDay, ...data.resMapFromCurDay})
+                } else {
+                    console.log('No such document!');
+                }
+                if (!isCancelled) {
+                    setError(null)
+                }
             }
+            catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }            
+            }                  
         }
-        fetchData();    
+        fetchData(); 
+    return () => setIsCancelled(true)    
     }, [])
 
 

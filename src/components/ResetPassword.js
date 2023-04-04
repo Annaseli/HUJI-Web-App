@@ -1,10 +1,7 @@
-// Display user's reservations from current day
-
-import { useCollection } from "../hooks/useCollection"
 import { useState, useEffect } from "react"
 import { db, projectAuth } from "../firebase/config";
-import { doc, getDoc, collection, onSnapshot, query, where, getDocs } from "firebase/firestore";
-import { getAuth, sendPasswordResetEmail, getUser  } from "firebase/auth";
+import { doc, getDoc, collection } from "firebase/firestore";
+import { sendPasswordResetEmail  } from "firebase/auth";
 
 // async function findEmail(uid) {
 //     const docRef = doc(collection(db, "Users"), uid)
@@ -22,22 +19,32 @@ import { getAuth, sendPasswordResetEmail, getUser  } from "firebase/auth";
 //     return email
 // }
 
+// Display user's reservations from current day
 export default function ResetPassword({ uid }) {
-
-    console.log("uid", uid)
     const [email, setEmail] = useState('')
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         async function fetchData() {
-            const docRef = doc(collection(db, "Users"), uid)
-            const docSnap = await getDoc(docRef)
-            //const email = docSnap.data().email
-            setEmail(docSnap.data().email)
-            console.log("email", email)
-            //return email;
+            try {
+                const docRef = doc(collection(db, "Users"), uid)
+                const docSnap = await getDoc(docRef)
+                setEmail(docSnap.data().email)
+                console.log("email", email)
+                if (!isCancelled) {
+                    setError(null)
+                }
+            }
+            catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }            
+            }                  
         }
-        //const email = fetchData();
-        fetchData()
+        fetchData(); 
+        return () => setIsCancelled(true)    
     }, [])
 
     try {

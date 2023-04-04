@@ -1,11 +1,10 @@
-import { useCollection } from "../hooks/useCollection"
 import { useState, useEffect } from "react"
-import { db } from "../firebase/config";
-import { doc, getDoc, collection, onSnapshot, query, where, getDocs, limit } from "firebase/firestore";
-import { useMyState } from "../hooks/useMyState";
+import { getDocRefFromReservations } from "./getDocRefFromReservations";
 
-export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year, month, day, hour, roomsAvailable, setRoomsAvailable }) {
+export default function FilterRoomsByDateAndTime({ duration, year, month, day, hour, roomsAvailable, setRoomsAvailable }) {
     const [roomsAv, setRoomsAv] = useState({})  
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
     let roomsAvailableByCapacity = roomsAvailable
  
     const addKeyValuePair = (key, value) => { 
@@ -17,46 +16,49 @@ export default function FilterRoomsByDateAndTime({ uid, capacity, duration, year
     //TODO: need a way to use the roomsAv that was calculated in the previous components and pass it here
     useEffect(() => {
         async function fetchData() {
-            console.log("FilterRooms4")     
-            
-            // for the given date and time, find all the rooms that are available         
-            const docRefOfYearMonth = doc(collection(db, "Reservations"), `${year}${month}`)
-            const docRefOfYearMonthDay = doc(collection(docRefOfYearMonth, `${year}${month}Reservations`), `${year}${month}${day}`)
-            Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
-                const docRefOfYearMonthDayRoom = query(collection(docRefOfYearMonthDay, `${year}${month}${day}Reservations`), where("roomNum", "==", `${roomNum}`))
-                const querySnapshot = await getDocs(docRefOfYearMonthDayRoom)
-                const queryDoc = querySnapshot.docs[0] 
-                const data = queryDoc.data();
-                const roomCapacity = data.roomCapacity; 
-
-                let roomIsAv = true  
-                for (let i = 0; i < duration; i++) {
-                    // this hour is available          
-                    if (Object.keys(data[parseInt(hour) + i]).length !== 0) {                     
-                        roomIsAv = false  
-                        break 
-                    } 
+            try {
+                console.log("FilterRooms4")                    
+                // for the given date and time, find all the rooms that are available                        
+                Object.keys(roomsAvailableByCapacity).forEach(async (roomNum) => {
+                    const { data } = await getDocRefFromReservations(year, month, day, roomNum)
+                    const roomCapacity = data.roomCapacity; 
+                    let roomIsAv = true  
+                    for (let i = 0; i < duration; i++) {
+                        // this hour is available          
+                        if (Object.keys(data[parseInt(hour) + i]).length !== 0) {                     
+                            roomIsAv = false  
+                            break 
+                        } 
+                    }
+                    if (roomIsAv){
+                        addKeyValuePair(roomNum, roomCapacity)
+                    }
+                })
+                if (!isCancelled) {
+                    setError(null)
                 }
-                if (roomIsAv){
-                    addKeyValuePair(roomNum, roomCapacity)
-                }
-            })
+            }
+            catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }            
+            }     
         }
         fetchData();   
+        return () => setIsCancelled(true)
     }, [])
 
-    console.log("roomsAv:", roomsAv)     
-    setRoomsAvailable(roomsAv)
-    console.log("roomsAvailable:", roomsAvailable)     
+    //setRoomsAvailable(roomsAv)  
  
     return (
         <div>
         <h2>roomsAvailable for a Given Date And Time</h2>
-            {/* {Object.keys(roomsAv).map(key => (
+            {Object.keys(roomsAv).map(key => (
                 <div key={key}>
                     {key}: {roomsAv[key]}
                 </div>
-            ))} */}
+            ))}
             {/* {datesAv.map(date => (
                 <div key={date}>
                     {date}

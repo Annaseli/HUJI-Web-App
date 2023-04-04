@@ -1,6 +1,6 @@
 // import { useEffect, useState } from "react";
 // import { useFirestore } from "../../hooks/useFirestore";
-// import { useCollection } from "../../hooks/useCollection"
+// import { useColl } from "../../hooks/useColl"
 // import GetUsersRes from "../../components/GetUsersRes";
 
 // import { createObjectCsvWriter } from "csv-writer";

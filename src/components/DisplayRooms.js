@@ -12,9 +12,7 @@ export default function DisplayRooms({ rooms, setSelectedRoomNum, setSelectedRoo
                         className="btn" 
                         onClick={() => {
                             if (roomsAvailable){
-                                const arr = Array.from(roomsAvailable);
-                                arr.push((room.roomNum, room.capacity))                        
-                                setRoomsAvailable(arr)
+                                setRoomsAvailable(prevState => [...prevState, room.roomNum, room.capacity]); 
                             }
                             if(setSelectedRoomNum)
                                 setSelectedRoomNum(room.roomNum)
@@ -28,5 +26,3 @@ export default function DisplayRooms({ rooms, setSelectedRoomNum, setSelectedRoo
         </ul>
     )
 }
-
-export { DisplayRooms }
