@@ -1,11 +1,11 @@
 import { useAuthContext } from "../../hooks/useAuthContext"
-import { useColl } from "../../hooks/useColl"
+import { useCollection } from "../../hooks/useCollection"
 
 // styles
 
 export default function UsersReservations() {
     const { user } = useAuthContext()
-    const { docs, error } = useColl('collection name')
+    const { docs, error } = useCollection('collection name')
 
     //return ()
 

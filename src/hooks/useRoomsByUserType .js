@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { useColl } from "./useColl";
+import { useCollection } from "./useCollection";
 import { db } from "../firebase/config";
 
 export const useRoomsByUserType = (userType) => {
@@ -24,7 +24,7 @@ export const useRoomsByUserType = (userType) => {
     };
 
     if (userType) {
-      //const { docs: userTypeInfo } = useColl('TypeOfUser', ["userType", "==", userType])
+      //const { docs: userTypeInfo } = useCollection('TypeOfUser', ["userType", "==", userType])
       //userTypeInfo && fetchRooms(userTypeInfo);
       fetchRooms();
     }

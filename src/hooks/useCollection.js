@@ -6,7 +6,7 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 // Takes in a collection and updating the documents to match whatever documents are inside the collection 
 // in that moment in time.
-export const useColl = (c, q) => {
+export const useCollection = (c, q) => {
     const [docs, setDocs] = useState(null)
     const [error, setError] = useState(null)
 

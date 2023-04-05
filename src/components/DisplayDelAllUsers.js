@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useFirestore } from "../hooks/useFirestore";
-import { useColl } from "../hooks/useColl"
+import { useCollection } from "../hooks/useCollection"
 
 // firebase imports
 import { db } from "../firebase/config";
@@ -8,7 +8,7 @@ import { doc } from "firebase/firestore";
 
 export default function DisplayDelAllUsers() {
     console.log("Display Del All Users")
-    const { docs: allUsers } = useColl('Users')
+    const { docs: allUsers } = useCollection('Users')
 
     //const [allUsers, setAllUsers] = useState([])
     // //TODO: add a cleanup function

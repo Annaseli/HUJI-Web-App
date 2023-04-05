@@ -1,4 +1,4 @@
-import { useColl } from "../hooks/useColl"
+import { useCollection } from "../hooks/useCollection"
 import DisplayDelResForm from "./DisplayDelResForm";
 
 // firebase imports
@@ -6,7 +6,7 @@ import { db } from "../firebase/config";
 import { collection, getCountFromServer, deleteDoc, doc, setDoc, deleteField , updateDoc, query, where, getDocs, getDoc  } from "firebase/firestore";
 
 export default function DisplayDelAllResForm() {
-    const { docs: allUsers } = useColl('Users')
+    const { docs: allUsers } = useCollection('Users')
 
     //const [allUid, setAllUid] = useState(new Set())
     //const [allUid, setAllUid] = useState([])

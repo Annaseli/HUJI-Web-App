@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useColl } from "../hooks/useColl"
+import { useCollection } from "../hooks/useCollection"
 import DisplayRooms from "./DisplayRooms";
 import { useFirestore } from "../hooks/useFirestore";
 

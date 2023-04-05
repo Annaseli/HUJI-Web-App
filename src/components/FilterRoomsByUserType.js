@@ -1,4 +1,4 @@
-//import { useColl } from "../hooks/useColl"
+//import { useCollection } from "../hooks/useCollection"
 //import { useDoc } from "../hooks/useDoc";
 //import { useRoomsByUserType } from "../hooks/useRoomsByUserType ";
 import { useState, useEffect } from "react"
@@ -30,7 +30,7 @@ export default function FilterRoomsByUserType({ uid }) {
 
     // console.log("userType", userType);
     // if (userType) {
-    //     const { docs } = useColl('TypeOfUser', ["userType", "==", userType])
+    //     const { docs } = useCollection('TypeOfUser', ["userType", "==", userType])
     //     setUserTypeInfo(docs)
     // }
     

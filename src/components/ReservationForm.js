@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useColl } from "../hooks/useColl";
+import { useCollection } from "../hooks/useCollection";
 import { getDocRefFromReservations } from "./getDocRefFromReservations";
 import { useFirestore } from "../hooks/useFirestore";
 //import { useCreateAnEmptyColl } from "../hooks/useCreateAnEmptyColl";

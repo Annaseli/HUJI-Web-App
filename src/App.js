@@ -21,11 +21,13 @@ export default function App() {
 
     setTimeout(() => {
       setIsLoading(false); // set isLoading to false when done
-    }, 2000);
+    }, 1000);
 
     return () => unsubscribe();
   }, []);
 
+
+  // TODO: front - style this
   if (isLoading) {
     return <div>Loading...</div>;
   }
