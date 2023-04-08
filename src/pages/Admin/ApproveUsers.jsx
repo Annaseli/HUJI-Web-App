@@ -27,6 +27,7 @@ export default function ApproveUsers() {
             console.log(users[row - 1].id)
             console.log(users[row - 1].rule)
         })
+        // updateUser(users[row - 1].id,users[row - 1].rule)
     };
 
     function handleDenyClick() {
