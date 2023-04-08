@@ -1,16 +1,15 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import Reservations from '../myReservations/Reservations';
-
-import LogIn from '../LogIn/LogIn';
-import NewReservation from '../NewReservation/NewReservation';
-import SignUp from "../SignUp/SignUp";
-import ApproveUsers from '../Admin/ApproveUsers';
-import AboutUs from "../AboutUs/AboutUs";
-import ManegeUsers from "../Admin/ManegeUsers";
+import Reservations from '../myReservations/MyReservations';
+import LogIn from '../logIn/LogIn';
+import NewReservation from '../newReservation/NewReservation';
+import SignUp from "../signUp/SignUp";
+import ApproveUsers from '../admin/ApproveUsers';
+import AboutUs from "../aboutUs/AboutUs";
+import ManageUsers from "../admin/ManageUsers";
 
 
 
@@ -42,7 +41,7 @@ function a11yProps(index) {
 }
 
 export default function HomePage() {
-    const [TabValue, setValue] = React.useState(0);
+    const [TabValue, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -73,7 +72,7 @@ export default function HomePage() {
         );
     } else if (a === "ManegeUseres") {
         return (
-            <ManegeUsers/>
+            <ManageUsers/>
         );
     }
     else if (a === "log in") {

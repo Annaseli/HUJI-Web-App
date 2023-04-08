@@ -7,7 +7,7 @@ import {SemiTitle} from "../../components/Title";
 import Button from "@mui/material/Button";
 import {TextField} from "@material-ui/core";
 
-export default function ManegeUsers() {
+export default function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [searchTerm, setSearchTerm] = useState('');
