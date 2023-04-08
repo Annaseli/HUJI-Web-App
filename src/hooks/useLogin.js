@@ -5,13 +5,13 @@ import { projectAuth } from '../firebase/config'
 //import useAuthContext from './useAuthContext'
 import { signInWithEmailAndPassword } from "firebase/auth"
 
-export const useLogin = () => {
+export const useLogIn = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     //const { dispatch } = useAuthContext()
 
-    const login = async (email, password) => {
+    const logIn = async (email, password) => {
         setError(null)
         setIsPending(true)
         try {
@@ -19,7 +19,7 @@ export const useLogin = () => {
 
             // if network connection is bad
             if (!res) {
-                throw new Error('Could not complete login')
+                throw new Error('Could not complete logIn')
             }
 
             console.log('user logged in:', res.user);
@@ -49,5 +49,5 @@ export const useLogin = () => {
         return () => setIsCancelled(true)
     }, [])
 
-    return { login, isPending, error }
+    return { logIn, isPending, error }
 }

@@ -27,7 +27,7 @@ import DisplayDelResForm from "../../components/DisplayDelResForm"
 
 export default function Home() {
     //const { user } = useAuthContext()
-    const { docs: rooms } = useColl('Rooms')
+    const { docs: rooms } = useCollection('Rooms')
     console.log("home")
 
     const [ selectedRoomNum, setSelectedRoomNum ] = useState('');
@@ -47,7 +47,7 @@ export default function Home() {
             {/* <FilterRoomsByUserType uid={uid} />  */}
             {/* <FilterRoomsByCapAndDur capacity={'5'} duration={'4'} year={'2023'} month={'04'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} />    */}
             {/* <FilterRoomsByDate capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} /> */}
-            <FilterRoomsByDateAndTime capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} hour={'8'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} />
+            {/* <FilterRoomsByDateAndTime capacity={'5'} duration={'3'} year={'2023'} month={'04'} day={'1'} hour={'8'} roomsAvailable={roomsAvailable} setRoomsAvailable={setRoomsAvailable} /> */}
             {/* <ReservationForm uid={uid} /> */}
             {/* <DisplayUsersRes uid={user.uid} /> */}
             {/* <ConfirmedUsersForm /> */}

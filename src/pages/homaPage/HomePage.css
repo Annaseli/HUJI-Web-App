@@ -1,0 +1,23 @@
+.form {
+    display: grid;
+    gap: 23px;
+    margin: 15px auto;
+}
+
+.sub-form {
+    display: inline-flex;
+    gap: 23px;
+    margin: 15px auto;
+}
+
+p, button{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    font-size: 14px;
+}
+
+.submit {
+    display: grid;
+    justify-content: center;
+    margin-top: 50px;
+}

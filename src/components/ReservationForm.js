@@ -19,7 +19,7 @@ export default function ReservationForm({ uid }) {
     const [selectedRoomNum, setSelectedRoomNum] = useState('')
     const { setDocToFireStore, updateDocInFireStore, response } = useFirestore()
     //const { createAnEmptyColl, response: resFromCreateAnEmptyColl } = useCreateAnEmptyColl()
-    const { docs: rooms } = useColl('Rooms')
+    const { docs: rooms } = useCollection('Rooms')
 
     console.log("reservation form")
 

@@ -6,14 +6,14 @@ import useAuthContext from './useAuthContext'
 import { createUserWithEmailAndPassword, updateUser, getAuth, updateProfile } from "firebase/auth"
 import { collection, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
 
-export const useSignup = () => {
+export const useSignUp = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     //const { dispatch } = useAuthContext()
     let resMapFromCurDay = {}
 
-    const signup = async (email, password, displayName) => {
+    const signUp = async (email, password, displayName) => {
         setError(null)
         setIsPending(true)   
 
@@ -22,7 +22,7 @@ export const useSignup = () => {
 
             // if network connection is bad
             if (!res) {
-                throw new Error('Could not complete signup')
+                throw new Error('Could not complete signUp')
             }
 
             const user = res.user
@@ -93,5 +93,5 @@ export const useSignup = () => {
         return () => setIsCancelled(true)
     }, [])
 
-    return { signup, error, isPending }
+    return { signUp, error, isPending }
 }

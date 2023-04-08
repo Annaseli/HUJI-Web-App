@@ -11,7 +11,7 @@ export default function TypeOfUserForm() {
     const [userType, setUserType] = useState('')
     const [roomsAvailable, setRoomsAvailable] = useState({})
     const { addDocToFireStore, response } = useFirestore()
-    const { docs: rooms } = useColl('Rooms')
+    const { docs: rooms } = useCollection('Rooms')
     console.log("type of user form")
 
     const handleSubmit = async (event) => {
