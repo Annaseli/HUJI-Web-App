@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AbcIcon from '@mui/icons-material/Abc';
+
 const pages = ['Book A Reservation', 'About HUJI-INNOVATE', 'HUJI-Articles'];
 const settingsOption = ['Profile', 'My reservation', 'Contact Us', 'Logout'];
 const AdminSettingOption  = ['Profile', 'Approve New Users', 'Usage Report', 'Logout'];

@@ -47,7 +47,7 @@ export default function HomePage() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const a = "log in"
+    const a = "reservations"
     if (a === "reservations") {
         return (
             <Box sx={{width: '100%'}}>
