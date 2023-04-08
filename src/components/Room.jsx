@@ -32,7 +32,7 @@ export function Room(props) {
             size={size}
             color={color}
             available={available}
-            onClick={onClick}
+            onClick={onClick }
             width={width}
         >
             {props.children}

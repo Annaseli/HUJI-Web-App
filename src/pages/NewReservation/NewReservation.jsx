@@ -16,12 +16,14 @@ import {InputLabel, Select} from "@material-ui/core";
 import MenuItem from "@mui/material/MenuItem";
 import {add, isSameDay} from 'date-fns';
 
+
 function NewReservation() {
     const [rooms, setrooms] = useState(DB.getRooms());
 
     const [date, setDate] = useState("");
-    const [peopleNum, setPeopleNum] = useState(1);
+    const [peopleNum, setPeopleNum] = useState(null);
     const [startTime, setStartTime] = useState("");
+    const [duration, setDuration] = useState("");
     const [endTime, setEndTime] = useState("");
     const dateInputRef = useRef(null);
     const startTimeInputRef = useRef(null);
@@ -30,7 +32,14 @@ function NewReservation() {
     const [DateAndTime, setDateAndTime] = React.useState(dayjs('2022-08-18T21:11:54'));
     const [isFormValid, setIsFormValid] = useState(false);
 
-    const [startTimes, setStartTimes] = useState([
+
+    const [durationsOptions, setDurationOptions] = useState([
+        {label: "", value: ""},
+        {label: '1 hour', value: 1},
+        {label: '2 hour', value: 2},
+    ]);
+
+    const [startTimesOptions, setStartTimesOptions] = useState([
         {label: '7:00', value: 7},
         {label: '8:00', value: 8},
         {label: '9:00', value: 9},
@@ -64,6 +73,11 @@ function NewReservation() {
         setStartTime(event.target.value);
     };
 
+
+    function handleDurationChange(event) {
+        setDuration(event.target.value)
+    }
+
     const handleChangeDateAndTime = (newValue) => {
         setDateAndTime(newValue);
     };
@@ -79,7 +93,6 @@ function NewReservation() {
 
     const isRoomAvailable = (room) => {
         return DB.isRoomAvailable(room, peopleNum) // date and time
-
     }
     const get_rooms = (rooms) => {
         return (rooms.map((room) => (
@@ -136,7 +149,22 @@ function NewReservation() {
                                 onChange={handleChangePeople}
                                 ref={peopleInputRef}
                             />
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
 
+                            <label style={{marginBottom: '5px'}}>Duration </label>
+                            <select
+                                onChange={handleDurationChange}
+                                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
+                                disabled={!peopleNum} // disable the select input if peopleNum is not set
+                                value={duration}
+                            >
+                                {durationsOptions.map((duration) => (
+                                    <option key={duration.value} value={duration.value
+                                    }>
+                                        {duration.label}
+                                    </option>
+                                ))}
+                            </select>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Box sx={{marginTop: '15px', marginBottom: '15px'}}>
                                     <label htmlFor="startDate">Date</label>
@@ -150,18 +178,19 @@ function NewReservation() {
                                         minDate={currentDate}
                                         maxDate={maxDate}
                                         shouldDisableDate={disableDates}
+                                        disabled={!duration}
                                     />
                                 </Box>
                             </LocalizationProvider>
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <label style={{marginBottom: '5px'}}>Available Hours </label>
+
+                                <label style={{marginBottom: '5px'}}>Available Hours (Starting Time) </label>
                                 <select
                                     onChange={handleStartTimeChange}
                                     style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
                                     disabled={!startDate} // disable the select input if startDate is not set
                                     value={startTime}
                                 >
-                                    {startTimes.map((time) => (
+                                    {startTimesOptions.map((time) => (
                                         <option key={time.value} value={time.value
                                         }>
                                             {time.label}
@@ -170,7 +199,6 @@ function NewReservation() {
                                 </select>
                             </div>
 
-                            {/*<Button type="submit" disabled={!isFormValid}>Find a Room</Button>*/}
                         </form>
                     </div>
                 </div>
