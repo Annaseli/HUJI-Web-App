@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {Button} from "../../components/Button";
 import {Room} from "../../components/Room";
 import BasicModal from "../../components/Modal";
@@ -16,22 +16,35 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import {add, isSameDay} from 'date-fns';
 
+// custom hooks
+import {useCollection} from "../../hooks/useCollection";
+import filterRoomsByUserType from "./filterRoomsByUserType";
+import filterRoomsByCapAndDur from "./filterRoomsByCapAndDur";
+import filterRoomsByDate from "./filterRoomsByDate";
+import filterRoomsByDateAndTime from "./filterRoomsByDateAndTime";
+import confirmReservation from "./confirmReservation";
+import {collection, doc, getDoc} from "firebase/firestore";
+import {db} from "../../firebase/config";
+import {createAnEmptyCollection} from "./createAnEmptyCollection";
 
-function NewReservation() {
-    const [rooms, setrooms] = useState(DB.getRooms());
-
+export default function NewReservation({ uid }) {
+    //const [rooms, setRooms] = useState(DB.getRooms());
+    const { docs: rooms } = useCollection('Rooms')
+    const [roomsAvailable, setRoomsAvailable] = useState({});
     const [date, setDate] = useState("");
-    const [peopleNum, setPeopleNum] = useState(null);
+    const [peopleNum, setPeopleNum] = useState("");
     const [startTime, setStartTime] = useState("");
     const [duration, setDuration] = useState("");
     const [endTime, setEndTime] = useState("");
+    const [selectedRoom, setSelectedRoom] = useState("1");
     const dateInputRef = useRef(null);
     const startTimeInputRef = useRef(null);
     const endTimeInputRef = useRef(null);
     const peopleInputRef = useRef(1);
-    const [DateAndTime, setDateAndTime] = React.useState(dayjs('2022-08-18T21:11:54'));
+    const [DateAndTime, setDateAndTime] = useState(dayjs('2022-08-18T21:11:54'));
     const [isFormValid, setIsFormValid] = useState(false);
-
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
 
     const [durationsOptions, setDurationOptions] = useState([
         {label: "", value: ""},
@@ -40,7 +53,6 @@ function NewReservation() {
     ]);
 
     const [startTimesOptions, setStartTimesOptions] = useState([
-        {label: '7:00', value: 7},
         {label: '8:00', value: 8},
         {label: '9:00', value: 9},
         {label: '10:00', value: 10},
@@ -50,11 +62,20 @@ function NewReservation() {
         {label: '14:00', value: 14},
         {label: '15:00', value: 15},
         {label: '16:00', value: 16},
+        {label: '17:00', value: 17},
+        {label: '18:00', value: 18}
     ]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+
     const currentDate = new Date();
-    const maxDate = add(currentDate, {months: 3});
+    let month = `${currentDate.getMonth() + 1}`;
+    if (currentDate.getMonth() + 1 < 10) {
+        month = `0${currentDate.getMonth() + 1}`;
+    }
+    let year = `${currentDate.getFullYear()}`;
+
+    const maxDate = add(currentDate, {months: 1});
 
     const disabledDates_arr = [
         new Date('2023-04-03'),
@@ -73,7 +94,6 @@ function NewReservation() {
         setStartTime(event.target.value);
     };
 
-
     function handleDurationChange(event) {
         setDuration(event.target.value)
     }
@@ -83,27 +103,90 @@ function NewReservation() {
     };
 
     const handleSubmit = (e) => {
-        console.log(date, peopleNum, startTime, endTime)
-        // e.preventDefault();
+        e.preventDefault();
     };
 
     const handleChangePeople = (e) => {
         setPeopleNum(e.target.value);
     };
 
-    const isRoomAvailable = (room) => {
-        return DB.isRoomAvailable(room, peopleNum) // date and time
+    useEffect(() => {
+        async function fetchData() {
+            try {
+
+
+                const roomsAvailable = await filterRoomsByUserType(uid);
+                setRoomsAvailable(roomsAvailable);
+                if (!isCancelled) {
+                    setError(null)
+                }
+            } catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }
+            }
+        }
+        fetchData();
+        return () => setIsCancelled(true)
+    }, [uid]);
+
+    // roomsAvailable && useEffect(() => {
+    //     async function fetchData() {
+    //         try {
+    //             if (peopleNum && duration && !startDate) {
+    //                 const { roomsAv, datesAv } = await filterRoomsByCapAndDur(peopleNum, duration, year, month, roomsAvailable);
+    //                 console.log("roomsAv", roomsAv)
+    //                 setRoomsAvailable(roomsAv);
+    //             } else if (peopleNum && duration && startDate && !startTime) {
+    //                 const { roomsAv, hoursAv } = await filterRoomsByDate(duration, year, month, startDate.D, roomsAvailable);
+    //                 setRoomsAvailable(roomsAv);
+    //             } else if (peopleNum && duration && date && startTime) {
+    //                 const {
+    //                     roomsAv,
+    //                     hoursAv
+    //                 } = await filterRoomsByDateAndTime(duration, year, month, startDate.D, startTime, roomsAvailable);
+    //                 setRoomsAvailable(roomsAv);
+    //             }
+    //             // } else {
+    //             //     setRoomsAvailable(roomsAvailable);
+    //             // }
+    //             if (!isCancelled) {
+    //                 setError(null)
+    //             }
+    //         } catch(error) {
+    //             if (!isCancelled) {
+    //                 console.log(error.message)
+    //                 setError(error.message)
+    //             }
+    //         }
+    //     }
+    //     fetchData();
+    //     return () => setIsCancelled(true)
+    // }, [uid, peopleNum, duration, startDate, startTime]);
+
+    const isRoomAvailable = (roomNum) => {
+        //return DB.isRoomAvailable(room, peopleNum) // date and time
+        return Object.keys(roomsAvailable).includes(roomNum)
     }
-    const get_rooms = (rooms) => {
+
+    //TODO - think with matan how to render it differently so the run time would decrease.
+    // Now for wach room in all rooms we are searching if it's in the roomsAvailable list.
+    const getRooms = () => {
+        //console.log("date", date)
         return (rooms.map((room) => (
                 <BasicModal
-                    key={room.name}
-                    title={room.name}
-                    date={date}
+                    key={room.roomNum}
+                    title={room.roomNum}
+                    year={startDate ? startDate.y : null}
+                    month={startDate ? startDate.M + 1 : null}
+                    day={startDate ? startDate.D : null}
                     startTime={startTime}
                     endTime={endTime}
-                    people={peopleNum}
-                    available={isRoomAvailable(room)}
+                    peopleNum={peopleNum}
+                    duration={duration}
+                    uid={uid}
+                    available={isRoomAvailable(room.roomNum)}
                 >
                 </BasicModal>
             ))
@@ -138,7 +221,6 @@ function NewReservation() {
                     <div className="text">Find a Room</div>
                     <div className="form2">
                         <form action="" onSubmit={handleSubmit}>
-
                             <label htmlFor="book-people">Number of People</label>
                             <input
                                 type="number"
@@ -198,7 +280,6 @@ function NewReservation() {
                                     ))}
                                 </select>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -208,14 +289,12 @@ function NewReservation() {
                     Book a Room
                 </div>
                 <div className="rooms">
-
-                    {get_rooms(rooms)}
-
-
+                    {rooms && roomsAvailable && getRooms()}
+                    {/*{useEffect(() => {*/}
+                    {/*    getRooms()*/}
+                    {/*}, [rooms, roomsAvailable])}*/}
                 </div>
             </div>
         </div>
     );
 }
-
-export default NewReservation;

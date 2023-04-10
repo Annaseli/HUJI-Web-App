@@ -5,13 +5,13 @@ import { projectAuth } from '../firebase/config'
 //import useAuthContext from './useAuthContext'
 import { signOut } from 'firebase/auth'
 
-export const useLogout = () => {
+export const useLogOut = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     //const { dispatch } = useAuthContext()
 
-    const logout = async () => {
+    const logOut = async () => {
         setError(null)
         setIsPending(true)
 
@@ -45,5 +45,5 @@ export const useLogout = () => {
         return () => setIsCancelled(true)
     }, [])
 
-    return { logout, isPending, error }
+    return { logOut, isPending, error }
 }

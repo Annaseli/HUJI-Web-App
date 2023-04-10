@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AbcIcon from '@mui/icons-material/Abc';
 import { Link } from "react-router-dom"
-import { useLogout } from '../hooks/useLogOut'
+import { useLogOut } from '../hooks/useLogOut'
 import { projectAuth } from "../firebase/config"
 import { isAdmin } from '../pages/admin/isAdmin';
 
@@ -23,9 +23,8 @@ const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
 const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
 
 
-
 export default function NavBar() {
-    const { logout } = useLogout()
+    const { logOut } = useLogOut()
     const user = projectAuth.currentUser
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -108,9 +107,6 @@ export default function NavBar() {
                         >
                             {user && pages.map((page) => (
                                 <MenuItem key={page} >
-                                    {/* <Typography textAlign="center">{page}</Typography>
-                                                                   */}
-                                    {console.log("in pages map")}
                                     { page === 'Book a Reservation' &&  <Typography textAlign="center"><Link to="/">{page}</Link></Typography>  }
                                     { page === 'About HUJI-INNOVATE' &&  <Typography textAlign="center"><Link to="/aboutUs">{page}</Link></Typography>  }
                                     { page === 'HUJI-Articles' && <Link to="/articles"> <Typography textAlign="center">{page}</Typography> </Link> }
@@ -173,13 +169,12 @@ export default function NavBar() {
                         >
                             {settings.map((setting) => (
                                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    {/* <Typography textAlign="center">{setting}</Typography> */}
                                     { setting === 'My Reservations' && <Link to="/myReservations"> <Typography textAlign="center">{setting}</Typography> </Link> }
                                     { setting === 'All Users Reservations' && <Link to="/allReservations"> <Typography textAlign="center">{setting}</Typography> </Link> }
                                     { setting === 'Contact Us' && <Link to="/contactUs"> <Typography textAlign="center">{setting}</Typography> </Link> }
                                     { setting === 'Approve New Users' && <Link to="/approveUsers"> <Typography textAlign="center">{setting}</Typography> </Link> }
                                     { setting === 'Manage Users' && <Link to="/manageUsers"> <Typography textAlign="center">{setting}</Typography> </Link> }
-                                    { setting === 'LogOut' && <Button onClick={logout}><Typography textAlign="center">{setting}</Typography></Button> }
+                                    { setting === 'LogOut' && <Button onClick={logOut}><Typography textAlign="center">{setting}</Typography></Button> }
                                 </MenuItem>
                             ))}
                         </Menu>

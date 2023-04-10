@@ -10,12 +10,14 @@ import './App.css';
 import HomePage from './pages/homePage/HomePage';
 //import Home from './pages/home/Home';
 import LogIn from './pages/logIn/LogIn';
+import ForgotPassword from "./pages/logIn/ForgotPassword";
 import SignUp from './pages/signUp/SignUp';
 import MyReservations from './pages/myReservations/MyReservations';
 import AllReservations from './pages/allReservations/AllReservations';
 import AboutUs from './pages/aboutUs/AboutUs';
 import ApproveUsers from './pages/admin/ApproveUsers';
 import ManageUsers from './pages/admin/ManageUsers';
+import AddRooms from "./pages/rooms/AddRooms";
 import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
@@ -66,7 +68,7 @@ export default function App() {
 
     return (
         <div className="App">
-            <ThemeProvider  theme={THEME}>
+            <ThemeProvider theme={THEME}>
                 <BrowserRouter>
                     <NavBar />
                     <Routes>
@@ -107,8 +109,16 @@ export default function App() {
                             element={ user && isAdmin() ? <ManageUsers /> : <Navigate to="/logIn" />}
                         />
                         <Route
+                            path="/addRooms"
+                            element={ user && isAdmin() ? <AddRooms /> : <Navigate to="/logIn" />}
+                        />
+                        <Route
                             path="/logIn"
                             element={ user ? <Navigate to="/" /> : <LogIn />}
+                        />
+                        <Route
+                            path="/forgotPassword"
+                            element={ user ? <Navigate to="/" /> : <ForgotPassword />}
                         />
                         <Route
                             path="/signUp"

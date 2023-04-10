@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -6,6 +6,7 @@ import Modal from '@mui/material/Modal';
 import "./Modal.css";
 import {Room} from './Room';
 import {Button} from './Button';
+import confirmReservation from "../pages/newReservation/confirmReservation";
 
 const style = {
     position: 'absolute',
@@ -20,11 +21,15 @@ const style = {
 };
 
 export default function BasicModal(props) {
-    const {title, date, startTime, endTime, people, available} = props;
-    const [open, setOpen] = React.useState(false);
+    // expcets all of them to be strings except the available which is bool
+    const {title, year, month, day, startTime, endTime, peopleNum, duration, uid, available} = props;
+    const [open, setOpen] = useState(false);
+
     const handleOpen = () => setOpen(true);
+
+    //TODO - front: add cancel to the confirm Order pop-up
     const handleClose = () => {
-        // TODO: add a function that add a new book.
+        confirmReservation(uid, peopleNum, duration, null, startTime, title)
         setOpen(false)
 
     };
@@ -46,12 +51,12 @@ export default function BasicModal(props) {
                         Order Information
                     </Typography>
                     <Typography id="modal-modal-description" sx={{m: 3, mt: 2, display: 'grid', gap: 2}}>
-                        <span>Date: {date}</span>
+                        <span>Date: {year +'-'+ month +'-'+ day}</span>
                         <span>Start Time: {startTime}</span>
                         <span>End Time: {endTime}</span>
-                        <span>People: {people}</span>
+                        <span>People: {peopleNum}</span>
                     </Typography>
-                    <Button background="#15CE49" onClick={handleClose}>Confirm Order</Button>
+                    <Button background="#15CE49" onClick={handleClose}>Confirm Reservation</Button>
                 </Box>
             </Modal>
         </div>

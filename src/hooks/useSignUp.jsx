@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react'
 
 // firebase imports
 import { db, projectAuth } from '../firebase/config'
-import useAuthContext from './useAuthContext'
 import { createUserWithEmailAndPassword, updateUser, getAuth, updateProfile } from "firebase/auth"
 import { collection, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
+import {Link} from "react-router-dom";
+
+import PendingUser from "../pages/signUp/PendingUser";
 
 export const useSignUp = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     //const { dispatch } = useAuthContext()
-    let resMapFromCurDay = {}
+    //let resMapFromCurDay = {}
 
     const signUp = async (email, password, displayName) => {
         setError(null)
@@ -35,30 +37,34 @@ export const useSignUp = () => {
 
             const docRef = doc(collection(db, 'ConfirmedUsers'), email)
             const docSnap = await getDoc(docRef)
-            if (docRef.exists) {
+            if (docSnap.exists()) {
                 const data = docSnap.data();
                 const userType = data.userType
 
                 // if exists add the user to "Users" collection
                 await setDoc(doc(collection(db, 'Users') , user.uid), {
                     userType,
-                    resMapFromCurDay
+                    email,
+                    resMapFromCurDay: {}
                 })
 
                 // if exists delete this user from the ConfirmedUsers collection
                 try {
                     await deleteDoc(docRef);
-                    console.log('Document deleted successfully.');
+                    console.log('Document deleted successfully from ConfirmedUsers');
                 } catch (err) {
                     console.error('Error deleting document:', err);
                 }
 
             } else {
-                // TODO: back - send an email to the admin to ask for
+                // TODO: back - send an email to the admin to ask for and add the user to the approveUser
+                //  form front and dont show this user the home page (in routes need to check that user isn't disabled before showing the home page)
                 //confimations to the user and add this to the pending list matan created
                 // disable the user account in firebase Authentication - doesn't work!!!!!!!!!!!
-                // TODO: front - let the user know that he is pending for approval
                 console.log('No such email in ConfirmedUsers collection!');
+                // TODO: front - let the user know that he is pending for approval in this page:
+                //PendingUser()
+
 
                 // disable the user from Authentication
                 // try {
@@ -79,7 +85,7 @@ export const useSignUp = () => {
         }
         catch(error) {
             if (!isCancelled) {
-                console.log(error.message)
+                console.log("error:", error.message)
                 setError(error.message)
                 setIsPending(false)
             }

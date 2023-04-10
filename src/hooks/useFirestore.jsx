@@ -39,7 +39,7 @@ export const useFirestore = () => {
 
     // add a document
     const addDocToFireStore = async (ref, data) => {
-        dispatch({ type: 'IS_PENDING' })
+        dispatch({ type: 'ADDED_DOC' })
 
         try {
             //const createdAt = timestamp.fromDate(new Date())
@@ -53,7 +53,7 @@ export const useFirestore = () => {
 
     // set a document
     const setDocToFireStore = async (ref, data, settings) => {
-        dispatch({ type: 'IS_PENDING' })
+        dispatch({ type: 'ADDED_DOC' })
 
         try {
             //const createdAt = timestamp.fromDate(new Date())
@@ -67,7 +67,7 @@ export const useFirestore = () => {
 
     // update a document
     const updateDocInFireStore = async (ref, data) => {
-        dispatch({ type: 'IS_PENDING' })
+        dispatch({ type: 'UPDATED_DOC' })
 
         try {
             const updateedDoc = await updateDoc(ref, data)
