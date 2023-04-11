@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword, updateUser, getAuth, updateProfile } fr
 import { collection, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
 import {Link} from "react-router-dom";
 
-import PendingUser from "../pages/signUp/PendingUser";
+import PendingUser from "../pages/SignUp/PendingUser";
 
 export const useSignUp = () => {
     const [isCancelled, setIsCancelled] = useState(false)

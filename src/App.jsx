@@ -9,19 +9,19 @@ import './App.css';
 // pages & components
 import HomePage from './pages/homePage/HomePage';
 //import Home from './pages/home/Home';
-import LogIn from './pages/logIn/LogIn';
-import ForgotPassword from "./pages/logIn/ForgotPassword";
-import SignUp from './pages/signUp/SignUp';
+import LogIn from './pages/LogIn/LogIn';
+import ForgotPassword from "./pages/LogIn/ForgotPassword";
+import SignUp from './pages/SignUp/SignUp';
 import MyReservations from './pages/myReservations/MyReservations';
 import AllReservations from './pages/allReservations/AllReservations';
-import AboutUs from './pages/aboutUs/AboutUs';
-import ApproveUsers from './pages/admin/ApproveUsers';
-import ManageUsers from './pages/admin/ManageUsers';
+import AboutUs from './pages/AboutUs/AboutUs';
+import ApproveUsers from './pages/Admin/ApproveUsers';
+import ManageUsers from './pages/Admin/ManageUsers';
 import AddRooms from "./pages/rooms/AddRooms";
 import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
-import { isAdmin } from './pages/admin/isAdmin';
+import { isAdmin } from './pages/Admin/isAdmin';
 
 const THEME = createTheme({
     typography: {

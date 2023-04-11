@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import "./Modal.css";
 import {Room} from './Room';
 import {Button} from './Button';
-import confirmReservation from "../pages/newReservation/confirmReservation";
+import confirmReservation from "../pages/NewReservation/confirmReservation";
 
 const style = {
     position: 'absolute',
@@ -22,14 +22,22 @@ const style = {
 
 export default function BasicModal(props) {
     // expcets all of them to be strings except the available which is bool
-    const {title, year, month, day, startTime, endTime, peopleNum, duration, uid, available} = props;
+    const {title, date, startTime, endTime, peopleNum, duration, uid, available} = props;
+    const dayObject = new Date(date)
+
     const [open, setOpen] = useState(false);
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+
+        setOpen(true);
+    }
 
     //TODO - front: add cancel to the confirm Order pop-up
     const handleClose = () => {
-        confirmReservation(uid, peopleNum, duration, null, startTime, title)
+        console.log("year: ", dayObject.getFullYear())
+        console.log("month: ", dayObject.getMonth() + 1)
+        console.log("day (of month): ", dayObject.getDate())
+        // confirmReservation(uid, peopleNum, duration, null, startTime, title)
         setOpen(false)
 
     };
@@ -51,7 +59,7 @@ export default function BasicModal(props) {
                         Order Information
                     </Typography>
                     <Typography id="modal-modal-description" sx={{m: 3, mt: 2, display: 'grid', gap: 2}}>
-                        <span>Date: {year +'-'+ month +'-'+ day}</span>
+                        <span>Date: {date}</span>
                         <span>Start Time: {startTime}</span>
                         <span>End Time: {endTime}</span>
                         <span>People: {peopleNum}</span>

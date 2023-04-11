@@ -4,16 +4,16 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 import Reservations from '../myReservations/MyReservations';
-import LogIn from '../logIn/LogIn';
-import NewReservation from '../newReservation/NewReservation';
-import SignUp from "../signUp/SignUp";
-import ApproveUsers from '../admin/ApproveUsers';
-import AboutUs from "../aboutUs/AboutUs";
-import ManageUsers from "../admin/ManageUsers";
+import LogIn from '../LogIn/LogIn';
+import NewReservation from '../NewReservation/NewReservation';
+import SignUp from "../SignUp/SignUp";
+import ApproveUsers from '../Admin/ApproveUsers';
+import AboutUs from "../AboutUs/AboutUs";
+import ManageUsers from "../Admin/ManageUsers";
 import MyReservations from "../myReservations/MyReservations";
 import {db, projectAuth} from "../../firebase/config";
 import {collection, doc, getDoc} from "firebase/firestore";
-import {createAnEmptyCollection} from "../newReservation/createAnEmptyCollection";
+import {createAnEmptyCollection} from "../NewReservation/createAnEmptyCollection";
 import {useCollection} from "../../hooks/useCollection";
 
 function TabPanel(props) {
