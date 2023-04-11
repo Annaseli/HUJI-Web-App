@@ -1,0 +1,12 @@
+.confirmation-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 1rem;
+}
+
+.confirmation-message svg {
+    margin-bottom: 1rem;
+}

@@ -2,7 +2,17 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import {DataGrid} from '@mui/x-data-grid';
 import { SemiTitle } from '../../components/Title';
+import Button from "@mui/material/Button";
+import CancelIcon from '@mui/icons-material/Cancel';
+import IconButton from "@mui/material/IconButton";
 
+
+const handleCancel = (reservation_id) => {
+  if (window.confirm(`Are you sure you want to this reservation ?`)) {
+    console.log(reservation_id)
+    // deleateFromDB(reservation_id) #TODO: anna to add backend
+  }
+};
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -38,13 +48,22 @@ const columns = [
     editable: false,
     type: 'number',
     width: 110,
+  },{
+    field: 'delete',
+    headerName: 'Delete',
+    width: 150,
+    renderCell: (params) => (
+        <IconButton sx={{ color: 'red' }} onClick={() => handleCancel(params.row.id)}>
+          <CancelIcon />
+        </IconButton>
+    ),
   },
 ];
 
 const rows = [
   { id: 1, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
   { id: 2, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
-  { id: 3, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
+  { id: 23, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
   { id: 4, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
   { id: 5, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
   { id: 6, room: 'A1', startTime: '08:00', endTime: '12:00', capacity: 3 },
@@ -61,7 +80,7 @@ export default function MyReservations() {
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
-            checkboxSelection
+            // checkboxSelection
             disableSelectionOnClick
             experimentalFeatures={{ newEditingApi: true }}
         />

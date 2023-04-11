@@ -17,11 +17,13 @@ import { useLogOut } from '../hooks/useLogOut'
 import { projectAuth } from "../firebase/config"
 import { isAdmin } from '../pages/admin/isAdmin';
 
+
 const pages = ['Book a Reservation', 'About HUJI-INNOVATE', 'HUJI-Articles'];
 const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
 // TODO: back & front - add a page to All Users Reservations
 const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
 
+import { useNavigate } from 'react-router';
 
 export default function NavBar() {
     const { logOut } = useLogOut()
@@ -47,16 +49,26 @@ export default function NavBar() {
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
+        console.log("1313")
     };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
 
+
+    const routesDict = {
+        'Book a Reservation': '/',
+        'About HUJI-INNOVATE': '/aboutUs',
+        'HUJI-Articles' : '/articles'
+    };
+    const navigate  = useNavigate();
+
+
     return (
         <AppBar position="static" sx={{ backgroundColor: '#211D42' }}>
             <Container maxWidth="lg">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters >
                     {/*<AbcIcon sx={{ display: { xs: 'none', md: 'flex' ,lg: 'flex'}, mr: 1 }} />*/}
                     <Typography
                         variant="h6"
@@ -137,7 +149,8 @@ export default function NavBar() {
                         {user && pages.map((page) => (
                             <Button
                                 key={page}
-                                onClick={handleCloseNavMenu}
+                                onClick={() => navigate(routesDict[page])}
+                                // to={`/${page}`} // Change this to the path of your page
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page}

@@ -47,6 +47,7 @@ export default function NewReservation({ uid }) {
     ]);
 
     const [startTimesOptions, setStartTimesOptions] = useState([
+        {label: "", value: ""},
         {label: '8:00', value: 8},
         {label: '9:00', value: 9},
         {label: '10:00', value: 10},
@@ -165,12 +166,13 @@ export default function NewReservation({ uid }) {
                     key={room.roomNum}
                     title={room.roomNum}
                     date={new Date(date).toString()}
-                    startTime={startHour + ":00"}
-                    endTime={parseInt(startHour) + parseInt(duration) + ":00" }
+                    startTime={startHour }
+                    endTime={parseInt(startHour) + parseInt(duration) }
                     peopleNum={peopleNum}
                     duration={duration}
                     uid={uid}
                     available={isRoomAvailable(room.roomNum)}
+                    room={room.roomNum}
                 >
                 </BasicModal>
             ))
@@ -253,7 +255,7 @@ export default function NewReservation({ uid }) {
                                     onChange={handleStartHourChange}
                                     style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
                                     disabled={!date} // disable the select input if startHour is not set
-                                    value={date}
+                                    value={startHour}
                                 >
                                     {startTimesOptions.map((time) => (
                                         <option key={time.value} value={time.value
