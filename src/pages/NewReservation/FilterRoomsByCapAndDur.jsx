@@ -3,6 +3,7 @@ import { getDocRefFromReservations } from "./getDocRefFromReservations";
 import {collection, doc, getDoc} from "firebase/firestore";
 import {db} from "../../firebase/config";
 import {createAnEmptyCollection} from "./createAnEmptyCollection";
+import {useCollection} from "../../hooks/useCollection";
 
 export default async function filterRoomsByCapAndDur(capacity, duration, year, month, roomsAvailable) {
     console.log("FilterRooms2")
@@ -39,7 +40,6 @@ export default async function filterRoomsByCapAndDur(capacity, duration, year, m
                     durationCounter++
                     if (durationCounter === parseInt(duration)){
                         roomsAv[roomNum] = roomCapacity
-                        console.log("roomsAv2", roomsAv)
                         datesAv.add(`${dayToUse}-` + month + '-' + year)
                         break
                     }

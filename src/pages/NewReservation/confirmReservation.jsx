@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { getDocRefFromReservations } from "./getDocRefFromReservations";
 import { useFirestore } from "../../hooks/useFirestore";
-import { createAnEmptyCollection} from "./createAnEmptyCollection";
 
 // firebase imports
 import { db } from "../../firebase/config";
 import { doc, getDoc, updateDoc, setDoc, collection } from "firebase/firestore";
-import {useCollection} from "../../hooks/useCollection";
 
 //TODO - front: fix the dates that pass here
 export default function confirmReservation(uid, capacity, duration, date, startTime, selectedRoomNum) {
     console.log("reservation form")
     //const { setDocToFireStore, updateDocInFireStore, response } = useFirestore()
-    const { docs: rooms } = useCollection('Rooms')
+
 
     const year = '2023'//date.y
     const monthRead = '4'//date.M + 1
@@ -34,12 +32,6 @@ export default function confirmReservation(uid, capacity, duration, date, startT
     const resId = year + month + day + time + selectedRoomNum
 
     async function addResToReservations() {
-        const checkDoc = doc(collection(db, "Reservations"), year + month)
-        const docSnap = await getDoc(checkDoc)
-        if (!docSnap.exists()) {
-            rooms && await createAnEmptyCollection(year, month, rooms)
-        }
-
         const { docRef } = await getDocRefFromReservations(year, month, day, selectedRoomNum)
 
         for (let i = 0; i < parseInt(duration); i++) {

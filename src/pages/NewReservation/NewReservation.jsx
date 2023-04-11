@@ -25,7 +25,6 @@ import filterRoomsByDateAndTime from "./filterRoomsByDateAndTime";
 import confirmReservation from "./confirmReservation";
 import {collection, doc, getDoc} from "firebase/firestore";
 import {db} from "../../firebase/config";
-import {createAnEmptyCollection} from "./createAnEmptyCollection";
 
 export default function NewReservation({ uid }) {
     //const [rooms, setRooms] = useState(DB.getRooms());
@@ -113,8 +112,6 @@ export default function NewReservation({ uid }) {
     useEffect(() => {
         async function fetchData() {
             try {
-
-
                 const roomsAvailable = await filterRoomsByUserType(uid);
                 setRoomsAvailable(roomsAvailable);
                 if (!isCancelled) {
@@ -131,39 +128,37 @@ export default function NewReservation({ uid }) {
         return () => setIsCancelled(true)
     }, [uid]);
 
-    // roomsAvailable && useEffect(() => {
-    //     async function fetchData() {
-    //         try {
-    //             if (peopleNum && duration && !startDate) {
-    //                 const { roomsAv, datesAv } = await filterRoomsByCapAndDur(peopleNum, duration, year, month, roomsAvailable);
-    //                 console.log("roomsAv", roomsAv)
-    //                 setRoomsAvailable(roomsAv);
-    //             } else if (peopleNum && duration && startDate && !startTime) {
-    //                 const { roomsAv, hoursAv } = await filterRoomsByDate(duration, year, month, startDate.D, roomsAvailable);
-    //                 setRoomsAvailable(roomsAv);
-    //             } else if (peopleNum && duration && date && startTime) {
-    //                 const {
-    //                     roomsAv,
-    //                     hoursAv
-    //                 } = await filterRoomsByDateAndTime(duration, year, month, startDate.D, startTime, roomsAvailable);
-    //                 setRoomsAvailable(roomsAv);
-    //             }
-    //             // } else {
-    //             //     setRoomsAvailable(roomsAvailable);
-    //             // }
-    //             if (!isCancelled) {
-    //                 setError(null)
-    //             }
-    //         } catch(error) {
-    //             if (!isCancelled) {
-    //                 console.log(error.message)
-    //                 setError(error.message)
-    //             }
-    //         }
-    //     }
-    //     fetchData();
-    //     return () => setIsCancelled(true)
-    // }, [uid, peopleNum, duration, startDate, startTime]);
+    roomsAvailable && useEffect(() => {
+        async function fetchData() {
+            try {
+                console.log(peopleNum, duration, startDate)
+                if (peopleNum && duration && !startDate) {
+                    const { roomsAv, datesAv } = await filterRoomsByCapAndDur(peopleNum, duration, year, month, roomsAvailable);
+                    console.log("roomsAv", roomsAv)
+                    setRoomsAvailable(roomsAv);
+                } else if (peopleNum && duration && startDate && !startTime) {
+                    const { roomsAv, hoursAv } = await filterRoomsByDate(duration, year, month, startDate.D, roomsAvailable);
+                    setRoomsAvailable(roomsAv);
+                } else if (peopleNum && duration && date && startTime) {
+                    const { roomsAv, hoursAv } = await filterRoomsByDateAndTime(duration, year, month, startDate.D, startTime, roomsAvailable);
+                    setRoomsAvailable(roomsAv);
+                }
+                // } else {
+                //     setRoomsAvailable(roomsAvailable);
+                // }
+                if (!isCancelled) {
+                    setError(null)
+                }
+            } catch(error) {
+                if (!isCancelled) {
+                    console.log(error.message)
+                    setError(error.message)
+                }
+            }
+        }
+        fetchData();
+        return () => setIsCancelled(true)
+    }, [uid, peopleNum, duration, startDate, startTime]);
 
     const isRoomAvailable = (roomNum) => {
         //return DB.isRoomAvailable(room, peopleNum) // date and time

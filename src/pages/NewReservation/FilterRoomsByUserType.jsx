@@ -24,7 +24,6 @@ export default async function filterRoomsByUserType(uid) {
     const querySnap = await getDocs(docRefInTypeOfUsers)
     const docSnap = querySnap.docs[0];
     roomsAv = docSnap.data().roomsAvailable
-    console.log("roomsAv", roomsAv)
     return roomsAv
 
     // i'll make a custom hook out of all this logic and return roomsAv and matan will render the roomsAv i'll send to him. So i won't have to sent roomsAvailable as prop

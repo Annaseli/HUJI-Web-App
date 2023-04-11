@@ -46,6 +46,21 @@ function a11yProps(index) {
 export default function HomePage() {
     const [TabValue, setValue] = useState(0);
     const uid = projectAuth.currentUser.uid
+    const { docs: rooms } = useCollection('Rooms')
+
+    // TODO - back: move this initialization of the DB to the admin - every time that he will log in, I'll check
+    // that there are collections for the next 3 month and if not will create them. I'll move to storage the
+    // the earliests 3 month. Need to check the option of doing that without his log in because it's riscy -
+    // if he won't log in there would be bugs in Reservations.
+    // async function create(year, month) {
+    //     const checkDoc = doc(collection(db, "Reservations"), year + month)
+    //     const docSnap = await getDoc(checkDoc)
+    //     if (!docSnap.exists()) {
+    //         rooms && await createAnEmptyCollection(year, month, rooms)
+    //     }
+    // }
+    //
+    // create('2023', '08')
 
     const handleChange = (event, newValue) => {
         setValue(newValue);

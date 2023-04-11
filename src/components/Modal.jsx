@@ -22,7 +22,7 @@ const style = {
 
 export default function BasicModal(props) {
     // expcets all of them to be strings except the available which is bool
-    const {title, year, month, day, startTime, endTime, peopleNum, duration, uid, available} = props;
+    const {title, year, month, day, startTime, endTime, peopleNum, duration, uid, available, rooms} = props;
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
