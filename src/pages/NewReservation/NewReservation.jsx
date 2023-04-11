@@ -30,20 +30,15 @@ export default function NewReservation({ uid }) {
     //const [rooms, setRooms] = useState(DB.getRooms());
     const { docs: rooms } = useCollection('Rooms')
     const [roomsAvailable, setRoomsAvailable] = useState({});
-    const [date, setDate] = useState("");
     const [peopleNum, setPeopleNum] = useState("");
-    const [startTime, setStartTime] = useState("");
+    const [date, setDate] = useState("");
     const [duration, setDuration] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [selectedRoom, setSelectedRoom] = useState("1");
-    const dateInputRef = useRef(null);
-    const startTimeInputRef = useRef(null);
-    const endTimeInputRef = useRef(null);
+    // const [endTime, setEndTime] = useState("");
     const peopleInputRef = useRef(1);
-    const [DateAndTime, setDateAndTime] = useState(dayjs('2022-08-18T21:11:54'));
-    const [isFormValid, setIsFormValid] = useState(false);
+    // const [DateAndTime, setDateAndTime] = useState(dayjs('2022-08-18T21:11:54'));
+    // const [isFormValid, setIsFormValid] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false)
-    const [error, setError] = useState(null)
+    // const [error, setError] = useState(null)
 
     const [durationsOptions, setDurationOptions] = useState([
         {label: "", value: ""},
@@ -64,9 +59,7 @@ export default function NewReservation({ uid }) {
         {label: '17:00', value: 17},
         {label: '18:00', value: 18}
     ]);
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-
+    const [startHour, setStartHour] = useState("");
     const currentDate = new Date();
     let month = `${currentDate.getMonth() + 1}`;
     if (currentDate.getMonth() + 1 < 10) {
@@ -89,17 +82,15 @@ export default function NewReservation({ uid }) {
         return day === 5 || day === 6 || disabledDates_arr.some(disable_date => isSameDay(d, disable_date));
     }
 
-    const handleStartTimeChange = (event) => {
-        setStartTime(event.target.value);
+    const handleStartHourChange = (event) => {
+        setStartHour(event.target.value);
     };
 
     function handleDurationChange(event) {
         setDuration(event.target.value)
     }
 
-    const handleChangeDateAndTime = (newValue) => {
-        setDateAndTime(newValue);
-    };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -173,11 +164,9 @@ export default function NewReservation({ uid }) {
                 <BasicModal
                     key={room.roomNum}
                     title={room.roomNum}
-                    year={startDate ? startDate.y : null}
-                    month={startDate ? startDate.M + 1 : null}
-                    day={startDate ? startDate.D : null}
-                    startTime={startTime}
-                    endTime={endTime}
+                    date={new Date(date).toString()}
+                    startTime={startHour + ":00"}
+                    endTime={parseInt(startHour) + parseInt(duration) + ":00" }
                     peopleNum={peopleNum}
                     duration={duration}
                     uid={uid}
@@ -189,13 +178,12 @@ export default function NewReservation({ uid }) {
     }
 
     const handleStartDateChange = (date) => {
-        setStartDate(date);
-        setIsFormValid(validateDateRange(date, endDate));
+        setDate(date);
     };
 
     const handleEndDateChange = (date) => {
         setEndDate(date);
-        setIsFormValid(validateDateRange(startDate, date));
+        setIsFormValid(validateDateRange(startHour, date));
     };
 
     const validateDateRange = (startDate, endDate) => {
@@ -248,7 +236,7 @@ export default function NewReservation({ uid }) {
                                     <DatePicker
                                         type="date"
                                         id="startDate"
-                                        value={startDate}
+                                        value={date}
                                         onChange={handleStartDateChange}
                                         renderInput={(params) => <TextField {...params} />}
                                         sx={{display: 'flex', marginTop: '15px'}}
@@ -260,12 +248,12 @@ export default function NewReservation({ uid }) {
                                 </Box>
                             </LocalizationProvider>
 
-                                <label style={{marginBottom: '5px'}}>Available Hours (Starting Time) </label>
+                                <label style={{marginBottom: '5px'}}>Available Hours (Starting Time)  </label>
                                 <select
-                                    onChange={handleStartTimeChange}
+                                    onChange={handleStartHourChange}
                                     style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
-                                    disabled={!startDate} // disable the select input if startDate is not set
-                                    value={startTime}
+                                    disabled={!date} // disable the select input if startHour is not set
+                                    value={date}
                                 >
                                     {startTimesOptions.map((time) => (
                                         <option key={time.value} value={time.value
