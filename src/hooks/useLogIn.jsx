@@ -19,7 +19,7 @@ export const useLogIn = () => {
 
             // if network connection is bad
             if (!res) {
-                throw new Error('Could not complete logIn')
+                throw new Error('Could not complete LogIn')
             }
 
             console.log('user logged in:', res.user);

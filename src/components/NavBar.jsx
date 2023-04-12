@@ -15,7 +15,7 @@ import AbcIcon from '@mui/icons-material/Abc';
 import { Link } from "react-router-dom"
 import { useLogOut } from '../hooks/useLogOut'
 import { projectAuth } from "../firebase/config"
-import { isAdmin } from '../pages/admin/isAdmin';
+import { isAdmin } from '../pages/Admin/isAdmin';
 
 const pages = ['Book a Reservation', 'About HUJI-INNOVATE', 'HUJI-Articles'];
 const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];

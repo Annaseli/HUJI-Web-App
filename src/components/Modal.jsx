@@ -3,10 +3,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
+// styles
 import "./Modal.css";
+
+// components
 import {Room} from './Room';
 import {Button} from './Button';
-import confirmReservation from "../pages/newReservation/confirmReservation";
 
 const style = {
     position: 'absolute',
@@ -21,23 +23,20 @@ const style = {
 };
 
 export default function BasicModal(props) {
-    // expcets all of them to be strings except the available which is bool
-    const {title, date, startTime, endTime, peopleNum, duration, uid, available} = props;
-    const dayObject = new Date(date)
-
+    // expects all of them to be strings except the available which is bool
+    const {title, date, startHour, endHour, peopleNum, duration, uid, available} = props;
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => {
-
         setOpen(true);
     }
 
     //TODO - front: add cancel to the confirm Order pop-up
     const handleClose = () => {
-        console.log("year: ", dayObject.getFullYear())
-        console.log("month: ", dayObject.getMonth() + 1)
-        console.log("day (of month): ", dayObject.getDate())
-        // confirmReservation(uid, peopleNum, duration, null, startTime, title)
+        console.log("startHour", startHour)
+        console.log("typeof startHour: ", typeof startHour)
+        // TODO - back: check that works
+        //confirmReservation(uid, peopleNum, duration, date, startHour, endHour, title)
         setOpen(false)
 
     };
@@ -60,9 +59,9 @@ export default function BasicModal(props) {
                     </Typography>
                     <Typography id="modal-modal-description" sx={{m: 3, mt: 2, display: 'grid', gap: 2}}>
                         <span>Date: {date}</span>
-                        <span>Start Time: {startTime}</span>
-                        <span>End Time: {endTime}</span>
-                        <span>People: {peopleNum}</span>
+                        <span>Start Time: {startHour + ":00"}</span>
+                        <span>End Time: {endHour}</span>
+                        <span>People Invited: {peopleNum}</span>
                     </Typography>
                     <Button background="#15CE49" onClick={handleClose}>Confirm Reservation</Button>
                 </Box>

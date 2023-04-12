@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import {DataGrid} from '@mui/x-data-grid';
 import { SemiTitle } from '../../components/Title';
@@ -19,22 +18,22 @@ const columns = [
     editable: false,
   },
   {
-    field: 'startTime',
+    field: 'startHour',
     headerName: 'Start Time',
     type: 'time',
     width: 120,
     editable: false,
   },
   {
-    field: 'endTime',
+    field: 'endHour',
     headerName: 'End Time',
     type: 'time',
     width: 120,
     editable: false,
   },
   {
-    field: 'capacity',
-    headerName: 'Capacity',
+    field: 'peopleNum',
+    headerName: 'Number of People Invited',
     editable: false,
     type: 'number',
     width: 110,

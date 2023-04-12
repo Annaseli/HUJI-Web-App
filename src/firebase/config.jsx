@@ -2,11 +2,11 @@ import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 import { initializeApp } from 'firebase/app';
 
-//import { initializeApp } from 'firebase-admin/app';
+//import { initializeApp } from 'firebase-Admin/app';
 
 
-// import { initializeApp as initializeAdminApp } from "firebase-admin/app";
-// import { credential } from "firebase-admin/auth";
+// import { initializeApp as initializeAdminApp } from "firebase-Admin/app";
+// import { credential } from "firebase-Admin/auth";
 
 
 // // Initialize Firebase Admin SDK

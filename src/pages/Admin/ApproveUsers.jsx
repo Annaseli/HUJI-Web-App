@@ -1,39 +1,90 @@
-import DataTable from "react-data-table-component";
 import {useState, useEffect} from "react";
-import {Button} from "../../components/Button";
 import {DataGrid} from "@mui/x-data-grid";
-import * as React from "react";
 import {FormControl, InputLabel, Select} from "@material-ui/core";
 import MenuItem from "@mui/material/MenuItem";
 import {SemiTitle} from "../../components/Title";
-import Box from "@mui/material/Box";
+import {useCollection} from "../../hooks/useCollection";
+import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {db, projectAuth} from "../../firebase/config";
+import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
 
+// TODO - need the disable feature or to make him sign up again because it's unsafe to pass the password loke that
 export default function ApproveUsers() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [perPage, setPerPage] = useState(10);
+    //const [users, setUsers] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
-    const [users, setUsers] = useState([]);
-    const [selectedRows, setSelectedRows] = React.useState([]);
+    const users = []
+    const { docs: usersDocs } = useCollection('PendingUsers')
+    console.log("usersDocs", usersDocs)
+    usersDocs.forEach((userDoc) => {
+        users.push({
+            "email": userDoc.email,
+            "name": userDoc.displayName,
+            "password": userDoc.password
+        })
+    })
+    console.log("users", users)
 
-    useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then((response) => response.json())
-            .then((data) => setUsers(data))
-            .catch((error) => console.error(error));
-    }, []);
-    const handleApproveClick = () => {
-        selectedRows.forEach((row) => {
-            console.log(users[row - 1].id)
-            console.log(users[row - 1].rule)
+    const handleApproveClick = async () => {
+        selectedRows.forEach(async (row) => {
+            const email = users[row - 1].email
+            const userType = users[row - 1].userType
+            const displayName = users[row - 1].displayName
+            const password = users[row - 1].password
+
+            console.log(email)
+            console.log(userType)
+            console.log(displayName)
+            console.log(password)
+
+            // sign the user up to firebase
+            const res = await createUserWithEmailAndPassword(projectAuth, email, password)
+            // if network connection is bad
+            if (!res) {
+                throw new Error('Could not complete SignUp')
+            }
+
+            const user = res.user
+            console.log('user signed up after approval:', user)
+
+            // add display name to user
+            await updateProfile(projectAuth.currentUser, { displayName })
+
+            // add user to the "Users" collection
+            await setDoc(doc(collection(db, 'Users') , user.uid), {
+                userType,
+                email,
+                resMapFromCurDay: {}
+            })
+
+            // remove user from the PendingUsers collection
+            try {
+                await deleteDoc(doc(collection(db, 'PendingUsers'), email));
+                console.log('Document deleted successfully from ConfirmedUsers');
+            } catch (err) {
+                console.error('Error deleting document:', err);
+            }
         })
         // updateUser(users[row - 1].id,users[row - 1].rule)
     };
 
-    function handleDenyClick() {
-        selectedRows.forEach((row) => {
-            console.log(users[row - 1].id)
-            console.log(users[row - 1].rule)
+    const handleDenyClick = async () => {
+        selectedRows.forEach(async (row) => {
+            console.log(users[row - 1].email)
+            console.log(users[row - 1].userType)
+
+            // romove the user from the PendingUsers collection and notify the user
+            // TODO - send the user mail that he was denied
+
+            try {
+                await deleteDoc(doc(collection(db, 'PendingUsers'), email));
+                console.log('Document deleted successfully from ConfirmedUsers');
+            } catch (err) {
+                console.error('Error deleting document:', err);
+            }
         })
     }
 
@@ -45,18 +96,16 @@ export default function ApproveUsers() {
         const {value} = event.target;
         const updatedUsers = [...users];
         const rowIndex = updatedUsers.findIndex((u) => u.id === row.id);
-        const updatedUser = {...updatedUsers[rowIndex], rule: value};
-        updatedUsers[rowIndex] = updatedUser;
-        setUsers(updatedUsers);
+        updatedUsers[rowIndex] = {...updatedUsers[rowIndex], rule: value};
+        //setUsers(updatedUsers);
     };
+
     const columns = [
-        {field: 'id', headerName: 'ID', width: 70},
         {field: 'name', headerName: 'Name', width: 130},
-        {field: 'username', headerName: 'Username', width: 130},
         {field: 'email', headerName: 'Email', width: 200},
         {
-            field: 'rule',
-            headerName: 'Rule',
+            field: 'userType',
+            headerName: 'User Type',
             width: 150,
             renderCell: (params) => {
                 const {row} = params;
@@ -90,7 +139,6 @@ export default function ApproveUsers() {
                 checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={handleSelectionChange}
-
             />
             <button
                 onClick={handleApproveClick}
@@ -105,7 +153,6 @@ export default function ApproveUsers() {
                     opacity: selectedRows.length === 0 ? 0.5 : 1,
                     marginRight: '10px'
                 }}>
-
                 Approve
             </button>
             <button
@@ -123,7 +170,6 @@ export default function ApproveUsers() {
             >
                 Deny
             </button>
-
         </div>
     );
 }

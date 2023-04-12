@@ -1,30 +1,19 @@
-import React, {useState, useRef, useEffect} from "react";
-import {Button} from "../../components/Button";
-import {Room} from "../../components/Room";
+import {useState, useRef, useEffect} from "react";
 import BasicModal from "../../components/Modal";
-import {DB} from "../../DB_TEST"
 import "./NewReservation.css";
-import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {TextField, useMediaQuery} from "@mui/material";
-import dayjs, {Dayjs} from 'dayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import Stack from '@mui/material/Stack';
 import {DatePicker, DesktopTimePicker, MobileTimePicker} from "@mui/x-date-pickers";
 import Box from "@mui/material/Box";
-// import {InputLabel, Select} from "@material-ui/core";
-import MenuItem from "@mui/material/MenuItem";
 import {add, isSameDay} from 'date-fns';
 
 // custom hooks
 import {useCollection} from "../../hooks/useCollection";
-import filterRoomsByUserType from "./filterRoomsByUserType";
-import filterRoomsByCapAndDur from "./filterRoomsByCapAndDur";
+import filterRoomsByUserType from "./FilterRoomsByUserType";
+import filterRoomsByCapAndDur from "./FilterRoomsByCapAndDur";
 import filterRoomsByDate from "./filterRoomsByDate";
 import filterRoomsByDateAndTime from "./filterRoomsByDateAndTime";
-import confirmReservation from "./confirmReservation";
-import {collection, doc, getDoc} from "firebase/firestore";
-import {db} from "../../firebase/config";
 
 export default function NewReservation({ uid }) {
     //const [rooms, setRooms] = useState(DB.getRooms());
@@ -33,17 +22,21 @@ export default function NewReservation({ uid }) {
     const [peopleNum, setPeopleNum] = useState("");
     const [date, setDate] = useState("");
     const [duration, setDuration] = useState("");
-    // const [endTime, setEndTime] = useState("");
+    const [startHour, setStartHour] = useState("");
+    const [datesNotAv, setDatesNotAv] = useState([]);
+    const [hoursAv, setHoursAv] = useState([]);
     const peopleInputRef = useRef(1);
-    // const [DateAndTime, setDateAndTime] = useState(dayjs('2022-08-18T21:11:54'));
-    // const [isFormValid, setIsFormValid] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false)
-    // const [error, setError] = useState(null)
+    const [error, setError] = useState(null)
 
     const [durationsOptions, setDurationOptions] = useState([
         {label: "", value: ""},
         {label: '1 hour', value: 1},
-        {label: '2 hour', value: 2},
+        {label: '2 hours', value: 2},
+        {label: '3 hours', value: 3},
+        {label: '4 hours', value: 4},
+        {label: '5 hours', value: 5},
+        {label: '6 hours', value: 6}
     ]);
 
     const [startTimesOptions, setStartTimesOptions] = useState([
@@ -59,27 +52,20 @@ export default function NewReservation({ uid }) {
         {label: '17:00', value: 17},
         {label: '18:00', value: 18}
     ]);
-    const [startHour, setStartHour] = useState("");
-    const currentDate = new Date();
-    let month = `${currentDate.getMonth() + 1}`;
-    if (currentDate.getMonth() + 1 < 10) {
-        month = `0${currentDate.getMonth() + 1}`;
+
+    const curDate = new Date();
+    let curMonth = `${curDate.getMonth() + 1}`;
+    if (curDate.getMonth() + 1 < 10) {
+        curMonth = `0${curDate.getMonth() + 1}`;
     }
-    let year = `${currentDate.getFullYear()}`;
+    let curYear = `${curDate.getFullYear()}`;
 
-    const maxDate = add(currentDate, {months: 1});
-
-    const disabledDates_arr = [
-        new Date('2023-04-03'),
-        new Date('2023-04-04'),
-        new Date('2023-04-02'),
-        new Date('2023-05-10')
-    ];
+    const maxDate = add(curDate, {months: 1});
 
     function disableDates(date) {
-        const d = new Date(date);
-        let day = d.getDay();
-        return day === 5 || day === 6 || disabledDates_arr.some(disable_date => isSameDay(d, disable_date));
+        const dayObject = new Date(date);
+        let day = dayObject.getDay();
+        return day === 5 || day === 6 || datesNotAv.some(disabledDate => isSameDay(dayObject, new Date(disabledDate)));
     }
 
     const handleStartHourChange = (event) => {
@@ -89,8 +75,6 @@ export default function NewReservation({ uid }) {
     function handleDurationChange(event) {
         setDuration(event.target.value)
     }
-
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -119,24 +103,39 @@ export default function NewReservation({ uid }) {
         return () => setIsCancelled(true)
     }, [uid]);
 
+    // TODO: lear the fields after reservation is made
     roomsAvailable && useEffect(() => {
         async function fetchData() {
             try {
-                console.log(peopleNum, duration, startDate)
-                if (peopleNum && duration && !startDate) {
-                    const { roomsAv, datesAv } = await filterRoomsByCapAndDur(peopleNum, duration, year, month, roomsAvailable);
-                    console.log("roomsAv", roomsAv)
+                let year;
+                let month;
+                let day;
+                if (date) {
+                    const dayObject = new Date(date)
+                    year = `${dayObject.getFullYear()}`
+                    month = `${dayObject.getMonth() + 1}`.padStart(2, '0')
+                    day = `${dayObject.getDate()}`.padStart(2, '0')
+                }
+                // when date is not null it's an object that we covert to Date object
+                if (peopleNum && duration && !date) {
+                    const { roomsAv, datesNotAv } = await filterRoomsByCapAndDur(peopleNum, duration, curYear, curMonth, roomsAvailable);
+                    // TODO - front: disable dates until it fetches the data and show some pending sign to the user
+                    console.log("roomsAv1", roomsAv)
+                    console.log("datesNotAv", datesNotAv)
                     setRoomsAvailable(roomsAv);
-                } else if (peopleNum && duration && startDate && !startTime) {
-                    const { roomsAv, hoursAv } = await filterRoomsByDate(duration, year, month, startDate.D, roomsAvailable);
+                    setDatesNotAv(datesNotAv)
+                } else if (peopleNum && duration && date && !startHour) {
+                    const { roomsAv, hoursAva } = await filterRoomsByDate(duration, year, month, day, roomsAvailable);
+                    // TODO - front: disable hours until it fetches the data and show some pending sign to the user
+                    console.log("roomsAv2", roomsAv)
+                    console.log("hoursAva", hoursAva)
                     setRoomsAvailable(roomsAv);
-                } else if (peopleNum && duration && date && startTime) {
-                    const { roomsAv, hoursAv } = await filterRoomsByDateAndTime(duration, year, month, startDate.D, startTime, roomsAvailable);
+                    setHoursAv(hoursAva)
+                } else if (peopleNum && duration && date && startHour) {
+                    const roomsAv = await filterRoomsByDateAndTime(duration, year, month, day, startHour, roomsAvailable);
+                    console.log("roomsAv3", roomsAv)
                     setRoomsAvailable(roomsAv);
                 }
-                // } else {
-                //     setRoomsAvailable(roomsAvailable);
-                // }
                 if (!isCancelled) {
                     setError(null)
                 }
@@ -149,7 +148,7 @@ export default function NewReservation({ uid }) {
         }
         fetchData();
         return () => setIsCancelled(true)
-    }, [uid, peopleNum, duration, startDate, startTime]);
+    }, [uid, peopleNum, duration, date, startHour]);
 
     const isRoomAvailable = (roomNum) => {
         //return DB.isRoomAvailable(room, peopleNum) // date and time
@@ -159,14 +158,13 @@ export default function NewReservation({ uid }) {
     //TODO - think with matan how to render it differently so the run time would decrease.
     // Now for wach room in all rooms we are searching if it's in the roomsAvailable list.
     const getRooms = () => {
-        //console.log("date", date)
         return (rooms.map((room) => (
                 <BasicModal
                     key={room.roomNum}
                     title={room.roomNum}
                     date={new Date(date).toString()}
-                    startTime={startHour + ":00"}
-                    endTime={parseInt(startHour) + parseInt(duration) + ":00" }
+                    startHour={startHour}
+                    endHour={parseInt(startHour) + parseInt(duration) + ":00" }
                     peopleNum={peopleNum}
                     duration={duration}
                     uid={uid}
@@ -177,13 +175,8 @@ export default function NewReservation({ uid }) {
         )
     }
 
-    const handleStartDateChange = (date) => {
+    const handleDateChange = (date) => {
         setDate(date);
-    };
-
-    const handleEndDateChange = (date) => {
-        setEndDate(date);
-        setIsFormValid(validateDateRange(startHour, date));
     };
 
     const validateDateRange = (startDate, endDate) => {
@@ -237,10 +230,10 @@ export default function NewReservation({ uid }) {
                                         type="date"
                                         id="startDate"
                                         value={date}
-                                        onChange={handleStartDateChange}
+                                        onChange={handleDateChange}
                                         renderInput={(params) => <TextField {...params} />}
                                         sx={{display: 'flex', marginTop: '15px'}}
-                                        minDate={currentDate}
+                                        minDate={curDate}
                                         maxDate={maxDate}
                                         shouldDisableDate={disableDates}
                                         disabled={!duration}
@@ -273,9 +266,6 @@ export default function NewReservation({ uid }) {
                 </div>
                 <div className="rooms">
                     {rooms && roomsAvailable && getRooms()}
-                    {/*{useEffect(() => {*/}
-                    {/*    getRooms()*/}
-                    {/*}, [rooms, roomsAvailable])}*/}
                 </div>
             </div>
         </div>
