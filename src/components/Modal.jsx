@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -9,6 +9,9 @@ import "./Modal.css";
 // components
 import {Room} from './Room';
 import {Button} from './Button';
+
+import ConfirmationMessage from "./ConfirmationMessage";
+
 
 const style = {
     position: 'absolute',
@@ -25,31 +28,51 @@ const style = {
 export default function BasicModal(props) {
     // expects all of them to be strings except the available which is bool
     const {title, date, startHour, endHour, peopleNum, duration, uid, available} = props;
+    const dayObject = new Date(date)
+
     const [open, setOpen] = useState(false);
+    const [isConfirm, setIsConfirm] = useState(false);
 
     const handleOpen = () => {
         setOpen(true);
+        if (startHour) {
+            setOpen(true);
+        } else {
+            alert('Please fill in all fields before choosing a room.');
+        }
     }
 
     //TODO - front: add cancel to the confirm Order pop-up
     const handleClose = () => {
+        setIsConfirm(true);
+        setOpen(false);
         console.log("startHour", startHour)
         console.log("typeof startHour: ", typeof startHour)
         // TODO - back: check that works
         //confirmReservation(uid, peopleNum, duration, date, startHour, endHour, title)
-        setOpen(false)
 
     };
+
     const handleOpen_not_available = () => null;
+
+    useEffect(() => {
+        if (isConfirm) {
+            setTimeout(() => {
+                setIsConfirm(false);
+            }, 2000);
+        }
+    }, [isConfirm]);
 
     return (
         <div>
+            {!isConfirm &&
+            <div>
             <Room onClick={ available ? handleOpen : handleOpen_not_available }
                   available={available}
             >{title}</Room>
             <Modal
                 open={open}
-                onClose={handleClose}
+                onClose={() => setOpen(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -63,9 +86,18 @@ export default function BasicModal(props) {
                         <span>End Time: {endHour}</span>
                         <span>People Invited: {peopleNum}</span>
                     </Typography>
-                    <Button background="#15CE49" onClick={handleClose}>Confirm Reservation</Button>
+                    <Button sx={{backgroundColor: '#15CE49', color: 'white', '&:hover': {backgroundColor: '#0f9d58'}}} onClick={handleClose}>Confirm Reservation</Button>
                 </Box>
             </Modal>
+            </div>}
+
+            {isConfirm &&
+
+              <ConfirmationMessage
+              roomNum = {room}
+              />
+
+            }
         </div>
     );
 }
