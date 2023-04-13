@@ -1,3 +1,7 @@
-// TODO - bac & front: implement the outpit of messages from the centerData collection
+import DisplayCenterContext from "../../components/DisplayCenterContext";
 
-export default function Articles() {}
+export default function Article() {
+    return (
+        <DisplayCenterContext contentType={"article"} title={"Articles"} />
+    )
+}

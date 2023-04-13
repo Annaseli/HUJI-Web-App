@@ -6,7 +6,7 @@ import { projectAuth } from './firebase/config';
 // styles
 import './App.css';
 
-// pages & components
+// pages & components & hooks
 import HomePage from './pages/homePage/HomePage';
 //import Home from './pages/home/Home';
 import LogIn from './pages/LogIn/LogIn';
@@ -22,6 +22,9 @@ import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
 import { isAdmin } from './pages/Admin/isAdmin';
+import {useCollection} from "./hooks/useCollection";
+import AddAboutUs from "./pages/centerContent/AddAboutUs";
+import AddArticle from "./pages/centerContent/AddArticle";
 
 const THEME = createTheme({
     typography: {
@@ -46,11 +49,11 @@ const THEME = createTheme({
 export default function App() {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { docs: allUsers } = useCollection('Users')
 
     useEffect(() => {
         const unsubscribe = projectAuth.onAuthStateChanged((user) => {
             setUser(user);
-            console.log("currentUser", user);
         });
 
         setTimeout(() => {
@@ -85,10 +88,6 @@ export default function App() {
                             element={ user ? <MyReservations /> : <Navigate to="/logIn" />}
                         />
                         <Route
-                            path="/allReservations"
-                            element={ user ? <AllReservations /> : <Navigate to="/logIn" />}
-                        />
-                        <Route
                             path="/aboutUs"
                             element={ user ? <AboutUs /> : <Navigate to="/logIn" />}
                         />
@@ -111,6 +110,18 @@ export default function App() {
                         <Route
                             path="/addRooms"
                             element={ user && isAdmin() ? <AddRooms /> : <Navigate to="/logIn" />}
+                        />
+                        <Route
+                            path="/allReservations"
+                            element={ user && isAdmin() && allUsers ? <AllReservations allUsers={allUsers}/> : <Navigate to="/logIn" />}
+                        />
+                        <Route
+                            path="/addAboutUs"
+                            element={ user && isAdmin() ? <AddAboutUs /> : <Navigate to="/logIn" />}
+                        />
+                        <Route
+                            path="/addArticle"
+                            element={ user && isAdmin() ? <AddArticle /> : <Navigate to="/logIn" />}
                         />
                         <Route
                             path="/logIn"

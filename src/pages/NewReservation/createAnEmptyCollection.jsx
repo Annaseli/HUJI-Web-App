@@ -11,8 +11,7 @@ export async function createAnEmptyCollection(year, month, rooms) {
 
     // create a collection inside the doc with the id {year}{month} that called {year}{month}Reservations
     const subCollectionYMRef = collection(docYMRef, year + month + 'Reservations');
-    // create a doc for each day for the current month in the {year}{month}Reservations
-    // collection with id {year}{month}{day}
+    // create a doc for each day for the current month in the {year}{month}Reservations collection with id {year}{month}{day}
     range(1, 32).forEach(async (day) => {
         const dayToPlace = `${day}`.padStart(2, '0')
         const docYMDRef = doc(subCollectionYMRef, year + month + dayToPlace);
@@ -21,8 +20,10 @@ export async function createAnEmptyCollection(year, month, rooms) {
         const subCollectionYMDRef = collection(docYMDRef, year + month + dayToPlace + 'Reservations')
 
         rooms.forEach(async (room) => {
+            const roomNum = room.roomNum
+            const roomNumPadded = `${roomNum}`.padStart(2, "0");
             const docRef = await addDoc(subCollectionYMDRef, {
-                roomNum: room.roomNum,
+                roomNum: roomNum,
                 roomCapacity: room.capacity
             })
 

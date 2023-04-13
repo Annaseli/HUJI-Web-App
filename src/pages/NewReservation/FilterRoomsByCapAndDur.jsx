@@ -1,9 +1,5 @@
 import { range } from "lodash";
 import { getDocRefFromReservations } from "./getDocRefFromReservations";
-import {collection, doc, getDoc} from "firebase/firestore";
-import {db} from "../../firebase/config";
-import {createAnEmptyCollection} from "./createAnEmptyCollection";
-import {useCollection} from "../../hooks/useCollection";
 
 export default async function filterRoomsByCapAndDur(capacity, duration, year, month, roomsAvailable) {
     console.log("FilterRooms2")
@@ -20,12 +16,13 @@ export default async function filterRoomsByCapAndDur(capacity, duration, year, m
         }
     })
 
-    const hours = range(8, 18)
+    const hours = range(8, 19)
     // for each day in the given month, for each available room, find all the hours that are available
     for (let day = 1; day < 32; day++) {
         const dayToUse = `${day}`.padStart(2, '0')
         datesNotAv.push(year + '-' + month + '-' + `${dayToUse}`)
         for (const roomNum of Object.keys(roomsAvailableByCapacity)) {
+            const room = `${roomNum}`.padStart(2, "0");
             const { data } = await getDocRefFromReservations(year, month, dayToUse, roomNum)
             const roomCapacity = data.roomCapacity;
             let durationCounter = 0

@@ -8,6 +8,7 @@ export default async function filterRoomsByDateAndTime(duration, year, month, da
     const rooms = Object.keys(roomsAvailable);
     for (let j = 0; j < rooms.length; j++) {
         const roomNum = rooms[j];
+        const room = `${roomNum}`.padStart(2, "0");
         const { data } = await getDocRefFromReservations(year, month, day, roomNum);
         const roomCapacity = data.roomCapacity;
         let roomIsAv = true;

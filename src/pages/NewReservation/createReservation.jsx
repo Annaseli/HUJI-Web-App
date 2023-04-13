@@ -10,8 +10,11 @@ export default function createReservation(uid, capacity, duration, date, startHo
     const year = `${dayObject.getFullYear()}`
     const month = `${dayObject.getMonth() + 1}`.padStart(2, "0");
     const day = `${dayObject.getDate()}`.padStart(2, "0");
+    const startHourPadded = `${startHour}`.padStart(2, "0");
+    const endHourPadded = `${endHour}`.padStart(2, "0");
+    const room = `${roomNum}`.padStart(2, "0");
 
-    const resId = year + month + day + startHour + roomNum
+    const resId = year + month + day + startHourPadded + roomNum
 
     async function addResToReservations() {
         const { docRef } = await getDocRefFromReservations(year, month, day, roomNum)
@@ -28,11 +31,14 @@ export default function createReservation(uid, capacity, duration, date, startHo
         const docRef = doc(collection(db, "Users"), uid)
         const updateMap = {
             [resId]: {
-                date,
-                startHour,
-                endHour,
+                year,
+                month,
+                day,
                 duration,
-                roomNum
+                roomNum,
+                startHour: startHourPadded + ":00",
+                endHour: endHourPadded,
+                peopleNum: capacity
             }
         };
         await setDoc(docRef, {
@@ -42,17 +48,4 @@ export default function createReservation(uid, capacity, duration, date, startHo
 
     addResToReservations()
     addResToUsers()
-
-    // without the useEffect the component renders infinitely
-    // useEffect(() => {
-    //     if (response.success) {
-    //         console.log(response.success)
-    //     } else if (response.error) {
-    //         console.log(response.error)
-    //     } else if (response.isPending) {
-    //         console.log("loading...")
-    //         // can I print the loading to the user too?
-    //     }
-    // }, [response])
-
 }

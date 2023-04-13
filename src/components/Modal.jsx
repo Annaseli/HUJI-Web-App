@@ -9,8 +9,9 @@ import "./Modal.css";
 // components
 import {Room} from './Room';
 import {Button} from './Button';
-
 import ConfirmationMessage from "./ConfirmationMessage";
+
+import createReservation from "../pages/NewReservation/createReservation";
 
 
 const style = {
@@ -27,7 +28,7 @@ const style = {
 
 export default function BasicModal(props) {
     // expects all of them to be strings except the available which is bool
-    const {title, date, startHour, endHour, peopleNum, duration, uid, available} = props;
+    const {title, date, startHour, endHour, peopleNum, duration, roomNum, uid, available} = props;
     const dayObject = new Date(date)
 
     const [open, setOpen] = useState(false);
@@ -46,11 +47,7 @@ export default function BasicModal(props) {
     const handleClose = () => {
         setIsConfirm(true);
         setOpen(false);
-        console.log("startHour", startHour)
-        console.log("typeof startHour: ", typeof startHour)
-        // TODO - back: check that works
-        //confirmReservation(uid, peopleNum, duration, date, startHour, endHour, title)
-
+        createReservation(uid, peopleNum, duration, date, startHour, endHour, roomNum)
     };
 
     const handleOpen_not_available = () => null;
@@ -94,7 +91,7 @@ export default function BasicModal(props) {
             {isConfirm &&
 
               <ConfirmationMessage
-              roomNum = {room}
+              roomNum = {roomNum}
               />
 
             }

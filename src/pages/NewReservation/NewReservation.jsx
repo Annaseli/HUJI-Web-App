@@ -104,7 +104,7 @@ export default function NewReservation({ uid }) {
         return () => setIsCancelled(true)
     }, [uid]);
 
-    // TODO: lear the fields after reservation is made
+    // TODO: clear the fields after reservation is made
     roomsAvailable && useEffect(() => {
         async function fetchData() {
             try {
@@ -168,9 +168,9 @@ export default function NewReservation({ uid }) {
                     endHour={parseInt(startHour) + parseInt(duration) + ":00" }
                     peopleNum={peopleNum}
                     duration={duration}
+                    roomNum={room.roomNum}
                     uid={uid}
                     available={isRoomAvailable(room.roomNum)}
-                    room={room.roomNum}
                 >
                 </BasicModal>
             ))
