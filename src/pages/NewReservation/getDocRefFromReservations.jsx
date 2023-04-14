@@ -1,5 +1,5 @@
 import { collection, query, where, getDocs, doc } from "firebase/firestore";
-import { db} from "../../firebase/config";
+import { db} from "../../config";
 
 export async function getDocRefFromReservations(year, month, day, roomNum) {
     //console.log("year + month + day", year + month + day)

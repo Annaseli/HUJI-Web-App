@@ -14,7 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AbcIcon from '@mui/icons-material/Abc';
 import { Link } from "react-router-dom"
 import { useLogOut } from '../hooks/useLogOut'
-import { projectAuth } from "../firebase/config"
+import { projectAuth } from "../config"
+import { getAuth } from "firebase/auth";
 import { isAdmin } from '../pages/Admin/isAdmin';
 
 
@@ -27,7 +28,7 @@ import { useNavigate } from 'react-router';
 
 export default function NavBar() {
     const { logOut } = useLogOut()
-    const user = projectAuth.currentUser
+    const user = getAuth().currentUser
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 

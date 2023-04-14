@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { db } from "../firebase/config";
+import { db } from "../config";
 import { doc, getDoc, collection } from "firebase/firestore";
 
 // Display user's reservations from current day

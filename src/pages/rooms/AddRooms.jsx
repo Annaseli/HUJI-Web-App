@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useFirestore} from "../../hooks/useFirestore";
 
 // firebase imports
-import { db } from "../../firebase/config";
+import { db } from "../../config";
 import { collection } from "firebase/firestore";
 
 export default function AddRooms() {

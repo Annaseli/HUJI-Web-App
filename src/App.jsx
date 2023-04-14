@@ -1,7 +1,8 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useState, useEffect } from "react"
-import { projectAuth } from './firebase/config';
+import { getAuth } from "firebase/auth";
+import { projectAuth } from './config';
 
 // styles
 import './App.css';
@@ -25,6 +26,7 @@ import { isAdmin } from './pages/Admin/isAdmin';
 import {useCollection} from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
+import AllUsers from "./pages/Admin/allUsers";
 
 const THEME = createTheme({
     typography: {
@@ -52,7 +54,7 @@ export default function App() {
     const { docs: allUsers } = useCollection('Users')
 
     useEffect(() => {
-        const unsubscribe = projectAuth.onAuthStateChanged((user) => {
+        const unsubscribe = getAuth().onAuthStateChanged((user) => {
             setUser(user);
         });
 
@@ -114,6 +116,10 @@ export default function App() {
                         <Route
                             path="/allReservations"
                             element={ user && isAdmin() && allUsers ? <AllReservations allUsers={allUsers}/> : <Navigate to="/logIn" />}
+                        />
+                        <Route
+                            path="/allUsers"
+                            element={ user && isAdmin() ? <AllUsers user={user}/> : <Navigate to="/logIn" />}
                         />
                         <Route
                             path="/addAboutUs"

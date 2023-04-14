@@ -75,7 +75,7 @@ export default function BasicModal(props) {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: 'center'}}>
-                        Order Information
+                        Reservation Information
                     </Typography>
                     <Typography id="modal-modal-description" sx={{m: 3, mt: 2, display: 'grid', gap: 2}}>
                         <span>Date: {date}</span>
@@ -89,7 +89,6 @@ export default function BasicModal(props) {
             </div>}
 
             {isConfirm &&
-
               <ConfirmationMessage
               roomNum = {roomNum}
               />

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useFirestore } from "../hooks/useFirestore";
 
 // firebase imports
-import { db } from "../firebase/config";
+import { db } from "../config";
 import { collection, doc, deleteField } from "firebase/firestore";
 import {getDocRefFromReservations} from "../pages/NewReservation/getDocRefFromReservations";
 import {getCheckInCodeFromRoom} from "../hooks/useGetCheckInCodeFromRoom";

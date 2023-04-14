@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 // firebase imports
-import { projectAuth } from '../firebase/config'
+import { projectAuth } from '../config'
 //import useAuthContext from './useAuthContext'
 import { signInWithEmailAndPassword } from "firebase/auth"
+import { getAuth } from "firebase/auth";
 
 export const useLogIn = () => {
     const [isCancelled, setIsCancelled] = useState(false)
@@ -15,7 +16,7 @@ export const useLogIn = () => {
         setError(null)
         setIsPending(true)
         try {
-            const res = await signInWithEmailAndPassword(projectAuth, email, password);
+            const res = await signInWithEmailAndPassword(getAuth(), email, password);
 
             // if network connection is bad
             if (!res) {

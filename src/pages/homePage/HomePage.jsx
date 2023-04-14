@@ -11,10 +11,11 @@ import ApproveUsers from '../Admin/ApproveUsers';
 import AboutUs from "../AboutUs/AboutUs";
 import ManageUsers from "../Admin/ManageUsers";
 import MyReservations from "../myReservations/MyReservations";
-import {db, projectAuth} from "../../firebase/config";
+import {db, projectAuth} from "../../config";
 import {collection, doc, getDoc} from "firebase/firestore";
 import {createAnEmptyCollection} from "../NewReservation/createAnEmptyCollection";
 import {useCollection} from "../../hooks/useCollection";
+import { getAuth } from "firebase/auth";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -45,7 +46,7 @@ function a11yProps(index) {
 
 export default function HomePage() {
     const [TabValue, setValue] = useState(0);
-    const uid = projectAuth.currentUser.uid
+    const uid = getAuth().currentUser.uid
     const { docs: rooms } = useCollection('Rooms')
 
     // TODO - back: move this initialization of the DB to the Admin - every time that he will log in, I'll check

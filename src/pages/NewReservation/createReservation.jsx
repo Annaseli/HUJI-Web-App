@@ -1,7 +1,7 @@
 import { getDocRefFromReservations } from "./getDocRefFromReservations";
 
 // firebase imports
-import { db } from "../../firebase/config";
+import { db } from "../../config";
 import { doc, updateDoc, setDoc, collection } from "firebase/firestore";
 
 export default function createReservation(uid, capacity, duration, date, startHour, endHour, roomNum) {
@@ -21,7 +21,17 @@ export default function createReservation(uid, capacity, duration, date, startHo
         for (let i = 0; i < parseInt(duration); i++) {
             const hourInt = parseInt(startHour)
             const updateMap = {
-                [`${hourInt + i}`.padStart(2, "0")]: {resId: resId, uid: uid, checkedIn: false}
+                [`${hourInt + i}`.padStart(2, "0")]: {
+                    resId: resId,
+                    uid: uid,
+                    year,
+                    month,
+                    day,
+                    duration,
+                    startHour: startHourPadded + ":00",
+                    endHour: endHourPadded,
+                    peopleNum: capacity,
+                    checkedIn: false}
             }
             await updateDoc(docRef, updateMap)
         }

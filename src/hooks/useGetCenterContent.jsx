@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { db } from "../firebase/config";
+import { db } from "../config";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 export default function useGetCenterContent(contentType) {

@@ -1,8 +1,7 @@
-import React from 'react';
 import { Grid, Card, CardContent, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from "prop-types";
-import {DB} from "./DB_TEST";
+import {DB} from "../DB_TEST";
 import {RoomCard} from "./RoomCard"
 // const rooms = [
 //     { id: 1, name: 'Room 1', size: 20, description: 'This is a description for Room 1', image: 'room1.jpg' },

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 // firebase imports
-import { db, projectAuth } from '../firebase/config'
+import { db, projectAuth } from '../config'
 import { createUserWithEmailAndPassword, updateUser, getAuth, updateProfile } from "firebase/auth"
 import {collection, doc, setDoc, getDoc, deleteDoc, addDoc} from 'firebase/firestore'
 import {Link} from "react-router-dom";
@@ -25,7 +25,7 @@ export const useSignUp = () => {
                 const userType = data.userType
 
                 // if the user exists in ConfirmedUsers - sign the user up to firebase
-                const res = await createUserWithEmailAndPassword(projectAuth, email, password)
+                const res = await createUserWithEmailAndPassword(getAuth(), email, password)
                 // if network connection is bad
                 if (!res) {
                     throw new Error('Could not complete SignUp')
@@ -35,7 +35,7 @@ export const useSignUp = () => {
                 console.log('user signed up:', user)
 
                 // add display name to user
-                await updateProfile(projectAuth.currentUser, { displayName })
+                await updateProfile(user, { displayName })
 
                 // if the user exists in ConfirmedUsers - add the user to "Users" collection
                 await setDoc(doc(collection(db, 'Users') , user.uid), {

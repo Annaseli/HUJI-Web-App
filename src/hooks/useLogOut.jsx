@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 // firebase imports
-import { projectAuth } from '../firebase/config'
+import { projectAuth } from '../config'
 //import useAuthContext from './useAuthContext'
 import { signOut } from 'firebase/auth'
+import { getAuth } from "firebase/auth";
 
 export const useLogOut = () => {
     const [isCancelled, setIsCancelled] = useState(false)
@@ -17,7 +18,7 @@ export const useLogOut = () => {
 
         // sign the user out
         try {
-            await signOut(projectAuth)
+            await signOut(getAuth())
             console.log('user signed out')
             //dispatch({ type: 'LOGOUT' })
 

@@ -4,8 +4,9 @@ import {FormControl, InputLabel, Select} from "@material-ui/core";
 import MenuItem from "@mui/material/MenuItem";
 import {SemiTitle} from "../../components/Title";
 import {useCollection} from "../../hooks/useCollection";
-import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
-import {db, projectAuth} from "../../firebase/config";
+import {createUserWithEmailAndPassword, getAuth, updateProfile} from "firebase/auth";
+//import {db, projectAuth} from "../../firebase/config";
+import { db } from "../../config";
 import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
 
 // TODO - need the disable feature or to make him sign up again because it's unsafe to pass the password loke that
@@ -41,7 +42,7 @@ export default function ApproveUsers() {
             console.log(password)
 
             // sign the user up to firebase
-            const res = await createUserWithEmailAndPassword(projectAuth, email, password)
+            const res = await createUserWithEmailAndPassword(getAuth(), email, password)
             // if network connection is bad
             if (!res) {
                 throw new Error('Could not complete SignUp')
@@ -51,7 +52,7 @@ export default function ApproveUsers() {
             console.log('user signed up after approval:', user)
 
             // add display name to user
-            await updateProfile(projectAuth.currentUser, { displayName })
+            await updateProfile(user, { displayName })
 
             // add user to the "Users" collection
             await setDoc(doc(collection(db, 'Users') , user.uid), {
