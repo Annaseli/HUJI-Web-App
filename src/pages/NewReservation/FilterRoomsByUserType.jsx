@@ -1,5 +1,5 @@
 // firebase imports
-import { db } from "../../config";
+import { db } from "../../firebase/config";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export default async function filterRoomsByUserType(uid) {

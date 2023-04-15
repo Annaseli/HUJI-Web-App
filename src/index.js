@@ -3,13 +3,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {StrictMode} from "react";
-// The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
-// const functions = require('firebase-functions');
-//
-// // The Firebase Admin SDK to access Firestore.
-// const admin = require('firebase-admin');
-// admin.initializeApp();
-// const db = admin.firestore()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

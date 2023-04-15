@@ -1,5 +1,5 @@
 import { deleteUser } from "firebase/auth";
-import { projectAuth } from "../../config";
+import { projectAuth } from "../../firebase/config";
 import {useEffect} from "react";
 
 export default function AllUsers(user) {

@@ -6,7 +6,7 @@ import {SemiTitle} from "../../components/Title";
 import {useCollection} from "../../hooks/useCollection";
 import {createUserWithEmailAndPassword, getAuth, updateProfile} from "firebase/auth";
 //import {db, projectAuth} from "../../firebase/config";
-import { db } from "../../config";
+import { db } from "../../firebase/config";
 import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
 
 // TODO - need the disable feature or to make him sign up again because it's unsafe to pass the password loke that

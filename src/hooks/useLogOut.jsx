@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // firebase imports
-import { projectAuth } from '../config'
+import { projectAuth } from '../firebase/config'
 //import useAuthContext from './useAuthContext'
 import { signOut } from 'firebase/auth'
 import { getAuth } from "firebase/auth";

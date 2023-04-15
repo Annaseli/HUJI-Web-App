@@ -1,5 +1,5 @@
 import { addDoc, setDoc, updateDoc, doc, collection } from "firebase/firestore";
-import { db } from "../../config";
+import { db } from "../../firebase/config";
 import { range } from "lodash";
 
 export async function createAnEmptyCollection(year, month, rooms) {

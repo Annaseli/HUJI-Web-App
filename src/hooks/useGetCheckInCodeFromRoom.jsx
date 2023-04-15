@@ -1,5 +1,5 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../config";
+import { db } from "../firebase/config";
 
 export async function getCheckInCodeFromRoom(roomNum) {
     const collRef = collection(db, "Rooms")

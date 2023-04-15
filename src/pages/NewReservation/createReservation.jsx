@@ -1,7 +1,7 @@
 import { getDocRefFromReservations } from "./getDocRefFromReservations";
 
 // firebase imports
-import { db } from "../../config";
+import { db } from "../../firebase/config";
 import { doc, updateDoc, setDoc, collection } from "firebase/firestore";
 
 export default function createReservation(uid, capacity, duration, date, startHour, endHour, roomNum) {

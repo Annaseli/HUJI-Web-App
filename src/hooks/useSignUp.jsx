@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 // firebase imports
-import { db, projectAuth } from '../config'
+import { db, projectAuth } from '../firebase/config'
 import { createUserWithEmailAndPassword, updateUser, getAuth, updateProfile } from "firebase/auth"
 import {collection, doc, setDoc, getDoc, deleteDoc, addDoc} from 'firebase/firestore'
 import {Link} from "react-router-dom";

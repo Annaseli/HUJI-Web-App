@@ -11,7 +11,7 @@ import ApproveUsers from '../Admin/ApproveUsers';
 import AboutUs from "../AboutUs/AboutUs";
 import ManageUsers from "../Admin/ManageUsers";
 import MyReservations from "../myReservations/MyReservations";
-import {db, projectAuth} from "../../config";
+import {db, projectAuth} from "../../firebase/config";
 import {collection, doc, getDoc} from "firebase/firestore";
 import {createAnEmptyCollection} from "../NewReservation/createAnEmptyCollection";
 import {useCollection} from "../../hooks/useCollection";

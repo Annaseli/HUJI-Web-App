@@ -14,12 +14,12 @@ import MenuItem from '@mui/material/MenuItem';
 import AbcIcon from '@mui/icons-material/Abc';
 import { Link } from "react-router-dom"
 import { useLogOut } from '../hooks/useLogOut'
-import { projectAuth } from "../config"
+import { projectAuth } from "../firebase/config"
 import { getAuth } from "firebase/auth";
 import { isAdmin } from '../pages/Admin/isAdmin';
 
 
-const pages = ['Book a Reservation', 'About HUJI-INNOVATE', 'HUJI-Articles'];
+const pages = ['Reservations', 'About HUJI-INNOVATE', 'HUJI-Articles'];
 const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
 // TODO: back & front - add a page to All Users Reservations
 const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
@@ -59,7 +59,7 @@ export default function NavBar() {
 
 
     const routesDict = {
-        'Book a Reservation': '/',
+        'Reservations': '/',
         'About HUJI-INNOVATE': '/aboutUs',
         'HUJI-Articles' : '/articles'
     };
@@ -120,7 +120,7 @@ export default function NavBar() {
                         >
                             {user && pages.map((page) => (
                                 <MenuItem key={page} >
-                                    { page === 'Book a Reservation' &&  <Typography textAlign="center"><Link to="/">{page}</Link></Typography>  }
+                                    { page === 'Reservations' &&  <Typography textAlign="center"><Link to="/">{page}</Link></Typography>  }
                                     { page === 'About HUJI-INNOVATE' &&  <Typography textAlign="center"><Link to="/aboutUs">{page}</Link></Typography>  }
                                     { page === 'HUJI-Articles' && <Link to="/articles"> <Typography textAlign="center">{page}</Typography> </Link> }
                                 </MenuItem>

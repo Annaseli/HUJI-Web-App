@@ -2,7 +2,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useState, useEffect } from "react"
 import { getAuth } from "firebase/auth";
-import { projectAuth } from './config';
+import { projectAuth } from './firebase/config';
 
 // styles
 import './App.css';
