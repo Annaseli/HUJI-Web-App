@@ -27,6 +27,7 @@ import {useCollection} from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
 import AllUsers from "./pages/Admin/allUsers";
+import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
 
 const THEME = createTheme({
     typography: {
@@ -140,6 +141,11 @@ export default function App() {
                         <Route
                             path="/signUp"
                             element={ user ? <Navigate to="/" /> : <SignUp />}
+                        />
+
+                        <Route
+                            path="/EditRoomsSettings"
+                            element={ user && isAdmin() ? <EditRoomsSettings /> : <Navigate to="/logIn" />}
                         />
                     </Routes>
                 </BrowserRouter>

@@ -28,14 +28,13 @@ const style = {
 
 export default function BasicModal(props) {
     // expects all of them to be strings except the available which is bool
-    const {title, date, startHour, endHour, peopleNum, duration, roomNum, uid, available} = props;
+    const {title, date, startHour, endHour, peopleNum, duration, roomNum, uid, available, moveToMyReservation} = props;
     const dayObject = new Date(date)
 
     const [open, setOpen] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
 
     const handleOpen = () => {
-        setOpen(true);
         if (startHour) {
             setOpen(true);
         } else {
@@ -44,7 +43,7 @@ export default function BasicModal(props) {
     }
 
     //TODO - front: add cancel to the confirm Order pop-up
-    const handleClose = () => {
+    const handleClose = async () => {
         setIsConfirm(true);
         setOpen(false);
         createReservation(uid, peopleNum, duration, date, startHour, endHour, roomNum)
@@ -56,6 +55,7 @@ export default function BasicModal(props) {
         if (isConfirm) {
             setTimeout(() => {
                 setIsConfirm(false);
+                moveToMyReservation()
             }, 2000);
         }
     }, [isConfirm]);
@@ -64,7 +64,7 @@ export default function BasicModal(props) {
         <div>
             {!isConfirm &&
             <div>
-            <Room onClick={ available ? handleOpen : handleOpen_not_available }
+            <Room onClick={ (available ) ? handleOpen : handleOpen_not_available }
                   available={available}
             >{title}</Room>
             <Modal

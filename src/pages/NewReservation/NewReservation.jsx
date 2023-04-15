@@ -14,8 +14,10 @@ import filterRoomsByUserType from "./FilterRoomsByUserType";
 import filterRoomsByCapAndDur from "./FilterRoomsByCapAndDur";
 import filterRoomsByDate from "./filterRoomsByDate";
 import filterRoomsByDateAndTime from "./filterRoomsByDateAndTime";
+import {useNavigate} from "react-router";
+import {Button} from "../../components/Button";
 
-export default function NewReservation({ uid }) {
+export default function NewReservation({ uid, moveToMyReservation }) {
     //const [rooms, setRooms] = useState(DB.getRooms());
     const { docs: rooms } = useCollection('Rooms')
     const [roomsAvailable, setRoomsAvailable] = useState({});
@@ -25,9 +27,9 @@ export default function NewReservation({ uid }) {
     const [startHour, setStartHour] = useState("");
     const [datesNotAv, setDatesNotAv] = useState([]);
     const [hoursAv, setHoursAv] = useState([]);
-    const peopleInputRef = useRef(1);
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
+
 
     const [durationsOptions, setDurationOptions] = useState([
         {label: "", value: ""},
@@ -84,6 +86,16 @@ export default function NewReservation({ uid }) {
     const handleChangePeople = (e) => {
         setPeopleNum(e.target.value);
     };
+
+    const cleanAllFields = async () => {
+        setPeopleNum("")
+        setDuration("")
+        setDate("")
+        setStartHour("")
+        const roomsAvailable = await filterRoomsByUserType(uid)
+        setRoomsAvailable(roomsAvailable)
+    }
+
 
     useEffect(() => {
         async function fetchData() {
@@ -171,6 +183,8 @@ export default function NewReservation({ uid }) {
                     roomNum={room.roomNum}
                     uid={uid}
                     available={isRoomAvailable(room.roomNum)}
+                    cleanAllFields={cleanAllFields}
+                    moveToMyReservation={moveToMyReservation}
                 >
                 </BasicModal>
             ))
@@ -207,7 +221,7 @@ export default function NewReservation({ uid }) {
                                 min="1"
                                 max="10"
                                 onChange={handleChangePeople}
-                                ref={peopleInputRef}
+                                value={peopleNum}
                             />
                             <div style={{display: 'flex', flexDirection: 'column'}}>
 
@@ -269,7 +283,15 @@ export default function NewReservation({ uid }) {
                 <div className="rooms">
                     {rooms && roomsAvailable && getRooms()}
                 </div>
+
+
             </div>
+            {/*<Button*/}
+            {/*    onClick={cleanAllFields}*/}
+            {/*>*/}
+            {/*    move*/}
+            {/*</Button>*/}
+
         </div>
     );
 }

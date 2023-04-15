@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -15,7 +15,11 @@ import {db, projectAuth} from "../../firebase/config";
 import {collection, doc, getDoc} from "firebase/firestore";
 import {createAnEmptyCollection} from "../NewReservation/createAnEmptyCollection";
 import {useCollection} from "../../hooks/useCollection";
-import { getAuth } from "firebase/auth";
+import {getAuth} from "firebase/auth";
+import CheckIn from "../CheckIn/CheckIn";
+import {useNavigate} from "react-router";
+import {Button} from "../../components/Button";
+import DisplayUsersRes from "../../components/DisplayUsersRes";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -46,8 +50,10 @@ function a11yProps(index) {
 
 export default function HomePage() {
     const [TabValue, setValue] = useState(0);
+    const [randValue, setRandValue] = useState({ value: 10 })
+
     const uid = getAuth().currentUser.uid
-    const { docs: rooms } = useCollection('Rooms')
+    const {docs: rooms} = useCollection('Rooms')
 
     // TODO - back: move this initialization of the DB to the Admin - every time that he will log in, I'll check
     // that there are collections for the next 3 month and if not will create them. I'll move to storage the
@@ -66,22 +72,45 @@ export default function HomePage() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    const moveToMyReservation = () => {
+        setValue(0);
+    }
+    const moveToNewReservation = () => {
+        setValue(1);
+    }
+    function rendFunc() {
+        setRandValue((prev) => {
+            return { ...prev };
+        });
+    }
 
     // TODO: back - make routes instead of the indices
     return (
         <Box sx={{width: '100%'}}>
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                 <Tabs value={TabValue} onChange={handleChange} aria-label="basic tabs example">
-                    <Tab label="Book A Reservation" {...a11yProps(0)} />
                     <Tab label="My Reservations" {...a11yProps(1)} />
+                    <Tab label="Book A Reservation" {...a11yProps(0)} />
+                    <Tab label="Check-In" {...a11yProps(2)} />
                 </Tabs>
             </Box>
-            <TabPanel value={TabValue} index={0}>
-                <NewReservation uid={uid} />
-            </TabPanel>
             <TabPanel value={TabValue} index={1}>
-                <MyReservations uid={uid} />
+                <NewReservation
+                    uid={uid}
+                    moveToMyReservation={moveToMyReservation}
+                />
+
             </TabPanel>
+            <TabPanel value={TabValue} index={0}>
+                <DisplayUsersRes uid={uid}
+                                 header={'My Reservations'}
+                                 moveToNewReservation={moveToNewReservation}
+                />
+            </TabPanel> <TabPanel value={TabValue} index={2}>
+            <CheckIn uid={uid}/>
+
+        </TabPanel>
+
         </Box>
 
     );

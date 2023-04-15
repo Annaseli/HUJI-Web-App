@@ -18,7 +18,7 @@ export default async function filterRoomsByCapAndDur(capacity, duration, year, m
 
     const hours = range(8, 19)
     // for each day in the given month, for each available room, find all the hours that are available
-    for (let day = 1; day < 32; day++) {
+    for (let day = 15; day < 32; day++) {
         const dayToUse = `${day}`.padStart(2, '0')
         datesNotAv.push(year + '-' + month + '-' + `${dayToUse}`)
         for (const roomNum of Object.keys(roomsAvailableByCapacity)) {

@@ -1,26 +1,29 @@
 import Box from '@mui/material/Box';
 import {DataGrid} from '@mui/x-data-grid';
-import { SemiTitle} from "./Title";
+import {SemiTitle} from "./Title";
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from "@mui/material/IconButton";
-import  { useGetUsersRes } from "../hooks/useGetUsersRes";
-import { useEffect, useState } from "react";
-import { useFirestore } from "../hooks/useFirestore";
-
+import {useGetUsersRes} from "../hooks/useGetUsersRes";
+import React, {useEffect, useState} from "react";
+import {useFirestore} from "../hooks/useFirestore";
 // firebase imports
-import { db } from "../firebase/config";
-import { collection, doc, deleteField } from "firebase/firestore";
+import {db} from "../firebase/config";
+import {collection, doc, deleteField} from "firebase/firestore";
 import {getDocRefFromReservations} from "../pages/NewReservation/getDocRefFromReservations";
 import {getCheckInCodeFromRoom} from "../hooks/useGetCheckInCodeFromRoom";
+import './EmptyReservationMessage.css';
 
-export default function DisplayUsersRes({uid, header, displayCheckIn=true}) {
+
+export default function DisplayUsersRes({uid, header, moveToNewReservation, displayCheckIn = true}) {
     console.log("DisplayUsersRes")
-    const { usersReservations, resMapFromCurDay, noData, error } = useGetUsersRes(uid)
+    const {usersReservations, resMapFromCurDay, noData, error} = useGetUsersRes(uid)
+    const [reservations, setReservations] = useState([]);
     const [checkIn, setCheckIn] = useState('')
-    const { setDocToFireStore, updateDocInFireStore, response } = useFirestore()
+    const {setDocToFireStore, updateDocInFireStore, response} = useFirestore()
+    const empty_reservation_msg = "You have no reservation"
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        {field: 'id', headerName: 'ID', width: 90},
         {
             field: 'uid',
             headerName: 'User ID',
@@ -60,13 +63,13 @@ export default function DisplayUsersRes({uid, header, displayCheckIn=true}) {
             type: 'number',
             width: 110,
             editable: false
-        },{
+        }, {
             field: 'delete',
             headerName: 'Delete',
             width: 150,
             renderCell: (params) => (
-                <IconButton sx={{ color: 'red' }} onClick={() => handleDelete(params.row.id)}>
-                    <CancelIcon />
+                <IconButton sx={{color: 'red'}} onClick={() => handleDelete(params.row.id)}>
+                    <CancelIcon/>
                 </IconButton>
             ),
         },
@@ -89,12 +92,12 @@ export default function DisplayUsersRes({uid, header, displayCheckIn=true}) {
             });
 
             // delete reservation from Reservations
-            const { docRef: docRefRes } = await getDocRefFromReservations(year, month, day, roomNum)
-            for(let i = 0; i < parseInt(duration); i++) {
+            const {docRef: docRefRes} = await getDocRefFromReservations(year, month, day, roomNum)
+            for (let i = 0; i < parseInt(duration); i++) {
                 const hourToPlace = parseInt(startHour)
                 await setDocToFireStore(docRefRes, {
                     [`${hourToPlace + i}`.padStart(2, '0')]: {}
-                }, { merge: true });
+                }, {merge: true});
             }
         }
     }
@@ -124,15 +127,16 @@ export default function DisplayUsersRes({uid, header, displayCheckIn=true}) {
 
         // TODO: in production delete the true
         if (parseInt(checkIn) === checkInCodeFromRoom && (true || checkedInEarly || checkedInLate)) {
-            const { docRef: docRefRes } = await getDocRefFromReservations(year, month, day, roomNum)
-            for(let i = 0; i < duration; i++) {
+            const {docRef: docRefRes} = await getDocRefFromReservations(year, month, day, roomNum)
+            for (let i = 0; i < duration; i++) {
                 const hourToPlace = parseInt(startHour)
                 await setDocToFireStore(docRefRes, {
                     [`${hourToPlace + i}`.padStart(2, '0')]: {"checkedIn": true}
-                }, { merge: true });
+                }, {merge: true});
             }
         }
     }
+
 
     // without the useEffect the component renders infinitely
     useEffect(() => {
@@ -145,22 +149,33 @@ export default function DisplayUsersRes({uid, header, displayCheckIn=true}) {
             console.log("loading...")
             // can I print the loading to the user too?
         }
+
     }, [response])
+    function emptyReservationMessage() {
+        return (
+            <div className="reservation-message-container">
+                <h5 className="reservation-message">{empty_reservation_msg}</h5>
+                <a href="#" className="reservation-link" onClick={moveToNewReservation}>Click here to book your first reservation</a>
+            </div>
+        )
+    }
+
 
     // TODO - front: display something if there are no reservations - noData indicates that
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            {header && <SemiTitle>{ header }</SemiTitle>}
-            {  usersReservations && <DataGrid
+        <Box sx={{height: 400, width: '100%'}}>
+            {header && <SemiTitle>{header}</SemiTitle>}
+            {usersReservations && usersReservations.length > 0 && <DataGrid
                 rows={usersReservations}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 // checkboxSelection
                 disableSelectionOnClick
-                experimentalFeatures={{ newEditingApi: true }}
-            /> }
-            {/*{ noData && (<h1> No Data </h1>) }*/}
+                // disableColumnFilter
+                experimentalFeatures={{newEditingApi: true}}
+            />}
+            {!noData && usersReservations.length === 0 &&  emptyReservationMessage()}
         </Box>
     );
 }

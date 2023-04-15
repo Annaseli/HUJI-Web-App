@@ -20,9 +20,8 @@ import { isAdmin } from '../pages/Admin/isAdmin';
 
 
 const pages = ['Reservations', 'About HUJI-INNOVATE', 'HUJI-Articles'];
-const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
 // TODO: back & front - add a page to All Users Reservations
-const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
+const adminSettingOption  = ['My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'Edit Rooms Settings', 'LogOut'];
 
 import { useNavigate } from 'react-router';
 
@@ -38,7 +37,6 @@ export default function NavBar() {
 
     let settings = []
     if (user && isAdmin()) {settings = adminSettingOption}
-    if (user && !isAdmin()) {settings = settingsOption}
 
 
     const handleOpenNavMenu = (event) => {
@@ -61,10 +59,12 @@ export default function NavBar() {
     const routesDict = {
         'Reservations': '/',
         'About HUJI-INNOVATE': '/aboutUs',
-        'HUJI-Articles' : '/articles'
+        'HUJI-Articles' : '/articles',
+        'All Users Reservations' : '/allReservations',
+        'Approve New Users' : "/approveUsers",
+        'Manage Users' : "/manageUsers",
     };
     const navigate  = useNavigate();
-
 
     return (
         <AppBar position="static" sx={{ backgroundColor: '#211D42' }}>
@@ -160,11 +160,11 @@ export default function NavBar() {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        {isAdmin && <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Matan Chen" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt="Admin" src="/static/images/avatar/2.jpg" />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip>}
                         <Menu
                             sx={{ mt: '45px' }}
                             id="menu-appbar"
@@ -182,13 +182,9 @@ export default function NavBar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    { setting === 'My Reservations' && <Link to="/myReservations"> <Typography textAlign="center">{setting}</Typography> </Link> }
-                                    { setting === 'All Users Reservations' && <Link to="/allReservations"> <Typography textAlign="center">{setting}</Typography> </Link> }
-                                    { setting === 'Contact Us' && <Link to="/contactUs"> <Typography textAlign="center">{setting}</Typography> </Link> }
-                                    { setting === 'Approve New Users' && <Link to="/approveUsers"> <Typography textAlign="center">{setting}</Typography> </Link> }
-                                    { setting === 'Manage Users' && <Link to="/manageUsers"> <Typography textAlign="center">{setting}</Typography> </Link> }
-                                    { setting === 'LogOut' && <Button onClick={logOut}><Typography textAlign="center">{setting}</Typography></Button> }
+                                <MenuItem key={setting}         onClick={() => navigate(routesDict[setting])}>
+                                    {setting !== 'LogOut' && < Typography textAlign="center"> {setting}  </Typography>}
+                                    { setting === 'LogOut' && <Button onClick={logOut}><Typography textAlign="left">{setting}</Typography></Button> }
                                 </MenuItem>
                             ))}
                         </Menu>
