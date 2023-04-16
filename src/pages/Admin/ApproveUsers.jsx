@@ -13,9 +13,18 @@ export default function ApproveUsers() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [perPage, setPerPage] = useState(10);
-    const [users, setUsers] = useState( []);
+    const [users, setUsers] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
+    const { docs: allUsers } = useCollection('PendingUsers')
 
+    useEffect(() => {
+        const createUsers = allUsers && allUsers.map(userDoc => ({
+            id: userDoc.id,
+            email: userDoc.email,
+            name: userDoc.name,
+        }));
+        setUsers(createUsers);
+    }, [allUsers]);
     useEffect(() => {
       setUsers(getPendingUser())
     }, []);
@@ -26,12 +35,12 @@ export default function ApproveUsers() {
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
             const userType = users[row - 1].userType
-            const displayName = users[row - 1].displayName
+            const name = users[row - 1].name
             const uid = users[row - 1].uid
 
             console.log(email)
             console.log(userType)
-            console.log(displayName)
+            console.log(name)
             console.log(uid)
 
             // enable the user from Authentication
@@ -50,6 +59,7 @@ export default function ApproveUsers() {
             // await setDoc(doc(collection(db, 'Users') , uid), {
             //     userType,
             //     email,
+            //     name: displayName,
             //     reservations: {}
             // })
             //
@@ -98,8 +108,8 @@ export default function ApproveUsers() {
         const {value} = event.target;
         const updatedUsers = [...users];
         const rowIndex = updatedUsers.findIndex((u) => u.id === row.id);
-        updatedUsers[rowIndex] = {...updatedUsers[rowIndex], userType: value};
-        // users = updatedUsers;
+        updatedUsers[rowIndex] = {...updatedUsers[rowIndex], rule: value};
+        //setUsers(updatedUsers);
     };
 
     const columns = [
@@ -130,8 +140,9 @@ export default function ApproveUsers() {
         },
     ];
 
+
     return (
-        <div style={{height: 400, width: '100%'}}>
+        users && <div style={{height: 400, width: '100%'}}>
             <SemiTitle>Approve New Users </SemiTitle>
             <DataGrid
                 rows={users}

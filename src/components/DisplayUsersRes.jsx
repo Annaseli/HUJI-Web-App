@@ -4,7 +4,7 @@ import {SemiTitle} from "./Title";
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from "@mui/material/IconButton";
 import {useGetUsersRes} from "../hooks/useGetUsersRes";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useFirestore} from "../hooks/useFirestore";
 // firebase imports
 import {db} from "../firebase/config";
@@ -13,8 +13,7 @@ import {getDocRefFromReservations} from "../pages/NewReservation/getDocRefFromRe
 import {getCheckInCodeFromRoom} from "../hooks/useGetCheckInCodeFromRoom";
 import './EmptyReservationMessage.css';
 
-
-export default function DisplayUsersRes({uid, header, moveToNewReservation, displayCheckIn = true}) {
+export default function DisplayUsersRes({uid, header, displayCheckIn=true}) {
     console.log("DisplayUsersRes")
     const {usersReservations, resMapFromCurDay, noData, error} = useGetUsersRes(uid)
     const [reservations, setReservations] = useState([]);
@@ -23,8 +22,8 @@ export default function DisplayUsersRes({uid, header, moveToNewReservation, disp
     const empty_reservation_msg = "You have no reservation"
 
     const columns = [
-        {field: 'id', headerName: 'ID', width: 90},
-        {
+        { field: 'id', headerName: 'ID', width: 90 },
+        !header && {
             field: 'uid',
             headerName: 'User ID',
             width: 150,
@@ -63,7 +62,7 @@ export default function DisplayUsersRes({uid, header, moveToNewReservation, disp
             type: 'number',
             width: 110,
             editable: false
-        }, {
+        },{
             field: 'delete',
             headerName: 'Delete',
             width: 150,
@@ -102,7 +101,6 @@ export default function DisplayUsersRes({uid, header, moveToNewReservation, disp
         }
     }
 
-    // TODO - front: add check in option
     const handleCheckIn = async (resId) => {
         console.log(resId)
         const roomNum = resMapFromCurDay[resId]['roomNum']
@@ -137,7 +135,6 @@ export default function DisplayUsersRes({uid, header, moveToNewReservation, disp
         }
     }
 
-
     // without the useEffect the component renders infinitely
     useEffect(() => {
         if (response.success) {
@@ -149,7 +146,6 @@ export default function DisplayUsersRes({uid, header, moveToNewReservation, disp
             console.log("loading...")
             // can I print the loading to the user too?
         }
-
     }, [response])
     function emptyReservationMessage() {
         return (
@@ -161,7 +157,6 @@ export default function DisplayUsersRes({uid, header, moveToNewReservation, disp
     }
 
 
-    // TODO - front: display something if there are no reservations - noData indicates that
     return (
         <Box sx={{height: 400, width: '100%'}}>
             {header && <SemiTitle>{header}</SemiTitle>}

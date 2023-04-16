@@ -117,7 +117,7 @@ export default function NewReservation({ uid, moveToMyReservation }) {
     }, [uid]);
 
     // TODO: clear the fields after reservation is made
-    roomsAvailable && useEffect(() => {
+    useEffect(() => {
         async function fetchData() {
             try {
                 let year;
