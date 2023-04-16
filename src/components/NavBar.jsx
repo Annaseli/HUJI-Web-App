@@ -17,13 +17,11 @@ import { useLogOut } from '../hooks/useLogOut'
 import { projectAuth } from "../firebase/config"
 import { getAuth } from "firebase/auth";
 import { isAdmin } from '../pages/Admin/isAdmin';
-
+import { useNavigate } from 'react-router';
 
 const pages = ['Reservations', 'About HUJI-INNOVATE', 'HUJI-Articles'];
-// TODO: back & front - add a page to All Users Reservations
-const adminSettingOption  = ['My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'Edit Rooms Settings', 'LogOut'];
-
-import { useNavigate } from 'react-router';
+const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
+const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
 
 export default function NavBar() {
     const { logOut } = useLogOut()
@@ -37,6 +35,7 @@ export default function NavBar() {
 
     let settings = []
     if (user && isAdmin()) {settings = adminSettingOption}
+    if (user && !isAdmin()) {settings = settingsOption}
 
 
     const handleOpenNavMenu = (event) => {

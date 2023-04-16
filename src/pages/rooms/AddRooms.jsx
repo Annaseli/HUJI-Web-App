@@ -109,7 +109,7 @@ export default function AddRooms() {
                     <input
 
                         type="boolean"
-                        onChange={(e) => setHoursAvailable([...hoursAvailablem, e.target.value])}
+                        onChange={(e) => setHoursAvailable([...hoursAvailable, e.target.value])}
                         value={hoursAvailable}
                     />
                 </label>

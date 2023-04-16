@@ -108,7 +108,7 @@ export default function App() {
                         />
                         <Route
                             path="/manageUsers"
-                            element={ user && isAdmin() ? <ManageUsers /> : <Navigate to="/logIn" />}
+                            element={ user && isAdmin() && allUsers ? <ManageUsers allUsers={allUsers}/> : <Navigate to="/logIn" />}
                         />
                         <Route
                             path="/addRooms"

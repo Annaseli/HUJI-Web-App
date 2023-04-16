@@ -1,61 +1,57 @@
 import {useState, useEffect} from "react";
 import {DataGrid} from "@mui/x-data-grid";
-import * as React from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import {SemiTitle} from "../../components/Title";
 import Button from "@mui/material/Button";
 import {TextField} from "@material-ui/core";
+import {collection, deleteDoc, doc} from "firebase/firestore";
+import {db} from "../../firebase/config";
 
-export default function ManageUsers() {
+export default function ManageUsers({ allUsers }) {
     const [users, setUsers] = useState([]);
-    const [selectedRows, setSelectedRows] = React.useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]);
+
+    useEffect(() => {
+        const createUsers = allUsers.map(userDoc => ({
+            id: userDoc.id,
+            email: userDoc.email,
+            name: userDoc.name,
+            userType: userDoc.userType
+        }));
+        setUsers(createUsers);
+    }, [allUsers]);
+
+    useEffect(() => {
+        console.log(users)
+        console.log(searchTerm)
+        users && setFilteredUsers(users.filter((user) =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        ));
+    }, [users]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
     };
 
-    useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then((response) => response.json())
-            .then((data) => setUsers(data))
-            .catch((error) => console.error(error));
-    }, []);
-
-    useEffect(() => {
-        setFilteredUsers(users.filter((user) =>
-            user.name.toLowerCase().includes(searchTerm.toLowerCase())
-        ));
-    }, [searchTerm, users]);
-
     const handleClick = () => {
         selectedRows.forEach((row) => {
             console.log(users[row - 1].id)
-            console.log(users[row - 1].rule)
+            console.log(users[row - 1].userType)
         })
     };
-
 
     const handleSelectionChange = (newSelection) => {
         console.log(newSelection);
         setSelectedRows(newSelection);
-    };
-    const handleRuleChange = (event, row) => {
-        const {value} = event.target;
-        const updatedUsers = [...users];
-        const rowIndex = updatedUsers.findIndex((u) => u.id === row.id);
-        const updatedUser = {...updatedUsers[rowIndex], rule: value};
-        updatedUsers[rowIndex] = updatedUser;
-        setUsers(updatedUsers);
-    };
+    }
+
     const columns = [
         {field: 'id', headerName: 'ID', width: 70},
         {field: 'name', headerName: 'Name', width: 130},
-        {field: 'username', headerName: 'Username', width: 130},
         {field: 'email', headerName: 'Email', width: 200},
-        {field: 'rule', headerName: 'Rule', width: 200},
+        {field: 'userType', headerName: 'User Type', width: 200},
         {
             field: 'delete',
             headerName: 'Delete',
@@ -73,15 +69,33 @@ export default function ManageUsers() {
         },
     ];
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (window.confirm(`Are you sure you want to delete user id: ${id}?`)) {
-            const updatedUsers = users.filter((u) => u.id !== id);
-            setUsers(updatedUsers);
+            //setUsers(users.filter((u) => u.id !== id));
+            setUsers(users.filter((u) => u.id !== id))
             setSelectedRows([]);
+
+            // delete user from the Users collection
+            try {
+                await deleteDoc(doc(collection(db, 'Users'), id));
+                console.log('Document deleted successfully from Users');
+            } catch (err) {
+                console.error('Error deleting document:', err);
+            }
+
+            // delete the user from firebase authentication
+            // TODO: after deploy do this:
+            // const functions = getFunctions();
+            // const deleteUser = httpsCallable(functions, 'deleteUser');
+            // try {
+            //     const result = await deleteUser({ uid: id })
+            //     console.log(result.data); // 'Successfully deleted user'
+            // } catch(error) {
+            //     console.log('Error deleting user:', error);
+            //     setError(error.message)
+            // }
         }
     };
-
-
 
     return (
         <div style={{height: 400, width: '100%'}}>
@@ -96,6 +110,7 @@ export default function ManageUsers() {
             />
             <DataGrid
                 rows={filteredUsers}
+                //rows={users}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[10]}
@@ -103,7 +118,6 @@ export default function ManageUsers() {
                 disableSelectionOnClick
                 onSelectionModelChange={handleSelectionChange}
             />
-
         </div>
     );
 }
