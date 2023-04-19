@@ -21,7 +21,6 @@ export default function AddContent(contentType) {
     }
 
     // curContent is an array
-    curContent && console.log("curContent:", curContent)
     return(
         <div>
             <h2>Add {contentType}</h2>

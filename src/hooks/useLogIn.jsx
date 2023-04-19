@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 
 // firebase imports
-import { projectAuth } from '../firebase/config'
-//import useAuthContext from './useAuthContext'
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { getAuth } from "firebase/auth";
 
@@ -10,7 +8,6 @@ export const useLogIn = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
-    //const { dispatch } = useAuthContext()
 
     const logIn = async (email, password) => {
         setError(null)
@@ -18,16 +15,8 @@ export const useLogIn = () => {
         try {
             const res = await signInWithEmailAndPassword(getAuth(), email, password);
 
-            // if network connection is bad
-            if (!res) {
-                throw new Error('Could not complete LogIn')
-            }
-
-            console.log('user logged in:', res.user);
-            //dispatch({ type: 'LOGIN', payload: res.user });
-
-            // Any time we are using a hook that updates states in a component, we should use a clean up
-            // function in case that component that uses that hook unmaunts (going to other component in the middle of of the process)
+            // Any time we are using a hook that updates states in a component, we should use a clean-up
+            // function in case that component that uses that hook unmaunts (going to other component in the middle of the process)
             // update state
             if (!isCancelled) {
                 setIsPending(false)
@@ -36,8 +25,7 @@ export const useLogIn = () => {
 
         } catch(error) {
             if (!isCancelled) {
-                console.log(error.message)
-                setError(error.message)
+                setError(error.message || "unknown error accured")
                 setIsPending(false)
             }
         }

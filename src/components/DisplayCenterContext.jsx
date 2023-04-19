@@ -34,11 +34,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DisplayCenterContext({ contentType, title }) {
     const classes = useStyles();
-    console.log("contentType", contentType)
     const { curContent, error } = useGetCenterContent(contentType)
 
-
-    console.log("curContent", curContent)
     return (
         <Container className={classes.container}>
             <Typography variant="h4" className={classes.heading}>

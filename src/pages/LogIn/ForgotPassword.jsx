@@ -1,5 +1,3 @@
-// import useResetPassword from "../../hooks/useResetPassword";
-
 import {useState} from "react";
 import {Link} from "react-router-dom"
 import {Divider} from '@mui/material';

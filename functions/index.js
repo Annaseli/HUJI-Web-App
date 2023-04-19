@@ -32,6 +32,7 @@ exports.enableDisableUser = functions.https.onRequest((request, response) => {
   response.send('Successfully updated user');
 });
 
+//TODO: back - when I use it make sure that after the delete this user is not logged in any more
 exports.deleteUser = functions.https.onRequest((request, response) => {
     functions.logger.info("deleteUser", {structuredData: true});
     getAuth()

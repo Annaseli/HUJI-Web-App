@@ -2,14 +2,12 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useState, useEffect } from "react"
 import { getAuth } from "firebase/auth";
-import { projectAuth } from './firebase/config';
 
 // styles
 import './App.css';
 
 // pages & components & hooks
 import HomePage from './pages/homePage/HomePage';
-//import Home from './pages/home/Home';
 import LogIn from './pages/LogIn/LogIn';
 import ForgotPassword from "./pages/LogIn/ForgotPassword";
 import SignUp from './pages/SignUp/SignUp';
@@ -22,11 +20,10 @@ import AddRooms from "./pages/rooms/AddRooms";
 import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
-import { isAdmin } from './pages/Admin/isAdmin';
+import {checkUserType} from "./pages/Admin/checkUserType";
 import {useCollection} from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
-import AllUsers from "./pages/Admin/allUsers";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
 
 const THEME = createTheme({
@@ -38,37 +35,59 @@ const THEME = createTheme({
     }
 });
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <ThemeProvider  theme={THEME}>
-//           <ResponsiveTopBar/>
-//         <HomePage/>
-//       </ThemeProvider>
-//     </div>
-//   );
-// }
-
 export default function App() {
     const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const { docs: allUsers } = useCollection('Users')
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [isPending, setIsPending] = useState(true);
+    const [error, setError] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false)
+    const [userType, setUserType] = useState("")
+    const { docs: allUsers } = useCollection("Users")
 
-    useEffect(() => {
-        const unsubscribe = getAuth().onAuthStateChanged((user) => {
+    useEffect(   () => {
+        setError(null)
+        const unsub = getAuth().onAuthStateChanged(   (user) => {
             setUser(user);
         });
 
         setTimeout(() => {
-            setIsLoading(false); // set isLoading to false when done
-        }, 1000);
+            setIsPending(false);
+        }, 500);
 
-        return () => unsubscribe();
+        return () => unsub();
     }, []);
 
+    useEffect(() => {
+        setIsPending(true)
+        setError(null)
+        async function checkAdmin(){
+            try {
+                const res = await checkUserType(user.uid)
+                setUserType(res)
+                setIsAdmin(userType === "Admin")
 
-    // TODO: front - style this
-    if (isLoading) {
+                if (!isCancelled) {
+                    setIsPending(false)
+                    setError(null)
+                }
+
+            }
+            catch(error) {
+                if (!isCancelled) {
+                    setError(error.message || "unknown error accured")
+                    setIsPending(false)
+                }
+            }
+        }
+        user && checkAdmin()
+
+        setTimeout(() => {
+            setIsPending(false);
+        }, 500);
+
+    }, [user])
+
+    if (isPending) {
         return <div>Loading...</div>;
     }
 
@@ -76,20 +95,20 @@ export default function App() {
         <div className="App">
             <ThemeProvider theme={THEME}>
                 <BrowserRouter>
-                    <NavBar />
+                    <NavBar isAdmin={isAdmin}/>
                     <Routes>
                         <Route
                             path="/"
-                            element={ user ? <HomePage /> : <Navigate to="/logIn" />}
+                            element={ user ? <HomePage userType={userType}/> : <Navigate to="/logIn" />}
                         />
                         <Route
                             path="/bookAReservation"
-                            element={ user ? <HomePage /> : <Navigate to="/logIn" />}
+                            element={ user ? <HomePage userType={userType}/> : <Navigate to="/logIn" />}
                         />
-                        <Route
-                            path="/myReservations"
-                            element={ user ? <MyReservations /> : <Navigate to="/logIn" />}
-                        />
+                        {/*<Route*/}
+                        {/*    path="/myReservations"*/}
+                        {/*    element={ user ? <MyReservations /> : <Navigate to="/logIn" />}*/}
+                        {/*/>*/}
                         <Route
                             path="/aboutUs"
                             element={ user ? <AboutUs /> : <Navigate to="/logIn" />}
@@ -104,31 +123,73 @@ export default function App() {
                         />
                         <Route
                             path="/approveUsers"
-                            element={ user && isAdmin() ? <ApproveUsers /> : <Navigate to="/logIn" />}
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <ApproveUsers />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
                         />
                         <Route
                             path="/manageUsers"
-                            element={ user && isAdmin() && allUsers ? <ManageUsers allUsers={allUsers}/> : <Navigate to="/logIn" />}
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <ManageUsers allUsers={allUsers} />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
                         />
                         <Route
                             path="/addRooms"
-                            element={ user && isAdmin() ? <AddRooms /> : <Navigate to="/logIn" />}
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <AddRooms />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
                         />
                         <Route
                             path="/allReservations"
-                            element={ user && isAdmin() && allUsers ? <AllReservations allUsers={allUsers}/> : <Navigate to="/logIn" />}
-                        />
-                        <Route
-                            path="/allUsers"
-                            element={ user && isAdmin() ? <AllUsers user={user}/> : <Navigate to="/logIn" />}
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <AllReservations allUsers={allUsers} />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
                         />
                         <Route
                             path="/addAboutUs"
-                            element={ user && isAdmin() ? <AddAboutUs /> : <Navigate to="/logIn" />}
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <AddAboutUs />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
                         />
                         <Route
                             path="/addArticle"
-                            element={ user && isAdmin() ? <AddArticle /> : <Navigate to="/logIn" />}
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <AddArticle />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
+                        />
+                        <Route
+                            path="/editRoomsSettings"
+                            element={
+                                user
+                                    ? isAdmin
+                                        ? <EditRoomsSettings />
+                                        : <Navigate to="/" />
+                                    : <Navigate to="/logIn" />
+                            }
                         />
                         <Route
                             path="/logIn"
@@ -142,16 +203,12 @@ export default function App() {
                             path="/signUp"
                             element={ user ? <Navigate to="/" /> : <SignUp />}
                         />
-
-                        <Route
-                            path="/EditRoomsSettings"
-                            element={ user && isAdmin() ? <EditRoomsSettings /> : <Navigate to="/logIn" />}
-                        />
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>
+            {error && <p>{error}</p>}
         </div>
-    );
+    )
 }
 
 
