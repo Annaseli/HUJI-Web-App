@@ -5,10 +5,10 @@ import { db } from "../../firebase/config";
 import { doc, updateDoc, setDoc, collection } from "firebase/firestore";
 
 export default function createReservation(uid, capacity, duration, date, startHour, endHour, roomNum) {
-    console.log("reservation form")
+    console.log("createReservation")
     const dayObject = new Date(date)
     const year = `${dayObject.getFullYear()}`
-    const month = `${dayObject.getMonth() + 1}`.padStart(2, "0");
+    const month = "07"// ${dayObject.getMonth() + 1}`.padStart(2, "0");
     const day = `${dayObject.getDate()}`.padStart(2, "0");
     const startHourPadded = `${startHour}`.padStart(2, "0");
     const endHourPadded = `${endHour}`.padStart(2, "0");
@@ -31,7 +31,9 @@ export default function createReservation(uid, capacity, duration, date, startHo
                     startHour: startHourPadded + ":00",
                     endHour: endHourPadded,
                     peopleNum: capacity,
-                    checkedIn: false}
+                    checkedIn: false,
+                    checkInTimeStamp: null
+                }
             }
             await updateDoc(docRef, updateMap)
         }
@@ -52,7 +54,7 @@ export default function createReservation(uid, capacity, duration, date, startHo
             }
         };
         await setDoc(docRef, {
-            resMapFromCurDay: updateMap
+            userReservationsKeys: updateMap
         }, { merge: true });
     }
 

@@ -6,7 +6,7 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 // Takes in a collection and updating the documents to match whatever documents are inside the collection
 // in that moment in time.
-export const useCollection = (c, q) => {
+export const useCollection = (c, q, r) => {
     const [docs, setDocs] = useState(null)
     const [error, setError] = useState(null)
 
@@ -15,7 +15,12 @@ export const useCollection = (c, q) => {
     const _q = useRef(q).current
 
     useEffect (() => {
-        let ref = collection(db, c)
+        let ref;
+        if (r) {
+            ref = r
+        } else {
+            ref = collection(db, c)
+        }
 
         if(_q) {
             ref = query(ref, where(..._q))

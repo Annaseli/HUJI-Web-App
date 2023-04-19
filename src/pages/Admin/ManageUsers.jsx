@@ -24,8 +24,6 @@ export default function ManageUsers({ allUsers }) {
     }, [allUsers]);
 
     useEffect(() => {
-        console.log(users)
-        console.log(searchTerm)
         users && setFilteredUsers(users.filter((user) =>
             user.name.toLowerCase().includes(searchTerm.toLowerCase())
         ));

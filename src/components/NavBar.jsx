@@ -16,26 +16,22 @@ import { Link } from "react-router-dom"
 import { useLogOut } from '../hooks/useLogOut'
 import { projectAuth } from "../firebase/config"
 import { getAuth } from "firebase/auth";
-import { isAdmin } from '../pages/Admin/isAdmin';
+import { checkUserType } from '../pages/Admin/checkUserType';
 import { useNavigate } from 'react-router';
 
 const pages = ['Reservations', 'About HUJI-INNOVATE', 'HUJI-Articles'];
 const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
 const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
 
-export default function NavBar() {
+export default function NavBar({ isAdmin }) {
     const { logOut } = useLogOut()
     const user = getAuth().currentUser
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
-    // const [settings, setSettings] = useState([]);
-    // user && isAdmin() && setSettings(adminSettingOption)
-    // user && !isAdmin() && setSettings(settingsOption)
-
     let settings = []
-    if (user && isAdmin()) {settings = adminSettingOption}
-    if (user && !isAdmin()) {settings = settingsOption}
+    if (user && isAdmin) {settings = adminSettingOption}
+    if (user && !isAdmin) {settings = settingsOption}
 
 
     const handleOpenNavMenu = (event) => {
@@ -47,7 +43,6 @@ export default function NavBar() {
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
-        console.log("1313")
     };
 
     const handleCloseUserMenu = () => {
@@ -159,7 +154,7 @@ export default function NavBar() {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        {isAdmin && <Tooltip title="Open settings">
+                        {checkUserType && <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Admin" src="/static/images/avatar/2.jpg" />
                             </IconButton>

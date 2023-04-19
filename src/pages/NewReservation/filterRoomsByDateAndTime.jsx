@@ -1,29 +1,25 @@
-import { getDocRefFromReservations } from "./getDocRefFromReservations";
+import {getResDocs} from "./getResDocs";
 
-export default async function filterRoomsByDateAndTime(duration, year, month, day, hour, roomsAvailable) {
-    console.log("FilterRooms4");
+export default async function filterRoomsByDateAndTime(duration, year, month, day, hour, roomsAvailableByUserTypeAndCapAndDate) {
+    console.log("filterRoomsByDateAndTime");
+    let roomsAvailable = [];
+    const roomsDocs = await getResDocs(year, month, day, roomsAvailableByUserTypeAndCapAndDate)
 
-    let roomsAv = {};
     // for the given date and time, find all the rooms that are available
-    const rooms = Object.keys(roomsAvailable);
-    for (let j = 0; j < rooms.length; j++) {
-        const roomNum = rooms[j];
+    for (const roomDoc of roomsDocs) {
+        const roomNum = roomDoc.roomNum
         const room = `${roomNum}`.padStart(2, "0");
-        const { data } = await getDocRefFromReservations(year, month, day, roomNum);
-        const roomCapacity = data.roomCapacity;
-        let roomIsAv = true;
+        let roomIsAvailable = true;
         for (let i = 0; i < parseInt(duration); i++) {
-            // this hour is available
-            const hourToPlace = `${parseInt(hour) + i}`.padStart(2, "0");
-            if (Object.keys(data[hourToPlace]).length !== 0) {
-                roomIsAv = false;
+            const PaddedHour = `${parseInt(hour) + i}`.padStart(2, "0");
+            if (Object.keys(roomDoc[PaddedHour]).length !== 0) { // this hour is not available
+                roomIsAvailable = false;
                 break;
             }
         }
-        if (roomIsAv) {
-            roomsAv[roomNum] = roomCapacity;
+        if (roomIsAvailable) {
+            roomsAvailable.push(roomNum);
         }
     }
-
-    return roomsAv;
+    return roomsAvailable;
 }

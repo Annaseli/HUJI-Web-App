@@ -54,7 +54,7 @@ export default function ApproveUsers() {
             //     userType,
             //     email,
             //     name: displayName,
-            //     reservations: {}
+            //     userReservations: {}
             // })
             //
             // // if the user exists in ConfirmedUsers - delete this user from the Pending collection
@@ -72,13 +72,12 @@ export default function ApproveUsers() {
             console.log("userType", userType)
 
             // remove the user from the PendingUsers collection and notify the user
-            // TODO - send the user mail that he was denied
-            try {
-                await deleteDoc(doc(collection(db, 'PendingUsers'), email));
-                console.log('Document deleted successfully from PendingUsers');
-            } catch (err) {
-                console.error('Error deleting document:', err);
-            }
+            // try {
+            //     await deleteDoc(doc(collection(db, 'PendingUsers'), email));
+            //     console.log('Document deleted successfully from PendingUsers');
+            // } catch (err) {
+            //     console.error('Error deleting document:', err);
+            // }
 
             // delete the user from firebase authentication
             // TODO: after deploy do this:

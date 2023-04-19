@@ -20,7 +20,8 @@ import CheckIn from "../CheckIn/CheckIn";
 import {useNavigate} from "react-router";
 import {Button} from "../../components/Button";
 import DisplayUsersRes from "../../components/DisplayUsersRes";
-
+import test from "../NewReservation/test";
+import getAllReservations from "../Admin/getAllReservations";
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
 
@@ -48,12 +49,15 @@ function a11yProps(index) {
     };
 }
 
-export default function HomePage() {
+export default function HomePage({userType}) {
+    console.log("HomePage")
     const [TabValue, setValue] = useState(0);
     const [randValue, setRandValue] = useState({ value: 10 })
+    const {docs: rooms} = useCollection("Rooms")
 
     const uid = getAuth().currentUser.uid
-    const {docs: rooms} = useCollection('Rooms')
+    test()
+    //rooms && getAllReservations('2023',['07'], rooms)
 
     // TODO - back: move this initialization of the DB to the Admin - every time that he will log in, I'll check
     // that there are collections for the next 3 month and if not will create them. I'll move to storage the
@@ -95,21 +99,21 @@ export default function HomePage() {
                 </Tabs>
             </Box>
             <TabPanel value={TabValue} index={1}>
-                <NewReservation
+                {uid && <NewReservation
                     uid={uid}
+                    userType={userType}
                     moveToMyReservation={moveToMyReservation}
-                />
-
+                />}
             </TabPanel>
             <TabPanel value={TabValue} index={0}>
-                <DisplayUsersRes uid={uid}
+                {uid && <DisplayUsersRes uid={uid}
                                  header={'My Reservations'}
                                  moveToNewReservation={moveToNewReservation}
-                />
-            </TabPanel> <TabPanel value={TabValue} index={2}>
-            <CheckIn uid={uid}/>
-
-        </TabPanel>
+                />}
+            </TabPanel>
+            <TabPanel value={TabValue} index={2}>
+                {uid && <CheckIn uid={uid}/>}
+            </TabPanel>
 
         </Box>
 
