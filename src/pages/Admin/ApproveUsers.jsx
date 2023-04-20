@@ -4,88 +4,89 @@ import {FormControl, InputLabel, Select} from "@material-ui/core";
 import MenuItem from "@mui/material/MenuItem";
 import {SemiTitle} from "../../components/Title";
 import {useCollection} from "../../hooks/useCollection";
-import {createUserWithEmailAndPassword, getAuth, updateProfile} from "firebase/auth";
-//import {db, projectAuth} from "../../firebase/config";
+import { getFunctions, httpsCallable } from "firebase/functions";
 import { db } from "../../firebase/config";
-import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDoc, setDoc} from "firebase/firestore";
+import getPendingUser from "./getPendingUser";
 
-// TODO - need the disable feature or to make him sign up again because it's unsafe to pass the password loke that
 export default function ApproveUsers() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [perPage, setPerPage] = useState(10);
-    //const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState( []);
     const [selectedRows, setSelectedRows] = useState([]);
 
-    const users = []
-    const { docs: usersDocs } = useCollection('PendingUsers')
-    console.log("usersDocs", usersDocs)
-    usersDocs.forEach((userDoc) => {
-        users.push({
-            "email": userDoc.email,
-            "name": userDoc.displayName,
-            "password": userDoc.password
-        })
-    })
+    useEffect(() => {
+      setUsers(getPendingUser())
+    }, []);
+
     console.log("users", users)
 
-    const handleApproveClick = async () => {
+    const handleApproveClick = () => {
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
             const userType = users[row - 1].userType
             const displayName = users[row - 1].displayName
-            const password = users[row - 1].password
+            const uid = users[row - 1].uid
 
             console.log(email)
             console.log(userType)
             console.log(displayName)
-            console.log(password)
+            console.log(uid)
 
-            // sign the user up to firebase
-            const res = await createUserWithEmailAndPassword(getAuth(), email, password)
-            // if network connection is bad
-            if (!res) {
-                throw new Error('Could not complete SignUp')
-            }
+            // enable the user from Authentication
+            // TODO: after deploy do this:
+            // const functions = getFunctions();
+            // const enableDisableUser = httpsCallable(functions, 'enableDisableUser');
+            // try {
+            //     const result = await enableDisableUser({ uid: user.uid, disable: false })
+            //     console.log(result.data); // 'Successfully updated user'
+            // } catch(error) {
+            //     console.log('Error updating user:', error);
+            //     setError(error.message)
+            // }
 
-            const user = res.user
-            console.log('user signed up after approval:', user)
-
-            // add display name to user
-            await updateProfile(user, { displayName })
-
-            // add user to the "Users" collection
-            await setDoc(doc(collection(db, 'Users') , user.uid), {
-                userType,
-                email,
-                resMapFromCurDay: {}
-            })
-
-            // remove user from the PendingUsers collection
-            try {
-                await deleteDoc(doc(collection(db, 'PendingUsers'), email));
-                console.log('Document deleted successfully from ConfirmedUsers');
-            } catch (err) {
-                console.error('Error deleting document:', err);
-            }
+            // // add the user to "Users" collection
+            // await setDoc(doc(collection(db, 'Users') , uid), {
+            //     userType,
+            //     email,
+            //     reservations: {}
+            // })
+            //
+            // // if the user exists in ConfirmedUsers - delete this user from the Pending collection
+            // await deleteDoc(doc(collection(db, 'ConfirmedUsers'), email));
+            // updateUser(users[row - 1].id,users[row - 1].rule)
         })
-        // updateUser(users[row - 1].id,users[row - 1].rule)
     };
 
-    const handleDenyClick = async () => {
+    const handleDenyClick = () => {
         selectedRows.forEach(async (row) => {
-            console.log(users[row - 1].email)
-            console.log(users[row - 1].userType)
+            const email = users[row - 1].email
+            const userType = users[row - 1].userType
 
-            // romove the user from the PendingUsers collection and notify the user
+            console.log("email", email)
+            console.log("userType", userType)
+
+            // remove the user from the PendingUsers collection and notify the user
             // TODO - send the user mail that he was denied
-
             try {
                 await deleteDoc(doc(collection(db, 'PendingUsers'), email));
-                console.log('Document deleted successfully from ConfirmedUsers');
+                console.log('Document deleted successfully from PendingUsers');
             } catch (err) {
                 console.error('Error deleting document:', err);
             }
+
+            // delete the user from firebase authentication
+            // TODO: after deploy do this:
+            // const functions = getFunctions();
+            // const deleteUser = httpsCallable(functions, 'deleteUser');
+            // try {
+            //     const result = await deleteUser({ uid: user.uid })
+            //     console.log(result.data); // 'Successfully deleted user'
+            // } catch(error) {
+            //     console.log('Error deleting user:', error);
+            //     setError(error.message)
+            // }
         })
     }
 
@@ -93,15 +94,16 @@ export default function ApproveUsers() {
         console.log(newSelection)
         setSelectedRows(newSelection);
     };
-    const handleRuleChange = (event, row) => {
+    const handleUserTypeChange = (event, row) => {
         const {value} = event.target;
         const updatedUsers = [...users];
         const rowIndex = updatedUsers.findIndex((u) => u.id === row.id);
-        updatedUsers[rowIndex] = {...updatedUsers[rowIndex], rule: value};
-        //setUsers(updatedUsers);
+        updatedUsers[rowIndex] = {...updatedUsers[rowIndex], userType: value};
+        // users = updatedUsers;
     };
 
     const columns = [
+        {field: 'id', headerName: 'ID', width: 90},
         {field: 'name', headerName: 'Name', width: 130},
         {field: 'email', headerName: 'Email', width: 200},
         {
@@ -112,11 +114,11 @@ export default function ApproveUsers() {
                 const {row} = params;
                 return (
                     <FormControl fullWidth>
-                        <InputLabel id={`rule-select-label-${row.id}`}>Rule</InputLabel>
+                        <InputLabel id={`userType-select-label-${row.id}`}>User Type</InputLabel>
                         <Select
-                            labelId={`rule-select-label-${row.id}`}
-                            value={row.rule || ''}
-                            onChange={(event) => handleRuleChange(event, row)}
+                            labelId={`userType-select-label-${row.id}`}
+                            value={row.userType || ''}
+                            onChange={(event) => handleUserTypeChange(event, row)}
                         >
                             <MenuItem value="User">User</MenuItem>
                             <MenuItem value="Team">Team</MenuItem>
@@ -127,7 +129,6 @@ export default function ApproveUsers() {
             },
         },
     ];
-
 
     return (
         <div style={{height: 400, width: '100%'}}>
