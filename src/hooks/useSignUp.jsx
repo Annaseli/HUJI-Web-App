@@ -61,14 +61,14 @@ export const useSignUp = () => {
             }
 
             if (!isCancelled) {
-                setIsPending(false)
                 setError(null)
+                setIsPending(false)
             }
 
         }
         catch(error) {
             if (!isCancelled) {
-                setError(error.message || "unknown error accured")
+                setError(error.message || "unknown error occurred")
                 setIsPending(false)
             }
         }

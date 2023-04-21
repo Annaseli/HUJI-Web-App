@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 const ButtonWrapper = styled.button`
@@ -23,11 +22,6 @@ const ButtonWrapper = styled.button`
   user-select: none;
   z-index: 1;
   height: ${({ height }) => (height ? height + "px" : "auto")};
-//   &:hover {
-//     color: #FFF4E6;
-//     background-color: #FD35BD;
-//     box-shadow: 0px 0px 0px rgba(160, 160, 160, 0.25);
-    
   }
   &:focus {
     outline: none;
@@ -35,8 +29,7 @@ const ButtonWrapper = styled.button`
 `;
 
 export function Button(props) {
-  const { size, color, background, onClick, width, height, border } = props;
-
+  const { size, color, background, onClick, width, height, border } = props
   return (
     <ButtonWrapper
       size={size}

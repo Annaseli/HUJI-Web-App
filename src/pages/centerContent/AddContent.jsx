@@ -1,20 +1,23 @@
 import {useEffect, useState} from "react";
-import {useFirestore} from "../../hooks/useFirestore";
-import {collection, getDocs, query, where} from "firebase/firestore";
-import {db} from "../../firebase/config";
+
+// firebase
+import {addDoc, collection} from "firebase/firestore";
+import { db } from "../../firebase/config";
+
+// custom hooks
 import useGetCenterContent from "../../hooks/useGetCenterContent";
 
 // TODO - front: create a form that adds or edits the aboutUS paragraph to the db.
+//  Use the curContent for editing the prev context and the setContent for adding new content.
 export default function AddContent(contentType) {
     console.log("AddContent")
-    const { addDocToFireStore, response } = useFirestore()
-    const { curContent, error } = useGetCenterContent(contentType)
-
-    const [newContent, setContent] = useState('ggju')
+    const { curContent, error, isPending } = useGetCenterContent(contentType)
+    const [newContent, setContent] = useState("")
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        await addDocToFireStore(collection(db, 'CenterContent'), {
+        // todo - add try and catch
+        await addDoc(collection(db, "CenterContent"), {
             contentType,
             content: newContent
         })
@@ -24,6 +27,8 @@ export default function AddContent(contentType) {
     return(
         <div>
             <h2>Add {contentType}</h2>
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </div>
     )
 }

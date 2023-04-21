@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // firebase imports
-import { signInWithEmailAndPassword } from "firebase/auth"
-import { getAuth } from "firebase/auth";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth"
 
 export const useLogIn = () => {
     const [isCancelled, setIsCancelled] = useState(false)
@@ -13,14 +12,13 @@ export const useLogIn = () => {
         setError(null)
         setIsPending(true)
         try {
-            const res = await signInWithEmailAndPassword(getAuth(), email, password);
-
+            await signInWithEmailAndPassword(getAuth(), email, password);
             // Any time we are using a hook that updates states in a component, we should use a clean-up
             // function in case that component that uses that hook unmaunts (going to other component in the middle of the process)
             // update state
             if (!isCancelled) {
-                setIsPending(false)
                 setError(null)
+                setIsPending(false)
             }
 
         } catch(error) {
@@ -38,5 +36,5 @@ export const useLogIn = () => {
         return () => setIsCancelled(true)
     }, [])
 
-    return { logIn, isPending, error }
+    return { logIn, error, isPending }
 }

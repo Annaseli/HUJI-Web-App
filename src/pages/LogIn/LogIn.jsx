@@ -6,10 +6,10 @@ import { Divider } from "@mui/material"
 import "./LogIn.css";
 
 // components && custom hooks
-import {Button} from "../../components/Button"
-import {SemiTitle} from "../../components/Title"
-import {StyledTextField} from "../../components/Input"
-import {useLogIn} from "../../hooks/useLogIn"
+import { Button } from "../../components/Button"
+import { SemiTitle } from "../../components/Title"
+import { StyledTextField } from "../../components/Input"
+import { useLogIn } from "../../hooks/useLogIn"
 
 const styledDivider = {
   width: "400px"
@@ -18,7 +18,7 @@ const styledDivider = {
 export default function LogIn() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const { logIn, error, isPending } = useLogIn("")
+    const { logIn, error, isPending } = useLogIn()
 
     const handleSubmit = async (event) => {
         event.preventDefault()

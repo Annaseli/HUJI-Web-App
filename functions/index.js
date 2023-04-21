@@ -13,7 +13,7 @@ const functions = require('firebase-functions');
 
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
-const {getAuth} = require("firebase-admin/auth");
+const { getAuth } = require("firebase-admin/auth");
 admin.initializeApp();
 
 exports.enableDisableUser = functions.https.onRequest((request, response) => {

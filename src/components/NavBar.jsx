@@ -11,20 +11,23 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AbcIcon from '@mui/icons-material/Abc';
 import { Link } from "react-router-dom"
-import { useLogOut } from '../hooks/useLogOut'
-import { projectAuth } from "../firebase/config"
-import { getAuth } from "firebase/auth";
-import { checkUserType } from '../pages/Admin/checkUserType';
 import { useNavigate } from 'react-router';
 
-const pages = ['Reservations', 'About HUJI-INNOVATE', 'HUJI-Articles'];
-const settingsOption = ['Profile', 'My Reservations', 'Contact Us', 'LogOut'];
-const adminSettingOption  = ['Profile', 'My Reservations', 'All Users Reservations', 'Approve New Users', 'Manage Users', 'Usage Report', 'LogOut'];
+// pages & custom hooks
+import { useLogOut } from '../hooks/useLogOut'
+import { checkUserType } from '../pages/Admin/checkUserType';
+
+// firebase
+import { getAuth } from "firebase/auth";
+
+const pages = ["Reservations", "About HUJI-INNOVATE", "HUJI-Articles"];
+const settingsOption = ["Profile", "My Reservations", "Contact Us", "LogOut"];
+const adminSettingOption  = ["Profile", "My Reservations", "All Users Reservations", "Approve New Users",
+    "Manage Users", "Usage Report", "LogOut"];
 
 export default function NavBar({ isAdmin }) {
-    const { logOut } = useLogOut()
+    const { logOut, error, isPending } = useLogOut()
     const user = getAuth().currentUser
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -32,7 +35,6 @@ export default function NavBar({ isAdmin }) {
     let settings = []
     if (user && isAdmin) {settings = adminSettingOption}
     if (user && !isAdmin) {settings = settingsOption}
-
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -49,14 +51,13 @@ export default function NavBar({ isAdmin }) {
         setAnchorElUser(null);
     };
 
-
     const routesDict = {
-        'Reservations': '/',
-        'About HUJI-INNOVATE': '/aboutUs',
-        'HUJI-Articles' : '/articles',
-        'All Users Reservations' : '/allReservations',
-        'Approve New Users' : "/approveUsers",
-        'Manage Users' : "/manageUsers",
+        "Reservations": "/",
+        "About HUJI-INNOVATE": "/aboutUs",
+        "HUJI-Articles" : "/articles",
+        "All Users Reservations" : "/allReservations",
+        "Approve New Users" : "/approveUsers",
+        "Manage Users" : "/manageUsers",
     };
     const navigate  = useNavigate();
 
@@ -64,7 +65,6 @@ export default function NavBar({ isAdmin }) {
         <AppBar position="static" sx={{ backgroundColor: '#211D42' }}>
             <Container maxWidth="lg">
                 <Toolbar disableGutters >
-                    {/*<AbcIcon sx={{ display: { xs: 'none', md: 'flex' ,lg: 'flex'}, mr: 1 }} />*/}
                     <Typography
                         variant="h6"
                         noWrap
@@ -114,9 +114,12 @@ export default function NavBar({ isAdmin }) {
                         >
                             {user && pages.map((page) => (
                                 <MenuItem key={page} >
-                                    { page === 'Reservations' &&  <Typography textAlign="center"><Link to="/">{page}</Link></Typography>  }
-                                    { page === 'About HUJI-INNOVATE' &&  <Typography textAlign="center"><Link to="/aboutUs">{page}</Link></Typography>  }
-                                    { page === 'HUJI-Articles' && <Link to="/articles"> <Typography textAlign="center">{page}</Typography> </Link> }
+                                    { page === "Reservations" &&  <Typography textAlign="center">
+                                        <Link to="/">{page}</Link></Typography>  }
+                                    { page === "About HUJI-INNOVATE" &&  <Typography textAlign="center">
+                                        <Link to="/aboutUs">{page}</Link></Typography>  }
+                                    { page === "HUJI-Articles" && <Link to="/articles">
+                                        <Typography textAlign="center">{page}</Typography> </Link> }
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -152,7 +155,6 @@ export default function NavBar({ isAdmin }) {
                             </Button>
                         ))}
                     </Box>
-
                     <Box sx={{ flexGrow: 0 }}>
                         {checkUserType && <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -176,15 +178,18 @@ export default function NavBar({ isAdmin }) {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting}         onClick={() => navigate(routesDict[setting])}>
-                                    {setting !== 'LogOut' && < Typography textAlign="center"> {setting}  </Typography>}
-                                    { setting === 'LogOut' && <Button onClick={logOut}><Typography textAlign="left">{setting}</Typography></Button> }
+                                <MenuItem key={setting} onClick={() => navigate(routesDict[setting])}>
+                                    { setting !== "LogOut" && < Typography textAlign="center"> { setting } </Typography> }
+                                    { setting === "LogOut" && <Button onClick={ logOut }>
+                                        <Typography textAlign="left">{ setting }</Typography></Button> }
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
                 </Toolbar>
             </Container>
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </AppBar>
     );
 }
