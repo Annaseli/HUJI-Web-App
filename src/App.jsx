@@ -20,8 +20,8 @@ import AddRooms from "./pages/rooms/AddRooms";
 import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
-import {checkUserType} from "./pages/Admin/checkUserType";
-import {useCollection} from "./hooks/useCollection";
+import { checkUserType } from "./pages/Admin/checkUserType";
+import { useCollection } from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
@@ -38,11 +38,17 @@ const THEME = createTheme({
 export default function App() {
     const [user, setUser] = useState(null);
     const [isCancelled, setIsCancelled] = useState(false)
-    const [isPending, setIsPending] = useState(true);
+    const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false)
     const [userType, setUserType] = useState("")
-    const { docs: allUsers } = useCollection("Users")
+    const { docs: allUsers, error: err } = useCollection("Users")
+    // if (!isCancelled) {
+    //     setIsPending(false)
+    //     if (err) {
+    //         setError(err)
+    //     }
+    // }
 
     useEffect(   () => {
         setError(null)
@@ -67,14 +73,13 @@ export default function App() {
                 setIsAdmin(userType === "Admin")
 
                 if (!isCancelled) {
-                    setIsPending(false)
                     setError(null)
+                    setIsPending(false)
                 }
-
             }
             catch(error) {
                 if (!isCancelled) {
-                    setError(error.message || "unknown error accured")
+                    setError(error.message || "unknown error occurred")
                     setIsPending(false)
                 }
             }
@@ -84,8 +89,9 @@ export default function App() {
         setTimeout(() => {
             setIsPending(false);
         }, 500);
-
+        return () => setIsCancelled(true);
     }, [user])
+
 
     if (isPending) {
         return <div>Loading...</div>;

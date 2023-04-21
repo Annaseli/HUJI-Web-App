@@ -1,31 +1,44 @@
-import {useState, useEffect} from "react";
-import {DataGrid} from "@mui/x-data-grid";
-import {FormControl, InputLabel, Select} from "@material-ui/core";
+import { useState, useEffect } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { FormControl, InputLabel, Select } from "@material-ui/core";
 import MenuItem from "@mui/material/MenuItem";
-import {SemiTitle} from "../../components/Title";
-import {useCollection} from "../../hooks/useCollection";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { db } from "../../firebase/config";
-import {collection, deleteDoc, doc, getDoc, setDoc} from "firebase/firestore";
+
+// components & custom hooks
+import { SemiTitle } from "../../components/Title";
+import { useCollection } from "../../hooks/useCollection";
 
 export default function ApproveUsers() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [perPage, setPerPage] = useState(10);
     const [users, setUsers] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
-    const { docs: allUsers } = useCollection('PendingUsers')
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
+    const [isPending, setIsPending] = useState(false)
+    const { docs: allUsers, error: err } = useCollection("PendingUsers")
+    // if (!isCancelled) {
+    //     setIsPending(false)
+    //     if (err) {
+    //         setError(err)
+    //     }
+    // }
 
     useEffect(() => {
+        setIsPending(true)
         const createUsers = allUsers && allUsers.map(userDoc => ({
             id: userDoc.id,
             email: userDoc.email,
             name: userDoc.name,
         }));
         setUsers(createUsers);
+        if(!isCancelled) {
+            setIsPending(false)
+        }
+        return () => setIsCancelled(true)
     }, [allUsers]);
 
     const handleApproveClick = () => {
+        setError(null)
+        setIsPending(true)
+        // todo add try catch and if (!isCancelled)
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
             const userType = users[row - 1].userType
@@ -64,6 +77,9 @@ export default function ApproveUsers() {
     };
 
     const handleDenyClick = () => {
+        setError(null)
+        setIsPending(true)
+        // todo add try catch and if (!iscancelled)
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
             const userType = users[row - 1].userType
@@ -98,21 +114,17 @@ export default function ApproveUsers() {
         setSelectedRows(newSelection);
     };
     const handleUserTypeChange = (event, row) => {
-        const {value} = event.target;
-        console.log("value", value)
+        const { value } = event.target;
         const updatedUsers = [...users];
-        console.log("value2", value)
         const rowIndex = updatedUsers.findIndex((u) => u.id === row.id);
-        console.log("rowIndex", rowIndex)
         updatedUsers[rowIndex] = {...updatedUsers[rowIndex], userType: value};
-        console.log("updatedUsers", updatedUsers)
         setUsers(updatedUsers);
     };
 
     const columns = [
-        {field: 'id', headerName: 'ID', width: 90},
-        {field: 'name', headerName: 'Name', width: 130},
-        {field: 'email', headerName: 'Email', width: 200},
+        {field: "id", headerName: "ID", width: 90},
+        {field: "name", headerName: "Name", width: 130},
+        {field: "email", headerName: "Email", width: 200},
         {
             field: 'userType',
             headerName: 'User Type',
@@ -179,6 +191,8 @@ export default function ApproveUsers() {
             >
                 Deny
             </button>
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </div>
     );
 }

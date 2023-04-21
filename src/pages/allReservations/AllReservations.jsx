@@ -1,6 +1,5 @@
 import DisplayUsersRes from "../../components/DisplayUsersRes";
-import { useCollection } from "../../hooks/useCollection";
-import {SemiTitle} from "../../components/Title";
+import { SemiTitle } from "../../components/Title";
 
 export default function AllReservations({allUsers}) {
     return(

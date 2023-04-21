@@ -1,27 +1,24 @@
-import {useState, useRef, useEffect} from "react";
-import BasicModal from "../../components/Modal";
-import "./NewReservation.css";
-import {TextField, useMediaQuery} from "@mui/material";
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {DatePicker, DesktopTimePicker, MobileTimePicker} from "@mui/x-date-pickers";
+import { useState, useEffect } from "react";
+import { TextField } from "@mui/material";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from "@mui/x-date-pickers";
 import Box from "@mui/material/Box";
-import {add, isSameDay} from 'date-fns';
+import { add, isSameDay } from 'date-fns';
 
-// custom hooks
-import {useCollection} from "../../hooks/useCollection";
+// styles
+import "./NewReservation.css";
+
+// components & custom hooks
+import BasicModal from "../../components/Modal";
+import { useCollection } from "../../hooks/useCollection";
 import filterRoomsByUserType from "./FilterRoomsByUserType";
 import filterRoomsByCapacity from "./FilterRoomsByCapacity";
 import filterRoomsByDateAndDuration from "./filterRoomsByDateAndDuration";
 import filterRoomsByDateAndTime from "./filterRoomsByDateAndTime";
-import {useNavigate} from "react-router";
-import {Button} from "../../components/Button";
+import useFilters from "../../hooks/useFilters";
 
-export default function NewReservation({ uid, userType, moveToMyReservation }) {
-    //const [rooms, setRooms] = useState(DB.getRooms());
-    const { docs: rooms } = useCollection('Rooms')
-    const [roomsAvailableAfterFilter, setRoomsAvailableAfterFilter] = useState([]);
-    const [peopleNum, setPeopleNum] = useState("");
+export default function NewReservation({ uid, userType, moveToMyReservation, rooms }) {
     const [date, setDate] = useState("");
     const curDate = new Date();
     let curMonth = `${curDate.getMonth() + 1}`.padStart(2, '0')
@@ -29,55 +26,59 @@ export default function NewReservation({ uid, userType, moveToMyReservation }) {
     const [yearToCheck, setYearToCheck] = useState(curYear);
     const [monthToCheck, setMonthToCheck] = useState(curMonth);
     const [moveMonth, setMoveMonth] = useState(false);
+    const [peopleNum, setPeopleNum] = useState("");
     const [duration, setDuration] = useState("");
     const [startHour, setStartHour] = useState("");
     const [datesNotAvailable, setDatesNotAvailable] = useState([]);
     const [hoursAvailable, setHoursAvailable] = useState([]);
-    const [isCancelled, setIsCancelled] = useState(false)
-    const [error, setError] = useState(null)
     const [resetFields, setResetFields] = useState(false)
-
+    const maxDate = add(curDate, {months: 12});
+    //const [isCancelled, setIsCancelled] = useState(false)
+    //const [error, setError] = useState(null)
+    //const [isPending, setIsPending] = useState(false)
+    //const [roomsAvailableAfterFilter, setRoomsAvailableAfterFilter] = useState([]);
+    const { roomsAvailableAfterFilter, error, isPending } = useFilters(
+        userType, uid, resetFields, peopleNum, duration, date, startHour, monthToCheck, yearToCheck, moveMonth,
+        setMoveMonth, setHoursAvailable, setDatesNotAvailable)
 
     const [peopleNumOptions, setPeopleNumOptions] = useState([
         {label: "", value: ""},
-        {label: '1 person', value: 1},
-        {label: '2 people', value: 2},
-        {label: '3 people', value: 3},
-        {label: '4 people', value: 4},
-        {label: '5 people', value: 5},
-        {label: '6 people', value: 6},
-        {label: '7 people', value: 7},
-        {label: '8 people', value: 8},
-        {label: '9 people', value: 9},
-        {label: '10 people', value: 10}
+        {label: "1 person", value: 1},
+        {label: "2 people", value: 2},
+        {label: "3 people", value: 3},
+        {label: "4 people", value: 4},
+        {label: "5 people", value: 5},
+        {label: "6 people", value: 6},
+        {label: "7 people", value: 7},
+        {label: "8 people", value: 8},
+        {label: "9 people", value: 9},
+        {label: "10 people", value: 10}
     ]);
 
     const [durationsOptions, setDurationOptions] = useState([
         {label: "", value: ""},
-        {label: '1 hour', value: 1},
-        {label: '2 hours', value: 2},
-        {label: '3 hours', value: 3},
-        {label: '4 hours', value: 4},
-        {label: '5 hours', value: 5},
-        {label: '6 hours', value: 6}
+        {label: "1 hour", value: 1},
+        {label: "2 hours", value: 2},
+        {label: "3 hours", value: 3},
+        {label: "4 hours", value: 4},
+        {label: "5 hours", value: 5},
+        {label: "6 hours", value: 6}
     ]);
 
     const [startTimesOptions, setStartTimesOptions] = useState([
         {label: "", value: ""},
-        {label: '8:00', value: 8},
-        {label: '9:00', value: 9},
-        {label: '10:00', value: 10},
-        {label: '11:00', value: 11},
-        {label: '12:00', value: 12},
-        {label: '13:00', value: 13},
-        {label: '14:00', value: 14},
-        {label: '15:00', value: 15},
-        {label: '16:00', value: 16},
-        {label: '17:00', value: 17},
-        {label: '18:00', value: 18}
+        {label: "8:00", value: 8},
+        {label: "9:00", value: 9},
+        {label: "10:00", value: 10},
+        {label: "11:00", value: 11},
+        {label: "12:00", value: 12},
+        {label: "13:00", value: 13},
+        {label: "14:00", value: 14},
+        {label: "15:00", value: 15},
+        {label: "16:00", value: 16},
+        {label: "17:00", value: 17},
+        {label: "18:00", value: 18}
     ]);
-
-    const maxDate = add(curDate, {months: 6});
 
     function disableDates(date) {
         const dayObject = new Date(date);
@@ -109,80 +110,93 @@ export default function NewReservation({ uid, userType, moveToMyReservation }) {
         setResetFields(true)
     }
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const roomsAvailableByUserType = await filterRoomsByUserType(userType);
-                setRoomsAvailableAfterFilter(roomsAvailableByUserType);
-                if (!isCancelled) {
-                    setError(null)
-                }
-            } catch(error) {
-                if (!isCancelled) {
-                    console.log(error.message)
-                    setError(error.message)
-                }
-            }
-        }
-        fetchData();
-        return () => setIsCancelled(true)
-    }, [uid, resetFields]);
-
-    useEffect(() => {
-        // todo: when the user wants to change some param in the res, and nor start from the begining it should work
-        async function fetchData() {
-            try {
-                // TODO: front if hoursAvailable is empty then tell the user this month has no available dates for this capacity
-                if(date) {
-                    const dayObject = new Date(date)
-                    const year = `${dayObject.getFullYear()}`
-                    const month = `${dayObject.getMonth() + 1}`.padStart(2, '0')
-                    const day = `${dayObject.getDate()}`.padStart(2, '0')
-
-                    if (peopleNum && duration && !startHour) {
-                        const { roomsAvailable, hoursAvailable } = await filterRoomsByDateAndDuration(duration, year, month, day, roomsAvailableAfterFilter);
-                        // const { roomsAvailable, hoursAvailable } = await filterRoomsByDateAndDuration(duration, '2023', '08', day, roomsAvailableAfterFilter);
-                        // TODO - front: disable hours until it fetches the data and show some pending sign to the user
-                        setRoomsAvailableAfterFilter(roomsAvailable);
-                        setHoursAvailable(hoursAvailable)
-                    // TODO: front if hoursAvailable is empty then tell the user to pick a different date or a smaller duration
-                    } else if (peopleNum && duration && startHour) {
-                        const roomsAvailable = await filterRoomsByDateAndTime(duration, year, month, day, startHour, roomsAvailableAfterFilter);
-                        // const roomsAvailable = await filterRoomsByDateAndTime(duration, '2023', '08', day, startHour, roomsAvailableAfterFilter);
-                        setRoomsAvailableAfterFilter(roomsAvailable);
-                    }
-                }
-                else if ((!date && peopleNum && !duration) || (moveMonth && peopleNum && duration && !date && !startHour)) {
-                    const { roomsAvailable, datesNotAvailable } = await filterRoomsByCapacity(peopleNum, yearToCheck, monthToCheck, roomsAvailableAfterFilter);
-                    // const { roomsAvailable, datesNotAvailable } = await filterRoomsByCapacity(peopleNum, '2023', '08', roomsAvailableAfterFilter);
-                    // TODO - front: disable dates and duration until it fetches the data and show some pending sign to the user
-                    setRoomsAvailableAfterFilter(roomsAvailable);
-                    setDatesNotAvailable(datesNotAvailable)
-                    // TODO: front if hoursAvailable is empty then tell the user this month has no available dates for this capacity
-                    setMoveMonth(false)
-                }
-
-                if (!isCancelled) {
-                    setError(null)
-                }
-            } catch(error) {
-                if (!isCancelled) {
-                    console.log(error.message)
-                    setError(error.message)
-                }
-            }
-        }
-        roomsAvailableAfterFilter && fetchData();
-        return () => setIsCancelled(true)
-    }, [uid, peopleNum, duration, date, startHour, monthToCheck])
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         setError(null)
+    //         setIsPending(true)
+    //         try {
+    //             const roomsAvailableByUserType = await filterRoomsByUserType(userType);
+    //             setRoomsAvailableAfterFilter(roomsAvailableByUserType);
+    //             if (!isCancelled) {
+    //                 setError(null)
+    //                 setIsPending(false)
+    //             }
+    //         } catch(error) {
+    //             if (!isCancelled) {
+    //                 setError(error.message)
+    //                 setIsPending(false)
+    //             }
+    //         }
+    //     }
+    //     fetchData();
+    // }, [uid, resetFields]);
+    //
+    // useEffect(() => {
+    //     // todo: when the user wants to change some param in the res, and nor start from the beginning it should work
+    //     async function fetchData() {
+    //         setError(null)
+    //         setIsPending(true)
+    //         try {
+    //             if(date) {
+    //                 const dayObject = new Date(date)
+    //                 const year = `${dayObject.getFullYear()}`
+    //                 const month = `${dayObject.getMonth() + 1}`.padStart(2, '0')
+    //                 const day = `${dayObject.getDate()}`.padStart(2, '0')
+    //
+    //                 if (peopleNum && duration && !startHour) {
+    //                     const { roomsAvailable, hoursAvailable } = await filterRoomsByDateAndDuration(
+    //                         duration, year, month, day, roomsAvailableAfterFilter);
+    //                     // TODO - front: disable hours until it fetches the data and show some pending sign to the user
+    //                     setRoomsAvailableAfterFilter(roomsAvailable);
+    //                     setHoursAvailable(hoursAvailable)
+    //                 // TODO: front if hoursAvailable is empty then tell the user to pick a different date or a smaller duration
+    //                 } else if (peopleNum && duration && startHour) {
+    //                     const roomsAvailable = await filterRoomsByDateAndTime(
+    //                         duration, year, month, day, startHour, roomsAvailableAfterFilter);
+    //                     setRoomsAvailableAfterFilter(roomsAvailable);
+    //                 }
+    //             }
+    //             else if ((!date && peopleNum && !duration) ||
+    //                 (moveMonth && peopleNum && duration && !date && !startHour)) {
+    //                 const { roomsAvailable, datesNotAvailable } = await filterRoomsByCapacity(
+    //                     peopleNum, yearToCheck, monthToCheck, roomsAvailableAfterFilter);
+    //                 // TODO - front: disable dates and duration until it fetches the data and show some pending sign to the user
+    //                 setRoomsAvailableAfterFilter(roomsAvailable);
+    //                 setDatesNotAvailable(datesNotAvailable)
+    //                 setMoveMonth(false)
+    //             }
+    //
+    //             if (!isCancelled) {
+    //                 setError(null)
+    //                 setIsPending(false)
+    //             }
+    //
+    //         } catch(error) {
+    //             if (!isCancelled) {
+    //                 setError(error.message)
+    //                 setIsPending(false)
+    //             }
+    //         }
+    //     }
+    //     roomsAvailableAfterFilter && fetchData();
+    //     return () => setIsCancelled(true)
+    // }, [uid, peopleNum, duration, date, startHour, monthToCheck])
 
     const isRoomAvailable = (roomNum) => {
-        //return DB.isRoomAvailable(room, peopleNum) // date and time
         return roomsAvailableAfterFilter.includes(roomNum)
     }
 
-    //TODO - think with matan how to render it differently so the run time would decrease.
-    // Now for wach room in all rooms we are searching if it's in the roomsAvailableAfterFilter list.
+    const handleDateChange = (date) => {
+        setDate(date);
+    };
+
+    const handleMonthChange = (date) => {
+        const moveMonthByOne = (parseInt(monthToCheck) + 1) % 12
+        setMonthToCheck(`${moveMonthByOne === 0 ? 12 : moveMonthByOne}`.padStart(2, '0'))
+        setYearToCheck(`${monthToCheck === '1' ? `${parseInt(yearToCheck) + 1}` : yearToCheck}`)
+        setMoveMonth(true)
+    };
+
     const getRooms = () => {
         return (rooms.map((room) => (
                 <BasicModal
@@ -204,28 +218,6 @@ export default function NewReservation({ uid, userType, moveToMyReservation }) {
         )
     }
 
-    const handleDateChange = (date) => {
-        setDate(date);
-    };
-
-    const handleMonthChange = (date) => {
-        const moveMonthByOne = (parseInt(monthToCheck) + 1) % 12
-        setMonthToCheck(`${moveMonthByOne === 0 ? 12 : moveMonthByOne}`.padStart(2, '0'))
-        setYearToCheck(`${monthToCheck === "1" ? `${parseInt(yearToCheck) + 1}` : yearToCheck}`)
-        setMoveMonth(true)
-    };
-
-    const validateDateRange = (startDate, endDate) => {
-        return startDate && endDate && startDate <= endDate;
-    };
-    const mediaQuery = useMediaQuery('(min-width:600px)');
-
-    const TimePickerComponent = mediaQuery ? DesktopTimePicker : MobileTimePicker;
-
-    const pickerProps = {
-        // ampm: false,
-        minutesStep: 60,
-    };
     return (
         <div className="test">
             <div className="container">
@@ -287,7 +279,6 @@ export default function NewReservation({ uid, userType, moveToMyReservation }) {
                                     />
                                 </Box>
                             </LocalizationProvider>
-
                                 <label style={{marginBottom: '5px'}}>Available Hours (Starting Time)  </label>
                                 <select
                                     onChange={handleStartHourChange}
@@ -314,15 +305,9 @@ export default function NewReservation({ uid, userType, moveToMyReservation }) {
                 <div className="rooms">
                     {rooms && roomsAvailableAfterFilter && getRooms()}
                 </div>
-
-
             </div>
-            {/*<Button*/}
-            {/*    onClick={cleanAllFields}*/}
-            {/*>*/}
-            {/*    move*/}
-            {/*</Button>*/}
-
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </div>
     );
 }

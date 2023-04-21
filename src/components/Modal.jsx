@@ -6,11 +6,10 @@ import Modal from '@mui/material/Modal';
 // styles
 import "./Modal.css";
 
-// components
-import {Room} from './Room';
-import {Button} from './Button';
+// components & pages
+import { Room } from './Room';
+import { Button } from './Button';
 import ConfirmationMessage from "./ConfirmationMessage";
-
 import createReservation from "../pages/NewReservation/createReservation";
 
 
@@ -26,11 +25,11 @@ const style = {
     p: 4,
 };
 
-export default function BasicModal(props) {
-    // expects all of them to be strings except the available which is bool
-    const {title, date, startHour, endHour, peopleNum, duration, roomNum, uid, available, moveToMyReservation} = props;
-    const dayObject = new Date(date)
-
+export default function BasicModal({ title, date, startHour, endHour, peopleNum, duration, roomNum, uid, available,
+                                       moveToMyReservation }) {
+    const [error, setError] = useState(null)
+    const [isPending, setIsPending] = useState(false)
+    const [isCancelled, setIsCancelled] = useState(false)
     const [open, setOpen] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
 
@@ -38,35 +37,48 @@ export default function BasicModal(props) {
         if (startHour) {
             setOpen(true);
         } else {
-            alert('Please fill in all fields before choosing a room.');
+            alert("Please fill in all fields before choosing a room");
         }
     }
 
-    //TODO - front: add cancel to the confirm Order pop-up
     const handleClose = async () => {
         setIsConfirm(true);
         setOpen(false);
-        createReservation(uid, peopleNum, duration, date, startHour, endHour, roomNum)
+        setError(null)
+        setIsPending(true)
+        try {
+            await createReservation(uid, peopleNum, duration, date, startHour, endHour, roomNum)
+            if (!isCancelled) {
+                setError(null)
+                setIsPending(false)
+            }
+        } catch (error) {
+            if (!isCancelled) {
+                setError(error.message || "unknown error occurred")
+                setIsPending(false)
+            }
+        }
     };
 
-    const handleOpen_not_available = () => null;
+    const handleOpenNotAvailable = () => null;
 
     useEffect(() => {
         if (isConfirm) {
             setTimeout(() => {
                 setIsConfirm(false);
-                moveToMyReservation()
-            }, 2000);
+                moveToMyReservation();
+            }, 1000);
         }
+        return () => setIsCancelled(true);
     }, [isConfirm]);
 
     return (
         <div>
             {!isConfirm &&
             <div>
-            <Room onClick={ (available ) ? handleOpen : handleOpen_not_available }
-                  available={available}
-            >{title}</Room>
+            <Room onClick={ available ? handleOpen : handleOpenNotAvailable }
+                  available={available}>{title}
+            </Room>
             <Modal
                 open={open}
                 onClose={() => setOpen(false)}
@@ -83,17 +95,18 @@ export default function BasicModal(props) {
                         <span>End Time: {endHour}</span>
                         <span>People Invited: {peopleNum}</span>
                     </Typography>
-                    <Button sx={{backgroundColor: '#15CE49', color: 'white', '&:hover': {backgroundColor: '#0f9d58'}}} onClick={handleClose}>Confirm Reservation</Button>
+                    <Button sx={{backgroundColor: '#15CE49', color: 'white', '&:hover': {backgroundColor: '#0f9d58'}}}
+                            onClick={handleClose}>Confirm Reservation</Button>
                 </Box>
             </Modal>
             </div>}
-
             {isConfirm &&
               <ConfirmationMessage
               roomNum = {roomNum}
               />
-
             }
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </div>
     );
 }

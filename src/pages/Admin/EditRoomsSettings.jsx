@@ -1,13 +1,20 @@
-import React from 'react';
+// components & custom hooks
 import { useCollection } from "../../hooks/useCollection";
-import BasicModal from "../../components/Modal";
 import "./EditRoomsSettings.css";
 import ModalForAdmin from "../../components/ModalForAdmin";
+import { useEffect, useState } from "react";
 
-const empty_reservation_msg = "You have no reservation";
-
-function EditRoomsSettings(moveToNewReservation) {
-    const { docs: rooms } = useCollection('Rooms');
+export default function EditRoomsSettings() {
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
+    const [isPending, setIsPending] = useState(false)
+    const { docs: rooms, err } = useCollection("Rooms");
+    // if (!isCancelled) {
+    //     setIsPending(false)
+    //     if (err) {
+    //         setError(err)
+    //     }
+    // }
 
     const getRooms = () => {
         return (
@@ -31,8 +38,8 @@ function EditRoomsSettings(moveToNewReservation) {
             <div className="rooms">
                 {rooms && getRooms()}
             </div>
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </>
     );
 }
-
-export default EditRoomsSettings;
