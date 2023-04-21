@@ -2,7 +2,7 @@
 import { useCollection } from "../../hooks/useCollection";
 import "./EditRoomsSettings.css";
 import ModalForAdmin from "../../components/ModalForAdmin";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function EditRoomsSettings() {
     const [isCancelled, setIsCancelled] = useState(false)
@@ -31,15 +31,17 @@ export default function EditRoomsSettings() {
     };
 
     return (
-        <>
-            <div style={{textAlign: "center", fontWeight: "bold", fontSize: "1.5rem", marginBottom: "1rem"}}>
+        <div>
+            <div style={{textAlign: "center", fontWeight: "bold", fontSize: "1.5rem", marginBottom: "1rem" }}>
                 Change Rooms Settings
             </div>
+            <hr style={{border: "none", borderBottom: "1px solid #e0e0e0", marginBottom: "1rem"}} />
+
             <div className="rooms">
                 {rooms && getRooms()}
             </div>
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
-        </>
+        </div>
     );
 }

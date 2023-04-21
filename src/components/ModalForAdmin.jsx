@@ -15,23 +15,23 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import { Button } from '@material-ui/core';
 import styled from 'styled-components';
-
-const useStyles = makeStyles((theme) => ({
-    title: {
-        textAlign: 'center',
-        fontSize: '1.5rem',
-        fontWeight: 'bold',
-        marginBottom: theme.spacing(2),
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: theme.spacing(2),
-    },
-    textField: {
-        marginBottom: theme.spacing(2),
-    },
-}));
+import "./modalForAdminStyles.css"
+// const useStyles = makeStyles((theme) => ({
+//     title: {
+//         textAlign: 'center',
+//         fontSize: '1.5rem',
+//         fontWeight: 'bold',
+//         marginBottom: theme.spacing(2),
+//     },
+//     // form: {
+//     //     display: 'flex',
+//     //     flexDirection: 'column',
+//     //     gap: theme.spacing(2),
+//     // },
+//     textField: {
+//         marginBottom: theme.spacing(2),
+//     },
+// }));
 const StyledButton = styled(Button)`
   && {
     margin-left: 16px;
@@ -46,7 +46,6 @@ const StyledButton = styled(Button)`
 `;
 
 function ModalForAdmin(props ) {
-    const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(false);
     const [roomNum, setRoomNum] = useState(props.roomNum);
@@ -70,22 +69,24 @@ function ModalForAdmin(props ) {
 
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         console.log(roomNum, userType, capacity, title)
         // TODO: Add logic to save changes to Firestore
         handleClose();
     };
 
     return (
-        <>
-            <div className={classes.title}>
+        <div>
+            <div className="title">
                 <Typography variant="h6">{title}</Typography>
             </div>
+            <div className="btn">
             <Button onClick={() => handleClickOpen(false)}> view setting </Button>
             <IconButton onClick={() => handleClickOpen(true)}>
                 <EditIcon />
             </IconButton>
-            <Dialog open={open} onClose={handleClose}>
+            </div>
+            <Dialog open={open} onClose={handleClose} >
                 <DialogTitle>
                     {editing ? 'Edit Room' : 'View Room Details'}
                 </DialogTitle>
@@ -93,7 +94,7 @@ function ModalForAdmin(props ) {
                     <DialogContentText>
                         Fill in the information about the room.
                     </DialogContentText>
-                    <form onSubmit={handleSubmit} className={classes.form}>
+                    <form onSubmit={handleSubmit} className="form" >
                         <TextField
                             label="Room Number"
                             value={roomNum}
@@ -149,7 +150,7 @@ function ModalForAdmin(props ) {
                     </form>
                 </DialogContent>
             </Dialog>
-        </>
+        </div>
     );
 }
 

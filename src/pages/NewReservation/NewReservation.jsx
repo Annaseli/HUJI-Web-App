@@ -1,24 +1,25 @@
-import { useState, useEffect } from "react";
-import { TextField } from "@mui/material";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from "@mui/x-date-pickers";
+import {useState, useEffect} from "react";
+import {TextField} from "@mui/material";
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DatePicker} from "@mui/x-date-pickers";
 import Box from "@mui/material/Box";
-import { add, isSameDay } from 'date-fns';
+import {add, isSameDay} from 'date-fns';
 
 // styles
 import "./NewReservation.css";
+import {CircularProgress} from '@material-ui/core';
 
 // components & custom hooks
 import BasicModal from "../../components/Modal";
-import { useCollection } from "../../hooks/useCollection";
+import {useCollection} from "../../hooks/useCollection";
 import filterRoomsByUserType from "./FilterRoomsByUserType";
 import filterRoomsByCapacity from "./FilterRoomsByCapacity";
 import filterRoomsByDateAndDuration from "./filterRoomsByDateAndDuration";
 import filterRoomsByDateAndTime from "./filterRoomsByDateAndTime";
 import useFilters from "../../hooks/useFilters";
 
-export default function NewReservation({ uid, userType, moveToMyReservation, rooms }) {
+export default function NewReservation({uid, userType, moveToMyReservation, rooms}) {
     const [date, setDate] = useState("");
     const curDate = new Date();
     let curMonth = `${curDate.getMonth() + 1}`.padStart(2, '0')
@@ -37,7 +38,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     //const [error, setError] = useState(null)
     //const [isPending, setIsPending] = useState(false)
     //const [roomsAvailableAfterFilter, setRoomsAvailableAfterFilter] = useState([]);
-    const { roomsAvailableAfterFilter, error, isPending } = useFilters(
+    const {roomsAvailableAfterFilter, error, isPending} = useFilters(
         userType, uid, resetFields, peopleNum, duration, date, startHour, monthToCheck, yearToCheck, moveMonth,
         setMoveMonth, setHoursAvailable, setDatesNotAvailable)
 
@@ -109,7 +110,21 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
         setStartHour("")
         setResetFields(true)
     }
+    useEffect(() => {
+        if (hoursAvailable.length === 0) {
+            return
+        }
+        let options = []
+        // console.log("h:" , hoursAvailable)
+        hoursAvailable.forEach(hour_val => {
+            options.push({label: hour_val + ":00", value: hour_val})
+        })
 
+        setStartTimesOptions(options)
+        // Object.keys(userReservations).forEach(res => {
+        // hoursAvailable.forEach()
+
+    }, [hoursAvailable]);
     // useEffect(() => {
     //     async function fetchData() {
     //         setError(null)
@@ -202,9 +217,9 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                 <BasicModal
                     key={room.roomNum}
                     title={room.roomNum}
-                    date={new Date(date).toString()}
+                    date={new Date(date).toString().substring(0, 15)}
                     startHour={startHour}
-                    endHour={parseInt(startHour) + parseInt(duration) + ":00" }
+                    endHour={parseInt(startHour) + parseInt(duration) + ":00"}
                     peopleNum={peopleNum}
                     duration={duration}
                     roomNum={room.roomNum}
@@ -248,42 +263,42 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                             </select>
                             <div style={{display: 'flex', flexDirection: 'column'}}>
 
-                            <label style={{marginBottom: '5px'}}>Duration </label>
-                            <select
-                                onChange={handleDurationChange}
-                                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
-                                disabled={!peopleNum} // disable the select input if peopleNum is not set
-                                value={duration}
-                            >
-                                {durationsOptions.map((duration) => (
-                                    <option key={duration.value} value={duration.value}>
-                                        {duration.label}
-                                    </option>
-                                ))}
-                            </select>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <Box sx={{marginTop: '15px', marginBottom: '15px'}}>
-                                    <label htmlFor="startDate">Date</label>
-                                    <DatePicker
-                                        type="date"
-                                        id="startDate"
-                                        value={date}
-                                        onChange={handleDateChange}
-                                        onMonthChange={handleMonthChange}
-                                        renderInput={(params) => <TextField {...params} />}
-                                        sx={{display: 'flex', marginTop: '15px'}}
-                                        minDate={curDate}
-                                        maxDate={maxDate}
-                                        shouldDisableDate={disableDates}
-                                        disabled={!duration}
-                                    />
-                                </Box>
-                            </LocalizationProvider>
-                                <label style={{marginBottom: '5px'}}>Available Hours (Starting Time)  </label>
+                                <label style={{marginBottom: '5px'}}>Duration </label>
+                                <select
+                                    onChange={handleDurationChange}
+                                    style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
+                                    disabled={!isPending && !peopleNum} // disable the select input if peopleNum is not set
+                                    value={duration}
+                                >
+                                    {durationsOptions.map((duration) => (
+                                        <option key={duration.value} value={duration.value}>
+                                            {duration.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <Box sx={{marginTop: '15px', marginBottom: '15px'}}>
+                                        <label htmlFor="startDate">Date</label>
+                                        <DatePicker
+                                            type="date"
+                                            id="startDate"
+                                            value={date}
+                                            onChange={handleDateChange}
+                                            onMonthChange={handleMonthChange}
+                                            renderInput={(params) => <TextField {...params} />}
+                                            sx={{display: 'flex', marginTop: '15px'}}
+                                            minDate={curDate}
+                                            maxDate={maxDate}
+                                            shouldDisableDate={disableDates}
+                                            disabled={!isPending && !duration}
+                                        />
+                                    </Box>
+                                </LocalizationProvider>
+                                <label style={{marginBottom: '5px'}}>Available Hours (Starting Time) </label>
                                 <select
                                     onChange={handleStartHourChange}
                                     style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
-                                    disabled={!date} // disable the select input if startHour is not set
+                                    disabled={!isPending && !date} // disable the select input if startHour is not set
                                     value={startHour}
                                 >
                                     {startTimesOptions.map((time) => (

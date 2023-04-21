@@ -22,12 +22,15 @@ export default function ApproveUsers() {
     // }
 
     useEffect(() => {
+        // let counter = 0;
         setIsPending(true)
         const createUsers = allUsers && allUsers.map(userDoc => ({
-            id: userDoc.id,
+            // id: counter++,
+                id: userDoc.id,
             email: userDoc.email,
             name: userDoc.name,
-        }));
+        }
+        ));
         setUsers(createUsers);
         if(!isCancelled) {
             setIsPending(false)
@@ -38,6 +41,7 @@ export default function ApproveUsers() {
     const handleApproveClick = () => {
         setError(null)
         setIsPending(true)
+        console.log(selectedRows)
         // todo add try catch and if (!isCancelled)
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
@@ -93,7 +97,7 @@ export default function ApproveUsers() {
             //     console.log('Document deleted successfully from PendingUsers');
             // } catch (err) {
             //     console.error('Error deleting document:', err);
-            // }
+            // }\
 
             // delete the user from firebase authentication
             // TODO: after deploy do this:
@@ -158,8 +162,8 @@ export default function ApproveUsers() {
                 pageSize={5}
                 rowsPerPageOptions={[10]}
                 checkboxSelection
-                disableSelectionOnClick
-                onSelectionModelChange={handleSelectionChange}
+                // disableSelectionOnClick
+                onRowSelectionModelChange={handleSelectionChange}
             />
             <button
                 onClick={handleApproveClick}

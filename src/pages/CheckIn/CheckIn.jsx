@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Divider } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 // components && custom hooks
 import { Button } from '../../components/Button';
@@ -147,7 +148,12 @@ export default function CheckIn({uid}) {
                 </div>
 
             </form>
-            {success && <p>check In completed</p>}
+            {success && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <CheckCircleIcon sx={{ fontSize: "5rem", color: "green" }} />
+                    <p>Check in completed</p>
+                </div>
+            )}
             {!success && <p>check In failed</p>}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}

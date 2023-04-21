@@ -1,6 +1,6 @@
 .rooms-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     grid-gap: 1rem;
 }
 
@@ -35,4 +35,10 @@
 
 .room-card button:hover {
     background-color: #0069d9;
+}
+.rooms {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-content: center;
+    gap: 30px;
 }

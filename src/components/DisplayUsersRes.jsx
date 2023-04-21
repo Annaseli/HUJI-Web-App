@@ -65,7 +65,7 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
         },
         {
             field: 'peopleNum',
-            headerName: 'Number of People Invited',
+            headerName: 'People',
             type: 'number',
             width: 110,
             editable: false
@@ -119,6 +119,9 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
                     setIsPending(false)
                 }
             }
+
+            //force refresh
+        window.location.reload(true)
         }
     }
 
