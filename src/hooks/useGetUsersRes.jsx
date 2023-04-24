@@ -1,35 +1,31 @@
 import { useState, useEffect } from "react"
-import { db } from "../firebase/config";
-import { doc, getDoc, collection } from "firebase/firestore";
+import { getUserReservations } from "./getUserReservations";
 
-// Display user's reservations from current day
 export const useGetUsersRes = (uid) => {
     console.log("useGetUsersRes")
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
-    const [resMapFromCurDay, setResMapFromCurDay] = useState({})
-    let usersReservations = []
+    const [isPending, setIsPending] = useState(false)
+    const [userReservations, setUserReservations] = useState({})
+    let userRes = []
     let noData = true
 
     useEffect(() => {
         async function fetchData() {
+            setError(null)
+            setIsPending(true)
             try {
-                const docRefInUsers = doc(collection(db, "Users"), uid);
-                const docInUsersSnap = await getDoc(docRefInUsers)
-                if (docInUsersSnap.exists) {
-                    const data = docInUsersSnap.data();
-                    setResMapFromCurDay({...resMapFromCurDay, ...data.resMapFromCurDay})
-                } else {
-                    console.log('No such document!');
-                }
+                const res  = await getUserReservations(uid)
+                setUserReservations(res)
                 if (!isCancelled) {
                     setError(null)
+                    setIsPending(false)
                 }
             }
             catch(error) {
                 if (!isCancelled) {
-                    console.log(error.message)
                     setError(error.message)
+                    setIsPending(false)
                 }
             }
         }
@@ -37,20 +33,19 @@ export const useGetUsersRes = (uid) => {
         return () => setIsCancelled(true)
     }, [])
 
-    if (Object.keys(resMapFromCurDay).length !== 0) {
+    if (Object.keys(userReservations).length !== 0) {
         noData = false
-        Object.keys(resMapFromCurDay).forEach(res => {
-            usersReservations.push({
+        Object.keys(userReservations).forEach(res => {
+            userRes.push({
                 id: res,
                 uid: uid,
-                room: resMapFromCurDay[res]['roomNum'],
-                date: new Date(resMapFromCurDay[res]['year'] + '-' + resMapFromCurDay[res]['month'] + '-' + resMapFromCurDay[res]['day']),
-                startHour: resMapFromCurDay[res]['startHour'],
-                endHour: resMapFromCurDay[res]['endHour'],
-                peopleNum: resMapFromCurDay[res]['peopleNum']
+                room: userReservations[res]["roomNum"],
+                date: new Date(userReservations[res]["year"] + '-' + userReservations[res]["month"] + '-' + userReservations[res]["day"]),
+                startHour: userReservations[res]["startHour"],
+                endHour: userReservations[res]["endHour"],
+                peopleNum: userReservations[res]["peopleNum"]
             })
         })
     }
-
-    return { usersReservations, resMapFromCurDay, noData, error }
+    return { userRes, userReservations, noData, error, isPending }
 }

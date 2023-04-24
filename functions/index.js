@@ -13,14 +13,14 @@ const functions = require('firebase-functions');
 
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
-const {getAuth} = require("firebase-admin/auth");
+const { getAuth } = require("firebase-admin/auth");
 admin.initializeApp();
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
+exports.enableDisableUser = functions.https.onRequest((request, response) => {
+  functions.logger.info("enableDisableUser", {structuredData: true});
   getAuth()
-      .updateUser("Rg6pLWjNXTVnkKMoOtv8u26W6fB2", {
-        disabled: true
+      .updateUser(request.body.uid, {
+        disabled: request.body.disable
       })
       .then((userRecord) => {
         // See the UserRecord reference doc for the contents of userRecord.
@@ -29,7 +29,21 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
       .catch((error) => {
         console.log('Error updating user:', error);
       });
-  response.send("Hello!");
+  response.send('Successfully updated user');
+});
+
+//TODO: back - when I use it make sure that after the delete this user is not logged in any more
+exports.deleteUser = functions.https.onRequest((request, response) => {
+    functions.logger.info("deleteUser", {structuredData: true});
+    getAuth()
+        .deleteUser(request.body.uid)
+        .then(() => {
+            console.log('Successfully deleted user');
+        })
+        .catch((error) => {
+            console.log('Error deleting user:', error);
+        });
+    response.send('Successfully deleted user');
 });
 
 

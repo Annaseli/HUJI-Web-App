@@ -11,20 +11,19 @@ export const useCollection = (c, q) => {
     const [error, setError] = useState(null)
 
     // If we don't use ref we would get an infinite loop in useEffect
-    // query is an array so it's pointer is different on every function call
+    // query is an array, so it's pointer is different on every function call
     const _q = useRef(q).current
 
     useEffect (() => {
         let ref = collection(db, c)
-
         if(_q) {
             ref = query(ref, where(..._q))
         }
 
-        // This function is gonna fire a function for us every time we get a snapshot back from firestore
-        // collection. We get a snapshot back once initially when we first make the connection and it sends
-        // us back the snapshot so we can recieve it inside the onSnapshot function. That snapshot represents
-        // a specific collection in a the moment in time when we first connect to that connection. And then
+        // This function is going to fire a function for us every time we get a snapshot back from firestore
+        // collection. We get a snapshot back once initially when we first make the connection, and it sends
+        // us back the snapshot, so we can receive it inside the onSnapshot function. That snapshot represents
+        // a specific collection at the moment in time when we first connect to that connection. And then
         // it's going to fire this func again whenever the firestore collection changes. That's why we can update
         // the setDocs state every time we get a snapshot back.
         const unsub = onSnapshot(ref, (snapshot) => {
@@ -37,15 +36,14 @@ export const useCollection = (c, q) => {
             setDocs(results)
             setError(null)
         }, (error) => {
-            console.log(error)
-            setError('Could not fetch the data')
+            setError("Could not fetch the data")
         })
 
         // unsubscribe on unmount - if we move away from this page we are no longer listening for a snapshot
-        // events i.e no longer updating states when we get them.
+        // events i.e, no longer updating states when we get them.
         return () => unsub()
 
     }, [c, _q])
 
-    return {docs, error}
+    return { docs, error }
 }

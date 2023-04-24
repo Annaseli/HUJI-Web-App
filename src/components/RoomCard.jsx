@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// VALDITION PROP
 RoomCard.propTypes = {
     room: PropTypes.shape({
         id: PropTypes.string.isRequired,
@@ -53,7 +52,7 @@ RoomCard.propTypes = {
     }).isRequired,
 };
 
-export function RoomCard({room}) {
+export function RoomCard({ room }) {
     const [open, setOpen] = useState(false);
     const classes = useStyles();
 

@@ -2,7 +2,8 @@ import { Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import useGetCenterContent from "../hooks/useGetCenterContent";
 import { v4 as uuidv4 } from 'uuid';
-import DisplayUsersRes from "./DisplayUsersRes";
+import {useEffect} from "react";
+import {checkUserType} from "../pages/Admin/checkUserType";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -34,11 +35,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DisplayCenterContext({ contentType, title }) {
     const classes = useStyles();
-    console.log("contentType", contentType)
-    const { curContent, error } = useGetCenterContent(contentType)
+    const { curContent, error, isPending } = useGetCenterContent(contentType)
 
-
-    console.log("curContent", curContent)
     return (
         <Container className={classes.container}>
             <Typography variant="h4" className={classes.heading}>
@@ -47,10 +45,13 @@ export default function DisplayCenterContext({ contentType, title }) {
             {curContent.map(content => (
                 <div key={uuidv4()}>
                     {<Typography variant="body1" className={classes.text}>
-                        <span className={classes.boldText}>ASPER-HUJI Innovate</span> {content}
+                        <span className={classes.boldText}>ASPER-HUJI Innovate</span> { content }
                     </Typography>}
                 </div>
             ))}
+            {/*{!isPending && }*/}
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
         </Container>
     );
 };

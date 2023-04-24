@@ -1,29 +1,19 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import Reservations from '../myReservations/MyReservations';
-import LogIn from '../LogIn/LogIn';
-import NewReservation from '../NewReservation/NewReservation';
-import SignUp from "../SignUp/SignUp";
-import ApproveUsers from '../Admin/ApproveUsers';
-import AboutUs from "../AboutUs/AboutUs";
-import ManageUsers from "../Admin/ManageUsers";
-import MyReservations from "../myReservations/MyReservations";
-import {db, projectAuth} from "../../firebase/config";
-import {collection, doc, getDoc} from "firebase/firestore";
-import {createAnEmptyCollection} from "../NewReservation/createAnEmptyCollection";
-import {useCollection} from "../../hooks/useCollection";
-import {getAuth} from "firebase/auth";
-import CheckIn from "../CheckIn/CheckIn";
-import {useNavigate} from "react-router";
-import {Button} from "../../components/Button";
+// components & pages & custom hooks
 import DisplayUsersRes from "../../components/DisplayUsersRes";
+import NewReservation from '../NewReservation/NewReservation';
+import { useCollection } from "../../hooks/useCollection";
+import CheckIn from "../CheckIn/CheckIn";
+
+// firebase imports
+import { getAuth } from "firebase/auth";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
-
     return (
         <div
             role="tabpanel"
@@ -48,12 +38,24 @@ function a11yProps(index) {
     };
 }
 
-export default function HomePage() {
+export default function HomePage({userType}) {
+    console.log("HomePage")
     const [TabValue, setValue] = useState(0);
-    const [randValue, setRandValue] = useState({ value: 10 })
+    //const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
+    const [isPending, setIsPending] = useState(false)
+
+    const { docs: rooms, error: err } = useCollection("Rooms")
+    // if (!isCancelled) {
+    //     setIsPending(false)
+    //     if (err) {
+    //         setError(err)
+    //     }
+    // }
 
     const uid = getAuth().currentUser.uid
-    const {docs: rooms} = useCollection('Rooms')
+    //test()
+    //rooms && getAllReservations('2023',['07'], rooms)
 
     // TODO - back: move this initialization of the DB to the Admin - every time that he will log in, I'll check
     // that there are collections for the next 3 month and if not will create them. I'll move to storage the
@@ -78,13 +80,8 @@ export default function HomePage() {
     const moveToNewReservation = () => {
         setValue(1);
     }
-    function rendFunc() {
-        setRandValue((prev) => {
-            return { ...prev };
-        });
-    }
 
-    // TODO: back - make routes instead of the indices
+    // TODO: maybe make routes instead of the indices
     return (
         <Box sx={{width: '100%'}}>
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
@@ -95,24 +92,25 @@ export default function HomePage() {
                 </Tabs>
             </Box>
             <TabPanel value={TabValue} index={1}>
-                <NewReservation
+                {uid && <NewReservation
                     uid={uid}
+                    userType={userType}
                     moveToMyReservation={moveToMyReservation}
-                />
-
+                    rooms={rooms}
+                />}
             </TabPanel>
             <TabPanel value={TabValue} index={0}>
-                <DisplayUsersRes uid={uid}
+                {uid && <DisplayUsersRes uid={uid}
                                  header={'My Reservations'}
                                  moveToNewReservation={moveToNewReservation}
-                />
-            </TabPanel> <TabPanel value={TabValue} index={2}>
-            <CheckIn uid={uid}/>
-
-        </TabPanel>
-
+                />}
+            </TabPanel>
+            <TabPanel value={TabValue} index={2}>
+                {uid && <CheckIn uid={uid}/>}
+            </TabPanel>
+            {isPending && <p>loading...</p>}
+            {error && <p>{ error }</p>}
         </Box>
-
     );
 }
 

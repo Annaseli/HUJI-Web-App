@@ -1,20 +1,40 @@
-import {useState, useEffect} from "react";
-import {DataGrid} from "@mui/x-data-grid";
-import {FormControl, InputLabel, Select} from "@material-ui/core";
+import { useState, useEffect } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { FormControl, InputLabel, Select } from "@material-ui/core";
 import MenuItem from "@mui/material/MenuItem";
-import {SemiTitle} from "../../components/Title";
-import {useCollection} from "../../hooks/useCollection";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { db } from "../../firebase/config";
-import {collection, deleteDoc, doc, getDoc, setDoc} from "firebase/firestore";
+
+// components & custom hooks
+import { SemiTitle } from "../../components/Title";
+import { useCollection } from "../../hooks/useCollection";
 import getPendingUser from "./getPendingUser";
 
 export default function ApproveUsers() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [perPage, setPerPage] = useState(10);
-    const [users, setUsers] = useState( []);
+    const [users, setUsers] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [isCancelled, setIsCancelled] = useState(false)
+    const [error, setError] = useState(null)
+    const [isPending, setIsPending] = useState(false)
+    const { docs: allUsers, error: err } = useCollection("PendingUsers")
+    // if (!isCancelled) {
+    //     setIsPending(false)
+    //     if (err) {
+    //         setError(err)
+    //     }
+    // }
+
+    useEffect(() => {
+        setIsPending(true)
+        const createUsers = allUsers && allUsers.map(userDoc => ({
+            id: userDoc.id,
+            email: userDoc.email,
+            name: userDoc.name,
+        }));
+        setUsers(createUsers);
+        if(!isCancelled) {
+            setIsPending(false)
+        }
+        return () => setIsCancelled(true)
+    }, [allUsers]);
 
     useEffect(() => {
       setUsers(getPendingUser())
@@ -23,15 +43,18 @@ export default function ApproveUsers() {
     console.log("users", users)
 
     const handleApproveClick = () => {
+        setError(null)
+        setIsPending(true)
+        // todo add try catch and if (!isCancelled)
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
             const userType = users[row - 1].userType
-            const displayName = users[row - 1].displayName
+            const name = users[row - 1].name
             const uid = users[row - 1].uid
 
             console.log(email)
             console.log(userType)
-            console.log(displayName)
+            console.log(name)
             console.log(uid)
 
             // enable the user from Authentication
@@ -50,7 +73,8 @@ export default function ApproveUsers() {
             // await setDoc(doc(collection(db, 'Users') , uid), {
             //     userType,
             //     email,
-            //     reservations: {}
+            //     name: displayName,
+            //     userReservations: {}
             // })
             //
             // // if the user exists in ConfirmedUsers - delete this user from the Pending collection
@@ -60,6 +84,9 @@ export default function ApproveUsers() {
     };
 
     const handleDenyClick = () => {
+        setError(null)
+        setIsPending(true)
+        // todo add try catch and if (!iscancelled)
         selectedRows.forEach(async (row) => {
             const email = users[row - 1].email
             const userType = users[row - 1].userType
@@ -68,13 +95,12 @@ export default function ApproveUsers() {
             console.log("userType", userType)
 
             // remove the user from the PendingUsers collection and notify the user
-            // TODO - send the user mail that he was denied
-            try {
-                await deleteDoc(doc(collection(db, 'PendingUsers'), email));
-                console.log('Document deleted successfully from PendingUsers');
-            } catch (err) {
-                console.error('Error deleting document:', err);
-            }
+            // try {
+            //     await deleteDoc(doc(collection(db, 'PendingUsers'), email));
+            //     console.log('Document deleted successfully from PendingUsers');
+            // } catch (err) {
+            //     console.error('Error deleting document:', err);
+            // }
 
             // delete the user from firebase authentication
             // TODO: after deploy do this:
@@ -95,17 +121,17 @@ export default function ApproveUsers() {
         setSelectedRows(newSelection);
     };
     const handleUserTypeChange = (event, row) => {
-        const {value} = event.target;
+        const { value } = event.target;
         const updatedUsers = [...users];
         const rowIndex = updatedUsers.findIndex((u) => u.id === row.id);
         updatedUsers[rowIndex] = {...updatedUsers[rowIndex], userType: value};
-        // users = updatedUsers;
+        setUsers(updatedUsers);
     };
 
     const columns = [
-        {field: 'id', headerName: 'ID', width: 90},
-        {field: 'name', headerName: 'Name', width: 130},
-        {field: 'email', headerName: 'Email', width: 200},
+        {field: "id", headerName: "ID", width: 90},
+        {field: "name", headerName: "Name", width: 130},
+        {field: "email", headerName: "Email", width: 200},
         {
             field: 'userType',
             headerName: 'User Type',
@@ -131,7 +157,7 @@ export default function ApproveUsers() {
     ];
 
     return (
-        <div style={{height: 400, width: '100%'}}>
+        users && <div style={{height: 400, width: '100%'}}>
             <SemiTitle>Approve New Users </SemiTitle>
             <DataGrid
                 rows={users}

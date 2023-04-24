@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     Dialog,
     DialogActions,
@@ -12,7 +12,6 @@ import {
     Select,
     MenuItem, InputLabel
 } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
 import { Button } from '@material-ui/core';
 import styled from 'styled-components';

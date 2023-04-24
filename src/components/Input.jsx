@@ -1,5 +1,5 @@
-import {TextField} from '@mui/material';
 import styled from "styled-components";
+import { TextField } from "@mui/material";
 
 
 export const StyledTextField = styled(TextField)`
@@ -16,7 +16,6 @@ export const StyledTextField = styled(TextField)`
   &.Mui-focused fieldset {
     color: #211D42;
   }
-
   &::after {
     border-color: #211D42;
   }
