@@ -19,7 +19,10 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                 const roomsAvailableByUserType = await filterRoomsByUserType(userType);
                 console.log("roomsAvailableByUserType", roomsAvailableByUserType)
                 setRoomsAvailableAfterFilter(roomsAvailableByUserType);
+                console.log(isCancelled, "is cancelled")
                 if (!isCancelled) {
+                    console.log(isCancelled, "is not cancelled")
+
                     setError(null)
                     setIsPending(false)
                 }
@@ -60,6 +63,7 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                         console.log("roomsAvailable", roomsAvailable)
                         setRoomsAvailableAfterFilter(roomsAvailable);
                     }
+                    console.log(isCancelled, "is cancelled if data()")
                 }
                 else if ((!date && peopleNum && !duration) ||
                     (moveMonth && peopleNum && duration && !date && !startHour)) {
@@ -72,6 +76,7 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                     setDatesNotAvailable(datesNotAvailable)
                     setMoveMonth(false)
                 }
+                console.log(isCancelled, "is cancelled else if data()")
 
                 if (!isCancelled) {
                     setError(null)

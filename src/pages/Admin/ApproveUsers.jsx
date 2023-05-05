@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 // components & custom hooks
 import { SemiTitle } from "../../components/Title";
 import { useCollection } from "../../hooks/useCollection";
-import getPendingUser from "./getPendingUser";
+import GetPendingUser from "./getPendingUser";
 
 export default function ApproveUsers() {
     const [users, setUsers] = useState([]);
@@ -37,7 +37,7 @@ export default function ApproveUsers() {
     }, [allUsers]);
 
     useEffect(() => {
-      setUsers(getPendingUser())
+      setUsers(GetPendingUser())
     }, []);
 
     console.log("users", users)

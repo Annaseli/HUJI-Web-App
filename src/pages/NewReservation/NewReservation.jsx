@@ -5,6 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from "@mui/x-date-pickers";
 import Box from "@mui/material/Box";
 import { add, isSameDay } from 'date-fns';
+import { CircularProgress } from '@material-ui/core';
 
 // styles
 import "./NewReservation.css";
@@ -217,9 +218,35 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
             ))
         )
     }
+    const bookARoom = () => {
+        if (isPending) {
+            return (
+                <div className="loading" style={{ height: "auto", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <CircularProgress />
+                </div>
+            );
+
+        } else {
+            return (
+                <div>
+                    <div style={{textAlign: "center", fontWeight: "bold", fontSize: "1.5rem", marginBottom: "1rem"}}>
+                        Book a Room
+                    </div>
+                    <div className="rooms">
+                        {rooms && roomsAvailableAfterFilter && getRooms()}
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    const handleClick = () => {
+        console.log(isPending);
+    }
 
     return (
         <div className="test">
+            <button onClick={handleClick}>Print isPending</button>
             <div className="container">
                 <div className="content">
                     <div className="text">Find a Room</div>
@@ -299,15 +326,13 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                 </div>
             </div>
             <div>
-                <div style={{textAlign: "center", fontWeight: "bold", fontSize: "1.5rem", marginBottom: "1rem"}}>
-                    Book a Room
-                </div>
-                <div className="rooms">
-                    {rooms && roomsAvailableAfterFilter && getRooms()}
-                </div>
+                {bookARoom()}
             </div>
             {isPending && <p>loading...</p>}
+            {!isPending && <p> notloading...</p>}
             {error && <p>{error}</p>}
+
+
         </div>
     );
 }
