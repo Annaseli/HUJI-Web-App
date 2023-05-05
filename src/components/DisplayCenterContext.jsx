@@ -14,6 +14,8 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.16)',
         width: '100%',
         maxWidth: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
     heading: {
         color: '#0072C6',
@@ -27,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
         color: '#4F4F4F',
         marginBottom: theme.spacing(3),
         lineHeight: '1.5',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
     boldText: {
         fontWeight: 'bold',

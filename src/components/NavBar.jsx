@@ -21,10 +21,10 @@ import { checkUserType } from '../pages/Admin/checkUserType';
 // firebase
 import { getAuth } from "firebase/auth";
 
-const pages = ["Reservations", "About HUJI-INNOVATE", "HUJI-Articles"];
+const pages = ["Reservations", "About HUJI-INNOVATE", "Report A Problem",];
 const settingsOption = ["Profile", "My Reservations", "Contact Us", "LogOut"];
 const adminSettingOption  = ["Profile", "My Reservations", "All Users Reservations", "Approve New Users",
-    "Manage Users", "Usage Report", "LogOut"];
+    "Manage Users", "Usage Report","Edit Rooms Settings", "LogOut"];
 
 export default function NavBar({ isAdmin }) {
     const { logOut, error, isPending } = useLogOut()
@@ -54,10 +54,11 @@ export default function NavBar({ isAdmin }) {
     const routesDict = {
         "Reservations": "/",
         "About HUJI-INNOVATE": "/aboutUs",
-        "HUJI-Articles" : "/articles",
+        "Report A Problem" : "/reportProblem",
         "All Users Reservations" : "/allReservations",
         "Approve New Users" : "/approveUsers",
         "Manage Users" : "/manageUsers",
+        "Edit Rooms Settings" : "/editRoomsSettings"
     };
     const navigate  = useNavigate();
 

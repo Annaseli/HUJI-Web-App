@@ -119,6 +119,9 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
                     setIsPending(false)
                 }
             }
+
+            //force refresh
+        window.location.reload(true)
         }
     }
 

@@ -2,8 +2,17 @@
 
 .title {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
+    color: #211d42;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #1a144c;
+    padding-bottom: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.btn{
+    /*border-bottom: 1px solid #1a144c;*/
     margin-bottom: 2rem;
 }
 
