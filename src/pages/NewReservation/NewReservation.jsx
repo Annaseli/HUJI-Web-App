@@ -34,14 +34,26 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     const [hoursAvailable, setHoursAvailable] = useState([]);
     const [resetFields, setResetFields] = useState(false)
     const maxDate = add(curDate, {months: 12});
-    //const [isCancelled, setIsCancelled] = useState(false)
-    //const [error, setError] = useState(null)
-    //const [isPending, setIsPending] = useState(false)
-    //const [roomsAvailableAfterFilter, setRoomsAvailableAfterFilter] = useState([]);
+
     const { roomsAvailableAfterFilter, error, isPending, setIsPending } = useFilters(
         userType, uid, resetFields, peopleNum, duration, date, startHour, monthToCheck, yearToCheck, moveMonth,
         setMoveMonth, setHoursAvailable, setDatesNotAvailable)
 
+    useEffect(() => {
+        if (hoursAvailable.length === 0) {
+            return
+        }
+        let options = []
+        // console.log("h:" , hoursAvailable)
+        hoursAvailable.forEach(hour_val => {
+            options.push({label: hour_val + ":00", value: hour_val})
+        })
+
+        setStartTimesOptions(options)
+        // Object.keys(userReservations).forEach(res => {
+        // hoursAvailable.forEach()
+
+    }, [hoursAvailable]);
     const [peopleNumOptions, setPeopleNumOptions] = useState([
         {label: "", value: ""},
         {label: "1 person", value: 1},
@@ -111,77 +123,6 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
         setResetFields(true)
     }
 
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         setError(null)
-    //         setIsPending(true)
-    //         try {
-    //             const roomsAvailableByUserType = await filterRoomsByUserType(userType);
-    //             setRoomsAvailableAfterFilter(roomsAvailableByUserType);
-    //             if (!isCancelled) {
-    //                 setError(null)
-    //                 setIsPending(false)
-    //             }
-    //         } catch(error) {
-    //             if (!isCancelled) {
-    //                 setError(error.message)
-    //                 setIsPending(false)
-    //             }
-    //         }
-    //     }
-    //     fetchData();
-    // }, [uid, resetFields]);
-    //
-    // useEffect(() => {
-    //     // todo: when the user wants to change some param in the res, and nor start from the beginning it should work
-    //     async function fetchData() {
-    //         setError(null)
-    //         setIsPending(true)
-    //         try {
-    //             if(date) {
-    //                 const dayObject = new Date(date)
-    //                 const year = `${dayObject.getFullYear()}`
-    //                 const month = `${dayObject.getMonth() + 1}`.padStart(2, '0')
-    //                 const day = `${dayObject.getDate()}`.padStart(2, '0')
-    //
-    //                 if (peopleNum && duration && !startHour) {
-    //                     const { roomsAvailable, hoursAvailable } = await filterRoomsByDateAndDuration(
-    //                         duration, year, month, day, roomsAvailableAfterFilter);
-    //                     // TODO - front: disable hours until it fetches the data and show some pending sign to the user
-    //                     setRoomsAvailableAfterFilter(roomsAvailable);
-    //                     setHoursAvailable(hoursAvailable)
-    //                 // TODO: front if hoursAvailable is empty then tell the user to pick a different date or a smaller duration
-    //                 } else if (peopleNum && duration && startHour) {
-    //                     const roomsAvailable = await filterRoomsByDateAndTime(
-    //                         duration, year, month, day, startHour, roomsAvailableAfterFilter);
-    //                     setRoomsAvailableAfterFilter(roomsAvailable);
-    //                 }
-    //             }
-    //             else if ((!date && peopleNum && !duration) ||
-    //                 (moveMonth && peopleNum && duration && !date && !startHour)) {
-    //                 const { roomsAvailable, datesNotAvailable } = await filterRoomsByCapacity(
-    //                     peopleNum, yearToCheck, monthToCheck, roomsAvailableAfterFilter);
-    //                 // TODO - front: disable dates and duration until it fetches the data and show some pending sign to the user
-    //                 setRoomsAvailableAfterFilter(roomsAvailable);
-    //                 setDatesNotAvailable(datesNotAvailable)
-    //                 setMoveMonth(false)
-    //             }
-    //
-    //             if (!isCancelled) {
-    //                 setError(null)
-    //                 setIsPending(false)
-    //             }
-    //
-    //         } catch(error) {
-    //             if (!isCancelled) {
-    //                 setError(error.message)
-    //                 setIsPending(false)
-    //             }
-    //         }
-    //     }
-    //     roomsAvailableAfterFilter && fetchData();
-    //     return () => setIsCancelled(true)
-    // }, [uid, peopleNum, duration, date, startHour, monthToCheck])
 
     const isRoomAvailable = (roomNum) => {
         return roomsAvailableAfterFilter.includes(roomNum)
