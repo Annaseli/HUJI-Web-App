@@ -154,8 +154,8 @@ export default function CheckIn({uid}) {
                     <p>Check in completed</p>
                 </div>
             )}
-            {!success && <p>check In failed</p>}
-            {isPending && <p>loading...</p>}
+            {error && <p> check In failed</p>}
+            {isPending && <p>checking you in...</p>}
             {error && <p>{error}</p>}
         </div>
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getResDocs } from "../NewReservation/getResDocs";
 
-export default async function getAllReservations(year, months, rooms) {
+export default async function GetAllReservations(year, months, rooms) {
     console.log("getAllReservations")
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(true)

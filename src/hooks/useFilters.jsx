@@ -9,7 +9,7 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
     const [roomsAvailableAfterFilter, setRoomsAvailableAfterFilter] = useState([]);
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(true);
-    const [isCancelled, setIsCancelled] = useState(true);
+    const [isCancelled, setIsCancelled] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -19,9 +19,9 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                 const roomsAvailableByUserType = await filterRoomsByUserType(userType);
                 console.log("roomsAvailableByUserType", roomsAvailableByUserType)
                 setRoomsAvailableAfterFilter(roomsAvailableByUserType);
-                console.log(isCancelled, "is cancelled")
+                // console.log(isCancelled, "is cancelled")
                 if (!isCancelled) {
-                    console.log(isCancelled, "is not cancelled")
+
 
                     setError(null)
                     setIsPending(false)
@@ -40,7 +40,6 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
         // todo: when the user wants to change some param in the res, and nor start from the beginning it should work
         async function fetchData() {
             setError(null)
-            setIsPending(true)
             try {
                 if(date) {
                     const dayObject = new Date(date)
@@ -49,6 +48,7 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                     const day = `${dayObject.getDate()}`.padStart(2, '0')
 
                     if (peopleNum && duration && !startHour) {
+                        setIsPending(true)
                         const { roomsAvailable, hoursAvailable } = await filterRoomsByDateAndDuration(
                             duration, year, month, day, roomsAvailableAfterFilter);
                         console.log("roomsAvailable", roomsAvailable)
@@ -58,6 +58,7 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                         setHoursAvailable(hoursAvailable)
                         // TODO: front if hoursAvailable is empty then tell the user to pick a different date or a smaller duration
                     } else if (peopleNum && duration && startHour) {
+                        setIsPending(true)
                         const roomsAvailable = await filterRoomsByDateAndTime(
                             duration, year, month, day, startHour, roomsAvailableAfterFilter);
                         console.log("roomsAvailable", roomsAvailable)
@@ -67,6 +68,7 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                 }
                 else if ((!date && peopleNum && !duration) ||
                     (moveMonth && peopleNum && duration && !date && !startHour)) {
+                    setIsPending(true)
                     const { roomsAvailable, datesNotAvailable } = await filterRoomsByCapacity(
                         peopleNum, yearToCheck, monthToCheck, roomsAvailableAfterFilter);
                     console.log("roomsAvailable", roomsAvailable)
@@ -76,9 +78,10 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                     setDatesNotAvailable(datesNotAvailable)
                     setMoveMonth(false)
                 }
-                console.log(isCancelled, "is cancelled else if data()")
+                console.log(isCancelled, " ")
 
                 if (!isCancelled) {
+                    console.log("is cancelled123", isCancelled)
                     setError(null)
                     setIsPending(false)
                 }
@@ -91,8 +94,8 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
             }
         }
         roomsAvailableAfterFilter && fetchData();
-        return () => setIsCancelled(true)
+        // return () => setIsCancelled(true)
     }, [uid, peopleNum, duration, date, startHour, monthToCheck])
-
-    return { roomsAvailableAfterFilter, error, isPending }
+    useEffect(() => { return () =>   setIsCancelled(true)}, [])
+    return { roomsAvailableAfterFilter, error, isPending, setIsPending }
 };

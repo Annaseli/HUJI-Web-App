@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 // components & custom hooks
 import { SemiTitle } from "../../components/Title";
 import { useCollection } from "../../hooks/useCollection";
-import GetPendingUser from "./getPendingUser";
+import GetPendingUser from "./GetPendingUser";
 
 export default function ApproveUsers() {
     const [users, setUsers] = useState([]);

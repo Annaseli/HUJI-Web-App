@@ -29,11 +29,11 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
     // }
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        { field: 'id', headerName: 'ID', width: 120 },
         !header && {
             field: 'uid',
             headerName: 'User ID',
-            width: 150,
+            width: 4,
             editable: false,
         },
         {
@@ -65,9 +65,9 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
         },
         {
             field: 'peopleNum',
-            headerName: 'Number of People Invited',
+            headerName: 'People',
             type: 'number',
-            width: 110,
+            width: 60,
             editable: false
         },{
             field: 'delete',
@@ -154,6 +154,7 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
             {noData && emptyReservationMessage()}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
+            {console.log(userRes)}
         </Box>
     );
 }

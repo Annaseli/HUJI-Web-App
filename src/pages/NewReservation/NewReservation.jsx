@@ -38,7 +38,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     //const [error, setError] = useState(null)
     //const [isPending, setIsPending] = useState(false)
     //const [roomsAvailableAfterFilter, setRoomsAvailableAfterFilter] = useState([]);
-    const { roomsAvailableAfterFilter, error, isPending } = useFilters(
+    const { roomsAvailableAfterFilter, error, isPending, setIsPending } = useFilters(
         userType, uid, resetFields, peopleNum, duration, date, startHour, monthToCheck, yearToCheck, moveMonth,
         setMoveMonth, setHoursAvailable, setDatesNotAvailable)
 
@@ -203,7 +203,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                 <BasicModal
                     key={room.roomNum}
                     title={room.roomNum}
-                    date={new Date(date).toString()}
+                    date={new Date(date).toString().substring(0, 15)}
                     startHour={startHour}
                     endHour={parseInt(startHour) + parseInt(duration) + ":00" }
                     peopleNum={peopleNum}
@@ -222,7 +222,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
         if (isPending) {
             return (
                 <div className="loading" style={{ height: "auto", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <CircularProgress />
+                    <CircularProgress> loading... </CircularProgress>
                 </div>
             );
 
@@ -246,26 +246,17 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
 
     return (
         <div className="test">
-            <button onClick={handleClick}>Print isPending</button>
             <div className="container">
                 <div className="content">
                     <div className="text">Find a Room</div>
                     <div className="form2">
-                        <form action="" onSubmit={handleSubmit}>
+                        <form action="" >
                             <label htmlFor="book-people">Number of People</label>
-                            {/*<input*/}
-                            {/*    type="number"*/}
-                            {/*    name=""*/}
-                            {/*    id="book-people"*/}
-                            {/*    min="1"*/}
-                            {/*    max="10"*/}
-                            {/*    onChange={handleChangePeople}*/}
-                            {/*    value={peopleNum}*/}
-                            {/*/>*/}
                             <select
                                 onChange={handleChangePeople}
                                 style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
                                 value={peopleNum}
+                                disabled={isPending}
                             >
                                 {peopleNumOptions.map((peopleNum) => (
                                     <option key={peopleNum.value} value={peopleNum.value}>
@@ -275,19 +266,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                             </select>
                             <div style={{display: 'flex', flexDirection: 'column'}}>
 
-                            <label style={{marginBottom: '5px'}}>Duration </label>
-                            <select
-                                onChange={handleDurationChange}
-                                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
-                                disabled={!peopleNum} // disable the select input if peopleNum is not set
-                                value={duration}
-                            >
-                                {durationsOptions.map((duration) => (
-                                    <option key={duration.value} value={duration.value}>
-                                        {duration.label}
-                                    </option>
-                                ))}
-                            </select>
+
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Box sx={{marginTop: '15px', marginBottom: '15px'}}>
                                     <label htmlFor="startDate">Date</label>
@@ -302,15 +281,29 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                                         minDate={curDate}
                                         maxDate={maxDate}
                                         shouldDisableDate={disableDates}
-                                        disabled={!duration}
+                                        disabled={!peopleNum || isPending} // disable the select input if peopleNum is not set
                                     />
                                 </Box>
                             </LocalizationProvider>
+
+                                <label style={{marginBottom: '5px'}}>Duration </label>
+                                <select
+                                    onChange={handleDurationChange}
+                                    style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
+                                    disabled={!peopleNum || !date || isPending }
+                                    value={duration}
+                                >
+                                    {durationsOptions.map((duration) => (
+                                        <option key={duration.value} value={duration.value}>
+                                            {duration.label}
+                                        </option>
+                                    ))}
+                                </select>
                                 <label style={{marginBottom: '5px'}}>Available Hours (Starting Time)  </label>
                                 <select
                                     onChange={handleStartHourChange}
                                     style={{padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
-                                    disabled={!date} // disable the select input if startHour is not set
+                                    disabled={!duration || !date || isPending} // disable the select input if startHour is not set
                                     value={startHour}
                                 >
                                     {startTimesOptions.map((time) => (
@@ -328,8 +321,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
             <div>
                 {bookARoom()}
             </div>
-            {isPending && <p>loading...</p>}
-            {!isPending && <p> notloading...</p>}
+
             {error && <p>{error}</p>}
 
 

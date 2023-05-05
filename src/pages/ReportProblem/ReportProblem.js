@@ -33,10 +33,14 @@ const ReportProblem = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // setIsLoading(true);
-        // setTimeout(400)
-        // setIsLoading(false);
+        setIsLoading(true);
+        setTimeout(400)
+        setIsLoading(false);
         setSuccess(true)
+        setName('');
+        setEmail('');
+        setProblem('');
+
     };
 
     return (

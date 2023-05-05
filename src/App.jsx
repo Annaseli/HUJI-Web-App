@@ -1,7 +1,7 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { useState, useEffect } from "react"
-import { getAuth } from "firebase/auth";
+import {ThemeProvider, createTheme} from '@mui/material/styles';
+import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
+import {useState, useEffect} from "react"
+import {getAuth} from "firebase/auth";
 
 // styles
 import './App.css';
@@ -20,11 +20,13 @@ import AddRooms from "./pages/rooms/AddRooms";
 import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
-import { checkUserType } from "./pages/Admin/checkUserType";
-import { useCollection } from "./hooks/useCollection";
+import {checkUserType} from "./pages/Admin/checkUserType";
+import {useCollection} from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
+import UsageReport from "./pages/Admin/UsageReport";
+import ReportProblem from "./pages/ReportProblem/ReportProblem";
 
 const THEME = createTheme({
     typography: {
@@ -42,7 +44,7 @@ export default function App() {
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false)
     const [userType, setUserType] = useState("")
-    const { docs: allUsers, error: err } = useCollection("Users")
+    const {docs: allUsers, error: err} = useCollection("Users")
     // if (!isCancelled) {
     //     setIsPending(false)
     //     if (err) {
@@ -50,9 +52,9 @@ export default function App() {
     //     }
     // }
 
-    useEffect(   () => {
+    useEffect(() => {
         setError(null)
-        const unsub = getAuth().onAuthStateChanged(   (user) => {
+        const unsub = getAuth().onAuthStateChanged((user) => {
             setUser(user);
         });
 
@@ -66,7 +68,8 @@ export default function App() {
     useEffect(() => {
         setIsPending(true)
         setError(null)
-        async function checkAdmin(){
+
+        async function checkAdmin() {
             try {
                 const res = await checkUserType(user.uid)
                 setUserType(res)
@@ -76,14 +79,14 @@ export default function App() {
                     setError(null)
                     setIsPending(false)
                 }
-            }
-            catch(error) {
+            } catch (error) {
                 if (!isCancelled) {
                     setError(error.message || "unknown error occurred")
                     setIsPending(false)
                 }
             }
         }
+
         user && checkAdmin()
 
         setTimeout(() => {
@@ -105,11 +108,11 @@ export default function App() {
                     <Routes>
                         <Route
                             path="/"
-                            element={ user ? <HomePage userType={userType}/> : <Navigate to="/logIn" />}
+                            element={user ? <HomePage userType={userType}/> : <Navigate to="/logIn"/>}
                         />
                         <Route
                             path="/bookAReservation"
-                            element={ user ? <HomePage userType={userType}/> : <Navigate to="/logIn" />}
+                            element={user ? <HomePage userType={userType}/> : <Navigate to="/logIn"/>}
                         />
                         {/*<Route*/}
                         {/*    path="/myReservations"*/}
@@ -117,24 +120,24 @@ export default function App() {
                         {/*/>*/}
                         <Route
                             path="/aboutUs"
-                            element={ user ? <AboutUs /> : <Navigate to="/logIn" />}
+                            element={user ? <AboutUs/> : <Navigate to="/logIn"/>}
                         />
                         <Route
                             path="/articles"
-                            element={ user ? <Articles /> : <Navigate to="/logIn" />}
+                            element={user ? <Articles/> : <Navigate to="/logIn"/>}
                         />
                         <Route
                             path="/contactUs"
-                            element={ user ? <ContactUs /> : <Navigate to="/logIn" />}
+                            element={user ? <ContactUs/> : <Navigate to="/logIn"/>}
                         />
                         <Route
                             path="/approveUsers"
                             element={
                                 user
                                     ? isAdmin
-                                        ? <ApproveUsers />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <ApproveUsers/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route
@@ -142,9 +145,9 @@ export default function App() {
                             element={
                                 user
                                     ? isAdmin
-                                        ? <ManageUsers allUsers={allUsers} />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <ManageUsers allUsers={allUsers}/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route
@@ -152,9 +155,9 @@ export default function App() {
                             element={
                                 user
                                     ? isAdmin
-                                        ? <AddRooms />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <AddRooms/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route
@@ -162,9 +165,9 @@ export default function App() {
                             element={
                                 user
                                     ? isAdmin
-                                        ? <AllReservations allUsers={allUsers} />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <AllReservations allUsers={allUsers}/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route
@@ -172,9 +175,9 @@ export default function App() {
                             element={
                                 user
                                     ? isAdmin
-                                        ? <AddAboutUs />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <AddAboutUs/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route
@@ -182,9 +185,9 @@ export default function App() {
                             element={
                                 user
                                     ? isAdmin
-                                        ? <AddArticle />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <AddArticle/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route
@@ -192,22 +195,34 @@ export default function App() {
                             element={
                                 user
                                     ? isAdmin
-                                        ? <EditRoomsSettings />
-                                        : <Navigate to="/" />
-                                    : <Navigate to="/logIn" />
+                                    ? <EditRoomsSettings/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
+                            }
+                        />
+                        <Route
+                            path="/reportProblem"
+                            element={
+                                <ReportProblem/>
+                            }
+                        />
+                        <Route
+                            path="/UsageReport"
+                            element={
+                                <UsageReport/>
                             }
                         />
                         <Route
                             path="/logIn"
-                            element={ user ? <Navigate to="/" /> : <LogIn />}
+                            element={user ? <Navigate to="/"/> : <LogIn/>}
                         />
                         <Route
                             path="/forgotPassword"
-                            element={ user ? <Navigate to="/" /> : <ForgotPassword />}
+                            element={user ? <Navigate to="/"/> : <ForgotPassword/>}
                         />
                         <Route
                             path="/signUp"
-                            element={ user ? <Navigate to="/" /> : <SignUp />}
+                            element={user ? <Navigate to="/"/> : <SignUp/>}
                         />
                     </Routes>
                 </BrowserRouter>
