@@ -24,7 +24,7 @@ import { getAuth } from "firebase/auth";
 const pages = ["Reservations", "About HUJI-INNOVATE", "HUJI-Articles"];
 const settingsOption = ["Profile", "My Reservations", "Contact Us", "LogOut"];
 const adminSettingOption  = ["Profile", "My Reservations", "All Users Reservations", "Approve New Users",
-    "Manage Users", "Usage Report", "LogOut"];
+    "Manage Users", " Report", "LogOut"];
 
 export default function NavBar({ isAdmin }) {
     const { logOut, error, isPending } = useLogOut()

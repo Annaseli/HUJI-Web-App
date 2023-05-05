@@ -25,6 +25,7 @@ import { useCollection } from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
+import UsageReport from "./pages/Admin/UsageReport";
 
 const THEME = createTheme({
     typography: {
@@ -195,6 +196,12 @@ export default function App() {
                                         ? <EditRoomsSettings />
                                         : <Navigate to="/" />
                                     : <Navigate to="/logIn" />
+                            }
+                        />
+                        <Route
+                            path="/UsageReport"
+                            element={
+                             <UsageReport />
                             }
                         />
                         <Route

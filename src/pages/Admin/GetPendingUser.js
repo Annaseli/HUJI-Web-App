@@ -1,6 +1,6 @@
 import {useCollection} from "../../hooks/useCollection";
 
-export default function getPendingUser() {
+export default function GetPendingUser() {
     let users = []
     const { docs: usersDocs } = useCollection('PendingUsers')
     console.log("usersDocs", usersDocs)
