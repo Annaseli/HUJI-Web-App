@@ -36,9 +36,9 @@ export default function ApproveUsers() {
         return () => setIsCancelled(true)
     }, [allUsers]);
 
-    useEffect(() => {
-      setUsers(GetPendingUser())
-    }, []);
+    // useEffect(() => {
+    //   setUsers(GetPendingUser())
+    // }, []);
 
     console.log("users", users)
 

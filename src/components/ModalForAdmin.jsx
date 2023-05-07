@@ -44,13 +44,13 @@ const StyledButton = styled(Button)`
   }
 `;
 
-function ModalForAdmin(props ) {
+function ModalForAdmin(props) {
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(false);
     const [roomNum, setRoomNum] = useState(props.roomNum);
     const [title, setTitle] = useState(props.roomTitle);
-    const [userType, setUserType] = useState('');
-    const [capacity, setCapacity] = useState('');
+    const [userType, setUserType] = useState("");
+    const [capacity, setCapacity] = useState("");
 
     const handleClickOpen = (editing) => {
         setOpen(true);
@@ -65,7 +65,6 @@ function ModalForAdmin(props ) {
     const handleEdit = () => {
         setEditing(true);
     };
-
 
     const handleSubmit = (e) => {
         // e.preventDefault();
@@ -123,9 +122,9 @@ function ModalForAdmin(props ) {
                             value={userType}
                             onChange={(e) => setUserType(e.target.value)}
                         >
-                            <MenuItem value="admin">Admin</MenuItem>
-                            <MenuItem value="team">Team</MenuItem>
-                            <MenuItem value="user">User</MenuItem>
+                            <MenuItem value="Admin">Admin</MenuItem>
+                            <MenuItem value="Team">Team</MenuItem>
+                            <MenuItem value="Member">User</MenuItem>
                         </Select>
                         </>)
                         }

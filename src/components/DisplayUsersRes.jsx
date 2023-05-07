@@ -154,7 +154,6 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
             {noData && emptyReservationMessage()}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
-            {console.log(userRes)}
         </Box>
     );
 }
