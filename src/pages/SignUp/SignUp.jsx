@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 // styles
 import "./SignUp.css";
 
-import { Button } from "../../components/Button";
+import Button from "../../components/Button";
 import { SemiTitle } from "../../components/Title";
 import { StyledTextField } from "../../components/Input";
 import { Box } from "@mui/material";

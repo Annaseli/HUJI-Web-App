@@ -2,7 +2,7 @@ import { addDoc, setDoc, updateDoc, doc, collection } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { range } from "lodash";
 
-export async function createAnEmptyCollection(year, month, rooms) {
+export default async function createAnEmptyCollection(year, month, rooms) {
     console.log("create An Empty Collection")
     // create a doc in the Reservations collection with id {year}{month}
     const resCollectionRef = collection(db, "Reservations");

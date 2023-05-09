@@ -1,7 +1,7 @@
 import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
-export async function getUserReservations(uid) {
+export default async function getUserReservations(uid) {
     // get user's reservations
     const docRef = doc(collection(db, "Users"), uid);
     const docSnap = await getDoc(docRef)

@@ -2,8 +2,6 @@ import { Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import useGetCenterContent from "../hooks/useGetCenterContent";
 import { v4 as uuidv4 } from 'uuid';
-import {useEffect} from "react";
-import {checkUserType} from "../pages/Admin/checkUserType";
 
 const useStyles = makeStyles((theme) => ({
     container: {

@@ -101,8 +101,8 @@ export default function HomePage({userType}) {
             </TabPanel>
             <TabPanel value={TabValue} index={0}>
                 {uid && <DisplayUsersRes uid={uid}
-                                 header={'My Reservations'}
-                                 moveToNewReservation={moveToNewReservation}
+                                 header={"My Reservations"}
+                                 //moveToNewReservation={moveToNewReservation}
                 />}
             </TabPanel>
             <TabPanel value={TabValue} index={2}>

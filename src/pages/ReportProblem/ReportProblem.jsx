@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {TextField, Button, Typography, Box} from '@material-ui/core';
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import {addDoc, collection} from "firebase/firestore";
+import {db} from "../../firebase/config";
 
 const useStyles = makeStyles((theme) => ({
 
@@ -23,23 +25,28 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ReportProblem = () => {
+export default function ReportProblem() {
     const classes = useStyles();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [problem, setProblem] = useState('');
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [problem, setProblem] = useState("");
     const [success, setSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
+        await addDoc(collection(db, "Problems"), {
+            name,
+            email,
+            problem
+        })
         setTimeout(400)
         setIsLoading(false);
         setSuccess(true)
-        setName('');
-        setEmail('');
-        setProblem('');
+        setName("");
+        setEmail("");
+        setProblem("");
 
     };
 
@@ -82,7 +89,6 @@ const ReportProblem = () => {
                     />
                     <hr style={{borderBottom: "1px solid #e0e0e0", marginBottom: "1rem"}}/>
 
-
                     <Button
                         type="submit"
                         variant="contained"
@@ -105,5 +111,3 @@ const ReportProblem = () => {
         </div>
     );
 };
-
-export default ReportProblem;
