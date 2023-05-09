@@ -27,6 +27,8 @@ import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
 import UsageReport from "./pages/Admin/UsageReport";
 import ReportProblem from "./pages/ReportProblem/ReportProblem";
+import ProblemList from "./pages/Admin/ProblemsList";
+import ProblemsList from "./pages/Admin/ProblemsList";
 
 const THEME = createTheme({
     typography: {
@@ -210,6 +212,18 @@ export default function App() {
                                 <ReportProblem/>
                             }
                         />
+
+                        <Route
+                            path="/ProblemsList"
+                            element={
+                                user
+                                    ? isAdmin
+                                    ? <ProblemsList/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
+                            }
+                        />
+
                         <Route
                             path="/usageReport"
                             element={
