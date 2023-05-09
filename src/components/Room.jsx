@@ -20,9 +20,8 @@ const SecondaryButtonWrapper = styled.div`
   }
 `;
 
-export function Room(props) {
+export default function Room(props) {
     const { size, color, available, onClick, width } = props;
-
     return (
         <SecondaryButtonWrapper
             size={size}

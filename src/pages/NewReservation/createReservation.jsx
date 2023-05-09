@@ -1,4 +1,4 @@
-import { getDocRefFromReservations } from "./getDocRefFromReservations";
+import getDocRefFromReservations from "./getDocRefFromReservations";
 
 // firebase imports
 import { db } from "../../firebase/config";

@@ -2,7 +2,7 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
-export async function checkUserType(uid) {
+export default async function checkUserType(uid) {
     const docRef = doc(db, "Users", uid);
     const docSnap = await getDoc(docRef)
     const data = docSnap.data();

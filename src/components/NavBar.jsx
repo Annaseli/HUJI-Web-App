@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router';
 
 // pages & custom hooks
 import { useLogOut } from '../hooks/useLogOut'
-import { checkUserType } from '../pages/Admin/checkUserType';
+import checkUserType from '../pages/Admin/checkUserType';
 
 // firebase
 import { getAuth } from "firebase/auth";
@@ -35,6 +35,7 @@ export default function NavBar({ isAdmin }) {
     let settings = []
     if (user && isAdmin) {settings = adminSettingOption}
     if (user && !isAdmin) {settings = settingsOption}
+    console.log("isAdmin", isAdmin)
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);

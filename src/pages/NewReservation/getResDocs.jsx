@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
-export async function getResDocs(year, month, day, roomsAvailable) {
+export default async function getResDocs(year, month, day, roomsAvailable) {
     const collRef = query(collection(db, "Reservations", year + month,
         year + month + "Reservations", year + month + day, year + month + day + "Reservations"),
         where("roomNum", "in", roomsAvailable));

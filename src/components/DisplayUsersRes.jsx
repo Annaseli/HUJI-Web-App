@@ -7,14 +7,14 @@ import { useEffect, useState } from "react";
 // firebase imports
 import { db } from "../firebase/config";
 import { collection, doc, deleteField, updateDoc, setDoc } from "firebase/firestore";
-import { getDocRefFromReservations } from "../pages/NewReservation/getDocRefFromReservations";
+import getDocRefFromReservations from "../pages/NewReservation/getDocRefFromReservations";
 
 // components & custom hooks
 import './EmptyReservationMessage.css';
 import { SemiTitle } from "./Title";
-import { useGetUsersRes } from "../hooks/useGetUsersRes";
+import useGetUsersRes from "../hooks/useGetUsersRes";
 
-export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
+export default function DisplayUsersRes({ uid, header }) {
     console.log("DisplayUsersRes")
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(false);
@@ -133,7 +133,8 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
         return (
             <div className="reservation-message-container">
                 <h5 className="reservation-message">{emptyReservationMsg}</h5>
-                <a href="#" className="reservation-link" onClick={moveToNewReservation}>Click here to book your first reservation</a>
+                {/*<a href="#" className="reservation-link" onClick={moveToNewReservation}>*/}
+                {/*    Click here to book your first reservation</a>*/}
             </div>
         )
     }
@@ -151,10 +152,9 @@ export default function DisplayUsersRes({ uid, header, moveToNewReservation }) {
                 // disableColumnFilter
                 experimentalFeatures={{newEditingApi: true}}
             />}
-            {noData && emptyReservationMessage()}
+            {noData && header && emptyReservationMessage()}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
-            {console.log(userRes)}
         </Box>
     );
 }

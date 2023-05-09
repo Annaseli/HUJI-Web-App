@@ -6,7 +6,7 @@ import { Divider } from '@mui/material';
 import "./ForgotPassword.css";
 
 // components
-import { Button } from '../../components/Button';
+import Button from '../../components/Button';
 import { SemiTitle } from '../../components/Title';
 import { StyledTextField } from '../../components/Input';
 

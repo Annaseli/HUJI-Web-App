@@ -28,7 +28,7 @@ const ButtonWrapper = styled.button`
   }
 `;
 
-export function Button(props) {
+export default function Button(props) {
   const { size, color, background, onClick, width, height, border } = props
   return (
     <ButtonWrapper

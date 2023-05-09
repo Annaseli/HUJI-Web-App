@@ -7,7 +7,7 @@ export default function AllReservations({allUsers}) {
             <SemiTitle>{ "All Reservations" }</SemiTitle>
             {(allUsers).map(user => (
                 <div key={user.id}>
-                    {<DisplayUsersRes uid={user.id} header={null} moveToNewReservation={() => {return 0}} />}
+                    {<DisplayUsersRes uid={user.id} header={""} />}
                 </div>
             ))}
         </>

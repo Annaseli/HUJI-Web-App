@@ -3,12 +3,12 @@ import { Divider } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 // components && custom hooks
-import { Button } from '../../components/Button';
+import Button from '../../components/Button';
 import { SemiTitle } from '../../components/Title';
 import { StyledTextField } from '../../components/Input';
-import { getCheckInCodeFromRoom } from "../../hooks/useGetCheckInCodeFromRoom";
-import { getDocRefFromReservations } from "../NewReservation/getDocRefFromReservations";
-import { getUserReservations } from "../../hooks/getUserReservations";
+import getCheckInCodeFromRoom from "../../hooks/getCheckInCodeFromRoom";
+import getDocRefFromReservations from "../NewReservation/getDocRefFromReservations";
+import getUserReservations from "../../hooks/getUserReservations";
 
 // firebase
 import { setDoc } from "firebase/firestore";
@@ -33,13 +33,14 @@ export default function CheckIn({uid}) {
         const curHour = curDate.getHours()
         const curMinute = curDate.getMinutes()
 
-        let year = null;
-        let month = null;
-        let day = null;
-        let roomNum = null;
-        let duration = null;
-        let startHour = null;
+        // let year = null;
+        // let month = null;
+        // let day = null;
+        // let roomNum = null;
+        // let duration = null;
+        // let startHour = null;
         let completed = false
+        let possibleReservations = {}
 
         Object.keys(userReservations).forEach(res => {
             const resYear = userReservations[res]["year"]
@@ -60,21 +61,24 @@ export default function CheckIn({uid}) {
                 // `${curDate.getMonth() + 1}`.padStart(2, '0') === resMonth &&
                 // `${curDate.getDate()}`.padStart(2, '0') === resDay &&
                 "07" === resMonth &&
-                "23" === resDay &&
+                "09" === resDay &&
                 (checkedInEarly || checkedInLate)) {
+                possibleReservations[res] = {year: resYear, month: resMonth, day: resDay,
+                    roomNum: resRoomNum, duration: resDuration, startHour: resStartHour}
                 completed = true
-
-                // Update the variables
-                year = resYear;
-                month = resMonth;
-                day = resDay;
-                roomNum = resRoomNum;
-                duration = resDuration;
-                startHour = resStartHour;
-                return { year, month, day, roomNum, duration, startHour, completed }
+                //
+                // // Update the variables
+                // year = resYear;
+                // month = resMonth;
+                // day = resDay;
+                // roomNum = resRoomNum;
+                // duration = resDuration;
+                // startHour = resStartHour;
+                //return { year, month, day, roomNum, duration, startHour, completed }
             }
         })
-        return { year, month, day, roomNum, duration, startHour, completed }
+        //return { year, month, day, roomNum, duration, startHour, completed }
+        return { possibleReservations, completed }
     }
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -85,7 +89,8 @@ export default function CheckIn({uid}) {
         setError(null)
         setIsPending(true)
         try {
-            const { year, month, day, roomNum, duration, startHour, completed } = await findRes()
+            //const { year, month, day, roomNum, duration, startHour, completed } = await findRes()
+            const { possibleReservations, completed } = await findRes()
             if (!completed) {
                 // TODO - front show this message to the user
                 console.log("Have no reservations or checkedIn too early or too late")
@@ -93,27 +98,34 @@ export default function CheckIn({uid}) {
                 return
             }
 
-            const checkInCodeFromRoom = await getCheckInCodeFromRoom(roomNum)
-            if (checkInCode === checkInCodeFromRoom) {
-                const {docRef} = await getDocRefFromReservations(year, month, day, roomNum)
-                for (let i = 0; i < parseInt(duration); i++) {
-                    await setDoc(docRef, {
-                        [`${parseInt(startHour) + i}`.padStart(2, '0')]: {"checkedIn": true, "checkInTimeStamp": new Date()}
-                    }, {merge: true});
+            for (const res of Object.keys(possibleReservations)) {
+                const resObj = possibleReservations[res]
+                const checkInCodeFromRoom = await getCheckInCodeFromRoom(resObj["roomNum"])
+                if (checkInCode === checkInCodeFromRoom) {
+                    const {docRef} = await getDocRefFromReservations(resObj["year"],
+                        resObj["month"], resObj["day"], resObj["roomNum"])
+                    for (let i = 0; i < parseInt(resObj["duration"]); i++) {
+                        await setDoc(docRef, {
+                            [`${parseInt(resObj["startHour"]) + i}`.padStart(2, '0')]:
+                                {"checkedIn": true, "checkInTimeStamp": new Date()}
+                        }, {merge: true});
+                    }
+                    // TODO - front show this message to the user
+                    console.log("rooms code match")
+                    setSuccess(true)
+                    break
+                } else {
+                    // TODO - front show this message to the user
+                    console.log("rooms code do not match")
+                    setSuccess(false)
                 }
-                // TODO - front show this message to the user
-                console.log("rooms code match")
-                setSuccess(true)
-            } else {
-                // TODO - front show this message to the user
-                console.log("rooms code do not match")
-                setSuccess(false)
+
+                if (!isCancelled) {
+                    setError(null)
+                    setIsPending(false)
+                }
             }
 
-            if (!isCancelled) {
-                setError(null)
-                setIsPending(false)
-            }
         } catch (error) {
             if (!isCancelled) {
                 setError(error.message || "unknown message occurred")
