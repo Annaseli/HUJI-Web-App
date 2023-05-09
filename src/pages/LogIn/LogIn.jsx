@@ -6,7 +6,7 @@ import { Divider } from "@mui/material"
 import "./LogIn.css";
 
 // components && custom hooks
-import { Button } from "../../components/Button"
+import Button from "../../components/Button"
 import { SemiTitle } from "../../components/Title"
 import { StyledTextField } from "../../components/Input"
 import { useLogIn } from "../../hooks/useLogIn"

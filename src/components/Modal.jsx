@@ -7,8 +7,8 @@ import Modal from '@mui/material/Modal';
 import "./Modal.css";
 
 // components & pages
-import { Room } from './Room';
-import { Button } from './Button';
+import Room from './Room';
+import Button from './Button';
 import ConfirmationMessage from "./ConfirmationMessage";
 import createReservation from "../pages/NewReservation/createReservation";
 

@@ -1,4 +1,4 @@
-import {getResDocs} from "./getResDocs";
+import getResDocs from "./getResDocs";
 
 export default async function filterRoomsByDateAndTime(duration, year, month, day, hour, roomsAvailableByUserTypeAndCapAndDate) {
     console.log("filterRoomsByDateAndTime");

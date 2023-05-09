@@ -20,7 +20,7 @@ import AddRooms from "./pages/rooms/AddRooms";
 import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
-import {checkUserType} from "./pages/Admin/checkUserType";
+import checkUserType from "./pages/Admin/checkUserType";
 import {useCollection} from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
 import AddArticle from "./pages/centerContent/AddArticle";
@@ -37,6 +37,7 @@ const THEME = createTheme({
     }
 });
 
+// TODO: what happens with 404 problem?
 export default function App() {
     const [user, setUser] = useState(null);
     const [isCancelled, setIsCancelled] = useState(false)
@@ -73,7 +74,7 @@ export default function App() {
             try {
                 const res = await checkUserType(user.uid)
                 setUserType(res)
-                setIsAdmin(userType === "Admin")
+                setIsAdmin(res === "Admin")
 
                 if (!isCancelled) {
                     setError(null)
@@ -192,12 +193,15 @@ export default function App() {
                         />
                         <Route
                             path="/editRoomsSettings"
+                            // element={
+                            //     user
+                            //         ? isAdmin
+                            //         ? <EditRoomsSettings/>
+                            //         : <Navigate to="/"/>
+                            //         : <Navigate to="/logIn"/>
+                            // }
                             element={
-                                user
-                                    ? isAdmin
-                                    ? <EditRoomsSettings/>
-                                    : <Navigate to="/"/>
-                                    : <Navigate to="/logIn"/>
+                                <EditRoomsSettings/>
                             }
                         />
                         <Route
@@ -207,7 +211,7 @@ export default function App() {
                             }
                         />
                         <Route
-                            path="/UsageReport"
+                            path="/usageReport"
                             element={
                                 <UsageReport/>
                             }

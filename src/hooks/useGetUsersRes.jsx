@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import { getUserReservations } from "./getUserReservations";
+import getUserReservations from "./getUserReservations";
 
-export const useGetUsersRes = (uid) => {
+export default function useGetUsersRes(uid) {
     console.log("useGetUsersRes")
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
@@ -33,14 +33,15 @@ export const useGetUsersRes = (uid) => {
         return () => setIsCancelled(true)
     }, [])
 
-    if (Object.keys(userReservations).length !== 0) {
+     if (userReservations && Object.keys(userReservations).length !== 0) {
         noData = false
         Object.keys(userReservations).forEach(res => {
             userRes.push({
                 id: res,
                 uid: uid,
                 room: userReservations[res]["roomNum"],
-                date: new Date(userReservations[res]["year"] + '-' + userReservations[res]["month"] + '-' + userReservations[res]["day"]),
+                date: new Date(userReservations[res]["year"] + '-' + userReservations[res]["month"] + '-'
+                    + userReservations[res]["day"]),
                 startHour: userReservations[res]["startHour"],
                 endHour: userReservations[res]["endHour"],
                 peopleNum: userReservations[res]["peopleNum"]

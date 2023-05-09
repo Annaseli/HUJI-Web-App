@@ -1,5 +1,5 @@
 import { range } from "lodash";
-import { getResDocs } from "./getResDocs";
+import getResDocs from "./getResDocs";
 
 export default async function filterRoomsByDateAndDuration(duration, year, month, day, roomsAvailableByUserTypeAndCap) {
     console.log("filterRoomsByDateAndDuration");
