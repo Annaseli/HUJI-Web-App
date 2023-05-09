@@ -30,12 +30,7 @@ export default function DisplayUsersRes({ uid, header }) {
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 120 },
-        !header && {
-            field: 'uid',
-            headerName: 'User ID',
-            width: 4,
-            editable: false,
-        },
+
         {
             field: 'room',
             headerName: 'Room',
@@ -142,17 +137,19 @@ export default function DisplayUsersRes({ uid, header }) {
     return (
         <Box sx={{height: 400, width: '100%'}}>
             {header && <SemiTitle>{header}</SemiTitle>}
-            {userReservations && !noData && <DataGrid
+            {userReservations && !noData &&
+            <DataGrid
                 rows={userRes}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
+                keyGetter={(row) => row.id}
                 // checkboxSelection
                 disableSelectionOnClick
                 // disableColumnFilter
                 experimentalFeatures={{newEditingApi: true}}
             />}
-            {noData && header && emptyReservationMessage()}
+            {noData && header && header !== "All Reservations" }
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
         </Box>

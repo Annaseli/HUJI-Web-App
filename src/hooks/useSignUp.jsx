@@ -68,7 +68,8 @@ export const useSignUp = () => {
         }
         catch(error) {
             if (!isCancelled) {
-                setError(error.message || "unknown error occurred")
+                const errorMessage = error.message.replace(/^Firebase: /i, "");
+                setError(errorMessage || "unknown error occurred")
                 setIsPending(false)
             }
         }

@@ -33,7 +33,7 @@ export default function ApproveUsers() {
             setIsPending(false)
         }
         return () => setIsCancelled(true)
-    }, [allUsers]);
+    }, [allUsers ]);
 
     // useEffect(() => {
     //   setUsers(GetPendingUser())
@@ -165,7 +165,7 @@ export default function ApproveUsers() {
                 rowsPerPageOptions={[10]}
                 checkboxSelection
                 disableSelectionOnClick
-                onSelectionModelChange={handleSelectionChange}
+                onRowSelectionModelChange={handleSelectionChange}
             />
             <button
                 onClick={handleApproveClick}

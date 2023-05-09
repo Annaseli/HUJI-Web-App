@@ -27,6 +27,8 @@ import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
 import UsageReport from "./pages/Admin/UsageReport";
 import ReportProblem from "./pages/ReportProblem/ReportProblem";
+import ProblemsList from "./pages/Admin/ProblemsList";
+import WaitForApproval from "./pages/SignUp/WaitForApproval";
 
 const THEME = createTheme({
     typography: {
@@ -210,8 +212,20 @@ export default function App() {
                                 <ReportProblem/>
                             }
                         />
+
                         <Route
-                            path="/usageReport"
+                            path="/ProblemsList"
+                            element={
+                                user
+                                    ? isAdmin
+                                    ? <ProblemsList/>
+                                    : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
+                            }
+                        />
+
+                        <Route
+                            path="/UsageReport"
                             element={
                                 <UsageReport/>
                             }
@@ -227,6 +241,10 @@ export default function App() {
                         <Route
                             path="/signUp"
                             element={user ? <Navigate to="/"/> : <SignUp/>}
+                        />
+                        <Route
+                            path="/waitingForApproval"
+                            element={ <WaitForApproval/>}
                         />
                     </Routes>
                 </BrowserRouter>
