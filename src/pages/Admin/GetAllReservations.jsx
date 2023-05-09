@@ -2,8 +2,6 @@ import getResDocs from "../NewReservation/getResDocs";
 
 export default async function GetAllReservations(year, month, rooms) {
     console.log("getAllReservations")
-    //const [error, setError] = useState(null)
-    //const [isPending, setIsPending] = useState(true)
     let allReservations = []
     let allRooms = rooms.map(roomDoc => roomDoc.roomNum)
     for (let day = 1; day < 32; day++) {
@@ -41,15 +39,13 @@ export default async function GetAllReservations(year, month, rooms) {
                         numOfPeople: roomDoc[paddedHour]["peopleNum"] || '',
                         roomNum: roomNum,
                         checkedIn: roomDoc[paddedHour]["checkedIn"] || '',
-                        checkInTimeStamp: roomDoc[paddedHour]["checkInTimeStamp"].toString() || ''
+                        checkInTimeStamp: roomDoc[paddedHour]["checkInTimeStamp"] ?
+                            roomDoc[paddedHour]["checkInTimeStamp"].toString() : ''
                     })
                 }
             }
         }
     }
-    //setIsPending(false)
-    // const myJSON = JSON.stringify(allReservations);
     console.log("allReservations1", allReservations);
-    //return { allReservations, isPending }
     return allReservations
 }

@@ -24,12 +24,13 @@ export default function UsageReport() {
             alert("Please select both year and month.");
             return;
         }
-        console.log(selectedMonth, selectedYear)
+        const year = `${selectedYear}`
+        const month = `${selectedMonth}`.padStart(2, '0')
         setIsPending(true);
-        const data = await GetAllReservations(selectedYear, selectedMonth, rooms);
+        const data = await GetAllReservations(year, month, rooms);
         setIsPending(false);
         const exportType = exportFromJSON.types.csv;
-        const fileName = `usage_report_${selectedYear}_${selectedMonth}`;
+        const fileName = `usage_report_${year}_${month}`;
         exportFromJSON({ data, fileName, exportType });
     };
 

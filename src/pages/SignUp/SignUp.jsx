@@ -32,7 +32,8 @@ export default function SignUp() {
             setErrorDialogOpen(true) && console.log("error", errorMsg)
             return
         }
-        // check that the 2 password are the same, if not there would be an error from firebase since confirmedPassword is an empty string
+        // check that the 2 password are the same, if not there would be an error from firebase since confirmedPassword
+        // is an empty string
         password1 && password2 && (password1 === password2) && (confirmedPassword = password1)
         firstName && lastName && (displayName = firstName + ' ' + lastName)
         await signUp(email, confirmedPassword, displayName)

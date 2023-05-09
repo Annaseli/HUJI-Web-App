@@ -66,7 +66,12 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
         {label: "7 people", value: 7},
         {label: "8 people", value: 8},
         {label: "9 people", value: 9},
-        {label: "10 people", value: 10}
+        {label: "10 people", value: 10},
+        {label: "10 people", value: 11},
+        {label: "10 people", value: 12},
+        {label: "10 people", value: 13},
+        {label: "10 people", value: 14},
+        {label: "10 people", value: 15}
     ]);
 
     const [durationsOptions, setDurationOptions] = useState([

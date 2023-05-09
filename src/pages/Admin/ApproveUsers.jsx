@@ -6,6 +6,8 @@ import MenuItem from "@mui/material/MenuItem";
 // components & custom hooks
 import { SemiTitle } from "../../components/Title";
 import { useCollection } from "../../hooks/useCollection";
+import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
+import {db} from "../../firebase/config";
 
 export default function ApproveUsers() {
     const [users, setUsers] = useState([]);
@@ -20,7 +22,6 @@ export default function ApproveUsers() {
     //         setError(err)
     //     }
     // }
-
     useEffect(() => {
         setIsPending(true)
         const createUsers = allUsers && allUsers.map(userDoc => ({
@@ -33,27 +34,24 @@ export default function ApproveUsers() {
             setIsPending(false)
         }
         return () => setIsCancelled(true)
-    }, [allUsers ]);
+    }, [allUsers]);
 
-    // useEffect(() => {
-    //   setUsers(GetPendingUser())
-    // }, []);
-
-    console.log("users", users)
     const handleApproveClick = () => {
         setError(null)
         setIsPending(true)
         // todo add try catch and if (!isCancelled)
         selectedRows.forEach(async (row) => {
-            const email = users[row - 1].email
-            const userType = users[row - 1].userType
-            const name = users[row - 1].name
-            const uid = users[row - 1].uid
+            console.log(row)
+            // const email = users[row - 1].email
+            // const userType = users[row - 1].userType
+            // const name = users[row - 1].name
+            //const uid = users[row - 1].uid
 
-            console.log(email)
-            console.log(userType)
-            console.log(name)
-            console.log(uid)
+
+            // console.log(email)
+            // console.log(userType)
+            // console.log(name)
+            //console.log(uid)
 
             // enable the user from Authentication
             // TODO: after deploy do this:
@@ -67,16 +65,15 @@ export default function ApproveUsers() {
             //     setError(error.message)
             // }
 
-            // // add the user to "Users" collection
-            // await setDoc(doc(collection(db, 'Users') , uid), {
+            // add the user to "Users" collection
+            // await setDoc(doc(collection(db, "Users") , uid), {
             //     userType,
             //     email,
             //     name: displayName,
             //     userReservations: {}
             // })
-            //
-            // // if the user exists in ConfirmedUsers - delete this user from the Pending collection
-            // await deleteDoc(doc(collection(db, 'ConfirmedUsers'), email));
+
+
             // updateUser(users[row - 1].id,users[row - 1].rule)
         })
     };
@@ -86,18 +83,20 @@ export default function ApproveUsers() {
         setIsPending(true)
         // todo add try catch and if (!iscancelled)
         selectedRows.forEach(async (row) => {
-            const email = users[row - 1].email
-            const userType = users[row - 1].userType
+            console.log(row)
+            // const email = users[row - 1].email
+            // const userType = users[row - 1].userType
+            //
+            // console.log("email", email)
+            // console.log("userType", userType)
 
-            console.log("email", email)
-            console.log("userType", userType)
-
-            // remove the user from the PendingUsers collection and notify the user
+            // remove the user from the PendingUsers collection
             // try {
-            //     await deleteDoc(doc(collection(db, 'PendingUsers'), email));
-            //     console.log('Document deleted successfully from PendingUsers');
+            //     await deleteDoc(doc(collection(db, "PendingUsers"), email));
+            //     console.log("Document deleted successfully from PendingUsers");
             // } catch (err) {
-            //     console.error('Error deleting document:', err);
+            //     console.error("Error deleting document:", err);
+            //     setError(err.message || "unknown error occurred")
             // }
 
             // delete the user from firebase authentication
@@ -131,8 +130,8 @@ export default function ApproveUsers() {
         {field: "name", headerName: "Name", width: 130},
         {field: "email", headerName: "Email", width: 200},
         {
-            field: 'userType',
-            headerName: 'User Type',
+            field: "userType",
+            headerName: "User Type",
             width: 150,
             renderCell: (params) => {
                 const {row} = params;

@@ -113,14 +113,6 @@ export default function App() {
                             element={user ? <HomePage userType={userType}/> : <Navigate to="/logIn"/>}
                         />
                         <Route
-                            path="/bookAReservation"
-                            element={user ? <HomePage userType={userType}/> : <Navigate to="/logIn"/>}
-                        />
-                        {/*<Route*/}
-                        {/*    path="/myReservations"*/}
-                        {/*    element={ user ? <MyReservations /> : <Navigate to="/logIn" />}*/}
-                        {/*/>*/}
-                        <Route
                             path="/aboutUs"
                             element={user ? <AboutUs/> : <Navigate to="/logIn"/>}
                         />
@@ -150,13 +142,6 @@ export default function App() {
                         />
                         <Route
                             path="/addRooms"
-                            // element={
-                            //     user
-                            //         ? isAdmin
-                            //         ? <AddRooms/>
-                            //         : <Navigate to="/"/>
-                            //         : <Navigate to="/logIn"/>
-                            // }
                             element={
                                 <AddRooms/>
                             }
@@ -197,9 +182,8 @@ export default function App() {
                                 <ReportProblem/>
                             }
                         />
-
                         <Route
-                            path="/ProblemsList"
+                            path="/problemsList"
                             element={
                                 user
                                     ? isAdmin
@@ -208,9 +192,8 @@ export default function App() {
                                     : <Navigate to="/logIn"/>
                             }
                         />
-
                         <Route
-                            path="/UsageReport"
+                            path="/usageReport"
                             element={
                                 <UsageReport/>
                             }

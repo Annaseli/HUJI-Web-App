@@ -149,7 +149,7 @@ export default function DisplayUsersRes({ uid, header }) {
                 // disableColumnFilter
                 experimentalFeatures={{newEditingApi: true}}
             />}
-            {noData && header && header !== "All Reservations" }
+            {noData && header && header !== "All Reservations" && emptyReservationMessage()}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
         </Box>
