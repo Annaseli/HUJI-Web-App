@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {List, ListItem, ListItemText, Button} from '@material-ui/core';
+import {SemiTitle} from "../../components/Title";
 
 
 export default function ProblemsList() {
@@ -34,7 +35,9 @@ export default function ProblemsList() {
 
     return (
         <div>
-        <List>
+            <SemiTitle>{ "Users Problems" }</SemiTitle>
+
+            <List>
             {problems.map((problem) => (
                 <ListItem key={problem.id}>
                     <ListItemText primary={problem.content} secondary={`${problem.user_name} (${problem.user_email})`}/>

@@ -60,7 +60,8 @@ export default function NavBar({isAdmin}) {
         "Approve New Users": "/approveUsers",
         "Manage Users": "/manageUsers",
         "Edit Rooms Settings": "/editRoomsSettings",
-        "User Problems" : "/ProblemsList"
+        "User Problems" : "/ProblemsList",
+        "Usage Report" : "/UsageReport"
     };
     const navigate = useNavigate();
 

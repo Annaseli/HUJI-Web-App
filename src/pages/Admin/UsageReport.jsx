@@ -1,47 +1,93 @@
-import { useState } from 'react';
-import { Button } from '@material-ui/core';
-import { saveAs } from 'file-saver';
-import exportFromJSON from 'export-from-json'
+import { useState } from "react";
+import { Button, Select, MenuItem } from "@material-ui/core";
+import exportFromJSON from "export-from-json";
 import GetAllReservations from "./GetAllReservations";
-import {useCollection} from "../../hooks/useCollection";
+import { useCollection } from "../../hooks/useCollection";
 
 export default function UsageReport() {
-    const { docs: rooms, err } = useCollection("Rooms")
-    const [isPending, setIsPending] = useState(false)
-    // const [data, setData] = useState([
-    //     {name: 'Alice', age: 25, city: 'New York'},
-    //     {name: 'Bob', age: 30, city: 'San Francisco'},
-    //     {name: 'Charlie', age: 35, city: 'Chicago'},
-    // ]);
+    const { docs: rooms, err } = useCollection("Rooms");
+    const [isPending, setIsPending] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+    const years = Array.from(
+        { length: new Date().getFullYear() - 2022 },
+        (_, index) => 2023 + index
+    );
 
     const handleDownload = async () => {
-        //const date = new Date().toISOString().slice(0, 10);
-        const year = "2023"
-        const month = "07"
-        setIsPending(true)
-        const data = await GetAllReservations(year, month, rooms)
-        setIsPending(false)
-        const exportType = exportFromJSON.types.csv
-        const fileName = `usage_report_${year}_${month}`
-        // const csvData = convertToCSV(data);
-        // const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-        // saveAs(blob, 'usage_report.csv');
-        exportFromJSON({data, fileName, exportType})
+        if (!selectedYear || !selectedMonth) {
+            alert("Please select both year and month.");
+            return;
+        }
+        console.log(selectedMonth, selectedYear)
+        setIsPending(true);
+        const data = await GetAllReservations(selectedYear, selectedMonth, rooms);
+        setIsPending(false);
+        const exportType = exportFromJSON.types.csv;
+        const fileName = `usage_report_${selectedYear}_${selectedMonth}`;
+        exportFromJSON({ data, fileName, exportType });
     };
-     // background={"#ffffff"}
+
     return (
         <div>
             <h1>Usage Report</h1>
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+                <label htmlFor="year-select">Year:</label>
+                <Select
+                    id="year-select"
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value)}
+                    MenuProps={{
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "left",
+                        },
+                        transformOrigin: {
+                            vertical: "top",
+                            horizontal: "left",
+                        },
+                        getContentAnchorEl: null,
+                    }}
+                >
+                    {years.map((year) => (
+                        <MenuItem key={year} value={year}>
+                            {year}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <label htmlFor="month-select">Month:</label>
+                <Select
+                    id="month-select"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    MenuProps={{
+                        anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "left",
+                        },
+                        transformOrigin: {
+                            vertical: "top",
+                            horizontal: "left",
+                        },
+                        getContentAnchorEl: null,
+                    }}
+                >
+                    {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
+                        <MenuItem key={month} value={month}>
+                            {month.toString().padStart(2, "0")}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </div>
             <Button
                 variant="contained"
                 color="primary"
-                style={{ backgroundColor: '#211d42', color: 'white' }}
+                style={{ backgroundColor: "#211d42", color: "white" }}
                 onClick={handleDownload}
             >
-                {isPending ? 'Loading...' : 'Download CSV'}
+                {isPending ? "Loading..." : "Download CSV"}
             </Button>
         </div>
     );
 }
-
-

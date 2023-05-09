@@ -27,7 +27,6 @@ import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
 import UsageReport from "./pages/Admin/UsageReport";
 import ReportProblem from "./pages/ReportProblem/ReportProblem";
-import ProblemList from "./pages/Admin/ProblemsList";
 import ProblemsList from "./pages/Admin/ProblemsList";
 
 const THEME = createTheme({
@@ -225,7 +224,7 @@ export default function App() {
                         />
 
                         <Route
-                            path="/usageReport"
+                            path="/UsageReport"
                             element={
                                 <UsageReport/>
                             }
