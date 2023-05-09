@@ -53,7 +53,7 @@ export default function NavBar({isAdmin}) {
     };
 
     const routesDict = {
-        "Reservations": "/",
+        "My Reservations": "/",
         "About HUJI-INNOVATE": "/aboutUs",
         "Report A Problem": "/reportProblem",
         "All Users Reservations": "/allReservations",

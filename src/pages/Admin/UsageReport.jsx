@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { Button, Select, MenuItem } from "@material-ui/core";
+import {Button, Select, MenuItem, TextField} from "@material-ui/core";
 import exportFromJSON from "export-from-json";
 import GetAllReservations from "./GetAllReservations";
 import { useCollection } from "../../hooks/useCollection";
+
+import './UsageReport.css';
+
+
 
 export default function UsageReport() {
     const { docs: rooms, err } = useCollection("Rooms");
@@ -33,8 +37,9 @@ export default function UsageReport() {
         <div>
             <h1>Usage Report</h1>
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
-                <label htmlFor="year-select">Year:</label>
+                <label htmlFor="year-select" >Year:</label>
                 <Select
+                    menuPortalTarget={document.body} menuPosition={'fixed'}
                     id="year-select"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
@@ -62,12 +67,9 @@ export default function UsageReport() {
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
                     MenuProps={{
+
                         anchorOrigin: {
                             vertical: "bottom",
-                            horizontal: "left",
-                        },
-                        transformOrigin: {
-                            vertical: "top",
                             horizontal: "left",
                         },
                         getContentAnchorEl: null,

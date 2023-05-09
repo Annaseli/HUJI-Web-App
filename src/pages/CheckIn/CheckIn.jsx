@@ -20,7 +20,7 @@ const styledDivider = {
 
 export default function CheckIn({uid}) {
     const [checkInCode, setCheckInCode] = useState("")
-    const [error, setError] = useState(null)
+    const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
     const [isPending, setIsPending] = useState(false)
     const [isCancelled, setIsCancelled] = useState(false)
@@ -95,6 +95,7 @@ export default function CheckIn({uid}) {
                 // TODO - front show this message to the user
                 console.log("Have no reservations or checkedIn too early or too late")
                 setSuccess(false)
+                setError("Have no reservations or checkedIn too early or too late")
                 return
             }
 
@@ -117,11 +118,12 @@ export default function CheckIn({uid}) {
                 } else {
                     // TODO - front show this message to the user
                     console.log("rooms code do not match")
+                    setError("rooms code do not match. Have no reservations or checked in too early/late")
+
                     setSuccess(false)
                 }
 
                 if (!isCancelled) {
-                    setError(null)
                     setIsPending(false)
                 }
             }
@@ -166,9 +168,10 @@ export default function CheckIn({uid}) {
                     <p>Check in completed</p>
                 </div>
             )}
-            {error && <p> check In failed</p>}
+            {error && <p style={{ color: "red" }}>  check In failed</p>}
             {isPending && <p>checking you in...</p>}
-            {error && <p>{error}</p>}
+            {error && <p >{error}</p>}
+
         </div>
 
     );
