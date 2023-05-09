@@ -115,7 +115,7 @@ export default function DisplayUsersRes({ uid, header }) {
                 }
             }
 
-            //force refresh
+        //force refresh
         window.location.reload(true)
         }
     }

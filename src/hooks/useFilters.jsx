@@ -19,7 +19,6 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                 const roomsAvailableByUserType = await filterRoomsByUserType(userType);
                 console.log("roomsAvailableByUserType", roomsAvailableByUserType)
                 setRoomsAvailableAfterFilter(roomsAvailableByUserType);
-                // console.log(isCancelled, "is cancelled")
                 if (!isCancelled) {
 
 
@@ -81,7 +80,6 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                 console.log(isCancelled, " ")
 
                 if (!isCancelled) {
-                    console.log("is cancelled123", isCancelled)
                     setError(null)
                     setIsPending(false)
                 }

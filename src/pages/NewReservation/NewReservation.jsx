@@ -33,7 +33,8 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     const [datesNotAvailable, setDatesNotAvailable] = useState([]);
     const [hoursAvailable, setHoursAvailable] = useState([]);
     const [resetFields, setResetFields] = useState(false)
-    const maxDate = add(curDate, {months: 12});
+    const maxDate = add(curDate, {months: 3});
+    rooms.sort((a, b) => a.roomNum - b.roomNum);
 
     const { roomsAvailableAfterFilter, error, isPending, setIsPending } = useFilters(
         userType, uid, resetFields, peopleNum, duration, date, startHour, monthToCheck, yearToCheck, moveMonth,
@@ -96,7 +97,8 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     function disableDates(date) {
         const dayObject = new Date(date);
         let day = dayObject.getDay();
-        return day === 5 || day === 6 || datesNotAvailable.some(disabledDate => isSameDay(dayObject, new Date(disabledDate)));
+        return day === 5 || day === 6 || datesNotAvailable.some(
+            disabledDate => isSameDay(dayObject, new Date(disabledDate)));
     }
 
     const handleStartHourChange = (event) => {
@@ -262,10 +264,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
             <div>
                 {bookARoom()}
             </div>
-
             {error && <p>{error}</p>}
-
-
         </div>
     );
 }

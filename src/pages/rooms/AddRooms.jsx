@@ -1,121 +1,126 @@
-// import { useEffect, useState } from "react";
-// import { useFirestore} from "../../hooks/useFirestore";
-//
-// // firebase imports
-// import { db } from "../../firebase/config";
-// import { collection } from "firebase/firestore";
-//
-// export default function AddRooms() {
-//     const [roomNum, setRoomNum] = useState('')
-//     const [capacity, setCapacity] = useState('')
-//     const [location, setLocation] = useState('')
-//     const [hasComputer, setHasComputer] = useState('')
-//     const [checkIn, setCheckIn] = useState('')
-//     const [hoursAvailable, setHoursAvailable] = useState([])
-//     const { addDocToFireStore, response } = useFirestore()
-//     console.log("Add Rooms")
-//
-//     const handleSubmit = async (event) => {
-//         event.preventDefault()
-//
-//         const ref = collection(db, 'Rooms')
-//
-//         await addDocToFireStore(ref, {
-//             // check for invalid data
-//             roomNum,
-//             capacity,
-//             location,
-//             hasComputer,
-//             checkIn,
-//             hoursAvailable
-//         })
-//     }
-//
-//     // without the useEffect the component renders infinitely
-//     useEffect(() => {
-//         if (response.success) {
-//             setRoomNum('')
-//             setCapacity('')
-//             setLocation('')
-//             setHasComputer('')
-//             setCheckIn('')
-//             setHoursAvailable([])
-//             console.log(response.success)
-//         } else if (response.error) {
-//             setRoomNum('')
-//             setCapacity('')
-//             setLocation('')
-//             setHasComputer('')
-//             setCheckIn('')
-//             setHoursAvailable([])
-//             console.log(response.error)
-//         } else if (response.isPending) {
-//             console.log("loading...")
-//             // can I print the loading to the user too?
-//         }
-//     }, [response])
-//
-//     return(
-//         <>
-//             <h2>Rooms Form</h2>
-//             <form onSubmit={handleSubmit}>
-//                 <label>
-//                     <span> Room Number:</span>
-//                     <input
-//                         required
-//                         type="num"
-//                         onChange={(e) => setRoomNum(e.target.value)}
-//                         value={roomNum}
-//                     />
-//                 </label>
-//                 <label>
-//                     <span> Capacity:</span>
-//                     <input
-//                         required
-//                         type="num"
-//                         onChange={(e) => setCapacity(e.target.value)}
-//                         value={capacity}
-//                     />
-//                 </label>
-//                 <label>
-//                     <span> Location:</span>
-//                     <input
-//
-//                         type="text"
-//                         onChange={(e) => setLocation(e.target.value)}
-//                         value={location}
-//                     />
-//                 </label>
-//                 <label>
-//                     <span> HasComputer:</span>
-//                     <input
-//
-//                         type="boolean"
-//                         onChange={(e) => setHasComputer(e.target.value)}
-//                         value={hasComputer}
-//                     />
-//                 </label>
-//                 <label>
-//                     <span> CheckIn:</span>
-//                     <input
-//
-//                         type="num"
-//                         onChange={(e) => setCheckIn(e.target.value)}
-//                         value={checkIn}
-//                     />
-//                 </label>
-//                 <label>
-//                     <span> HoursAvailable:</span>
-//                     <input
-//
-//                         type="boolean"
-//                         onChange={(e) => setHoursAvailable([...hoursAvailable, e.target.value])}
-//                         value={hoursAvailable}
-//                     />
-//                 </label>
-//                 <button>Add a room</button>
-//             </form>
-//         </>
-//
-//     )
-// }
+import { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import {TextField, Button, Typography, Box} from '@material-ui/core';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import {addDoc, collection} from "firebase/firestore";
+import {db} from "../../firebase/config";
+
+const useStyles = makeStyles((theme) => ({
+
+    formReport: {
+        display: 'flex',
+        flexDirection: 'column',
+        '& > *': {
+            marginBottom: theme.spacing(2),
+        },
+    },
+    submitButton: {
+        alignSelf: 'center',
+    },
+    box: {
+        height: 'auto',
+        width: '80%',
+
+
+    },
+}));
+
+export default function ReportProblem() {
+    console.log("Add Rooms")
+    const classes = useStyles();
+    const [roomNum, setRoomNum] = useState("")
+    const [capacity, setCapacity] = useState("")
+    const [location, setLocation] = useState("")
+    const [checkIn, setCheckIn] = useState("")
+    const [success, setSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setIsLoading(true);
+        await addDoc(collection(db, "Rooms"), {
+            // check for invalid data
+            roomNum,
+            capacity,
+            location,
+            checkIn
+        })
+        setTimeout(400)
+        setIsLoading(false);
+        setSuccess(true)
+        setRoomNum("");
+        setCapacity("");
+        setLocation("");
+        setCheckIn("");
+
+    };
+
+    return (
+        <div>
+            <Box className={classes.box}
+                 display="inline-block"
+                 justifyContent="center"
+                 alignItems="center"
+                 flexDirection="column"
+            >
+
+                <Typography variant="h5" component="h2" gutterBottom className="title">
+                    Add Rooms - For Developers
+                </Typography>
+                <form onSubmit={handleSubmit} className={classes.formReport}>
+                    <TextField
+                        label="RoomNum"
+                        type="text"
+                        variant="outlined"
+                        value={roomNum}
+                        onChange={(event) => setRoomNum(event.target.value)}
+                        required
+                    />
+                    <TextField
+                        label="CheckInCode"
+                        type="text"
+                        variant="outlined"
+                        value={checkIn}
+                        onChange={(event) => setCheckIn(event.target.value)}
+                        required
+                    />
+                    <TextField
+                        label="Location"
+                        type="text"
+                        variant="outlined"
+                        value={location}
+                        onChange={(event) => setLocation(event.target.value)}
+                        required
+                    />
+                    <TextField
+                        label="Capacity"
+                        type="text"
+                        variant="outlined"
+                        value={capacity}
+                        onChange={(event) => setCapacity(event.target.value)}
+                        required
+                    />
+                    <hr style={{borderBottom: "1px solid #e0e0e0", marginBottom: "1rem"}}/>
+
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        className={classes.submitButton}
+                        disabled={isLoading}
+                        style={{backgroundColor: '#211d42'}}
+                    >
+                        {isLoading ? "Adding..." : "Add Room"}
+                    </Button>
+
+                </form>
+                {success && (
+                    <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                        <CheckCircleIcon sx={{fontSize: "5rem", color: "green"}}/>
+                        <p>Added Room</p>
+                    </div>
+                )}
+            </Box>
+        </div>
+    );
+};

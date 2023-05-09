@@ -8,7 +8,7 @@ export default function createReservation(uid, capacity, duration, date, startHo
     console.log("createReservation")
     const dayObject = new Date(date)
     const year = `${dayObject.getFullYear()}`
-    const month = "07"// ${dayObject.getMonth() + 1}`.padStart(2, "0");
+    const month = "09"//`${dayObject.getMonth() + 1}`.padStart(2, "0");
     const day = `${dayObject.getDate()}`.padStart(2, '0');
     const startHourPadded = `${startHour}`.padStart(2, '0');
     const endHourPadded = `${endHour}`.padStart(2, '0');
@@ -53,7 +53,7 @@ export default function createReservation(uid, capacity, duration, date, startHo
             }
         };
         await setDoc(docRef, {
-            userReservationsKeys: updateMap
+            userReservations: updateMap
         }, { merge: true });
     }
 

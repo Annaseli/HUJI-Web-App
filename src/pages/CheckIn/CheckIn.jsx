@@ -33,12 +33,6 @@ export default function CheckIn({uid}) {
         const curHour = curDate.getHours()
         const curMinute = curDate.getMinutes()
 
-        // let year = null;
-        // let month = null;
-        // let day = null;
-        // let roomNum = null;
-        // let duration = null;
-        // let startHour = null;
         let completed = false
         let possibleReservations = {}
 
@@ -58,26 +52,14 @@ export default function CheckIn({uid}) {
 
             // todo - change the check after debug
             if (`${curDate.getFullYear()}` === resYear &&
-                // `${curDate.getMonth() + 1}`.padStart(2, '0') === resMonth &&
-                // `${curDate.getDate()}`.padStart(2, '0') === resDay &&
-                "07" === resMonth &&
-                "09" === resDay &&
+                `${curDate.getMonth() + 1}`.padStart(2, '0') === resMonth &&
+                `${curDate.getDate()}`.padStart(2, '0') === resDay &&
                 (checkedInEarly || checkedInLate)) {
                 possibleReservations[res] = {year: resYear, month: resMonth, day: resDay,
                     roomNum: resRoomNum, duration: resDuration, startHour: resStartHour}
                 completed = true
-                //
-                // // Update the variables
-                // year = resYear;
-                // month = resMonth;
-                // day = resDay;
-                // roomNum = resRoomNum;
-                // duration = resDuration;
-                // startHour = resStartHour;
-                //return { year, month, day, roomNum, duration, startHour, completed }
             }
         })
-        //return { year, month, day, roomNum, duration, startHour, completed }
         return { possibleReservations, completed }
     }
     const handleSubmit = async (event) => {

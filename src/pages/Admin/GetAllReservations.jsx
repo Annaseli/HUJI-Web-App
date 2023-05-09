@@ -2,12 +2,10 @@ import getResDocs from "../NewReservation/getResDocs";
 
 export default async function GetAllReservations(year, month, rooms) {
     console.log("getAllReservations")
-    console.log("0");
     //const [error, setError] = useState(null)
     //const [isPending, setIsPending] = useState(true)
     let allReservations = []
     let allRooms = rooms.map(roomDoc => roomDoc.roomNum)
-    console.log("1");
     for (let day = 1; day < 32; day++) {
         const paddedDay = `${day}`.padStart(2, '0')
         const fullDate = year + '-' + month + '-' + `${paddedDay}`
@@ -21,14 +19,12 @@ export default async function GetAllReservations(year, month, rooms) {
         let roomsDocs;
         try {
             roomsDocs = await getResDocs(year, month, paddedDay, allRooms)
-            console.log("2");
         } catch (error) {
             //setError(error.message || "unknown error occurred")
             console.log(error.message || "unknown error occurred")
         }
 
         for (const roomDoc of roomsDocs) {
-            console.log("3");
             const roomNum = roomDoc.roomNum
             const room = `${roomNum}`.padStart(2, '0');
             for (let hour = 8; hour < 19; hour++) {

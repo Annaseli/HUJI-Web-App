@@ -8,6 +8,7 @@ import {collection, doc, setDoc, getDoc, deleteDoc, addDoc} from "firebase/fires
 
 // TODO - use the useFirestore functions instead for the try catch for await funcs
 export const useSignUp = () => {
+    console.log("useSignUp");
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
@@ -22,7 +23,6 @@ export const useSignUp = () => {
 
             // add display name to user
             await updateProfile(user, { displayName })
-
             const docRef = doc(collection(db, "ConfirmedUsers"), email)
             const docSnap = await getDoc(docRef)
             if (docSnap.exists()) {

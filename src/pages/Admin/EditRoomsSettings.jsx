@@ -17,6 +17,7 @@ export default function EditRoomsSettings() {
     // }
 
     const getRooms = () => {
+        rooms.sort((a, b) => a.roomNum - b.roomNum);
         return (
             rooms.map((room) => (
                 <ModalForAdmin

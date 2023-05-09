@@ -40,7 +40,6 @@ export default function ApproveUsers() {
     // }, []);
 
     console.log("users", users)
-
     const handleApproveClick = () => {
         setError(null)
         setIsPending(true)
@@ -145,7 +144,7 @@ export default function ApproveUsers() {
                             value={row.userType || ''}
                             onChange={(event) => handleUserTypeChange(event, row)}
                         >
-                            <MenuItem value="User">User</MenuItem>
+                            <MenuItem value="Member">Member</MenuItem>
                             <MenuItem value="Team">Team</MenuItem>
                             <MenuItem value="Admin">Admin</MenuItem>
                         </Select>

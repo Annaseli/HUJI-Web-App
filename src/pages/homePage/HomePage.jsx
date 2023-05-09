@@ -11,6 +11,9 @@ import CheckIn from "../CheckIn/CheckIn";
 
 // firebase imports
 import { getAuth } from "firebase/auth";
+import createAnEmptyCollection from "../NewReservation/createAnEmptyCollection";
+import {collection, doc, getDoc} from "firebase/firestore";
+import {db} from "../../firebase/config";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -44,7 +47,6 @@ export default function HomePage({userType}) {
     //const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
-
     const { docs: rooms, error: err } = useCollection("Rooms")
     // if (!isCancelled) {
     //     setIsPending(false)
@@ -54,22 +56,27 @@ export default function HomePage({userType}) {
     // }
 
     const uid = getAuth().currentUser.uid
-    //test()
-    //rooms && getAllReservations('2023',['07'], rooms)
-
-    // TODO - back: move this initialization of the DB to the Admin - every time that he will log in, I'll check
-    // that there are collections for the next 3 month and if not will create them. I'll move to storage the
-    // the earliests 3 month. Need to check the option of doing that without his log in because it's riscy -
-    // if he won't log in there would be bugs in Reservations.
-    // async function create(year, month) {
-    //     const checkDoc = doc(collection(db, "Reservations"), year + month)
-    //     const docSnap = await getDoc(checkDoc)
-    //     if (!docSnap.exists()) {
-    //         rooms && await createAnEmptyCollection(year, month, rooms)
-    //     }
-    // }
-    //
-    // create('2023', '08')
+    async function create() {
+        const curDate = new Date()
+        const year = `${curDate.getFullYear()}`
+        const month = curDate.getMonth() + 1
+        // create empty reservations year+month docs in Reservation for 3 month in advance
+        for (let m = month; m < month + 3; m++) {
+            const monthStr = `${m}`.padStart(2, '0')
+            const checkDoc = doc(collection(db, "Reservations"),
+                year + monthStr)
+            const docSnap = await getDoc(checkDoc)
+            if (!docSnap.exists()) {
+                setIsPending(true)
+                //console.log(`creates ${year}${monthStr} doc in Reservations`)
+                rooms && await createAnEmptyCollection(year, monthStr, rooms)
+                setIsPending(false)
+            } else {
+                //console.log(`doesn't create ${year}${monthStr} doc in Reservations`)
+            }
+        }
+    }
+    create()
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -81,7 +88,6 @@ export default function HomePage({userType}) {
         setValue(1);
     }
 
-    // TODO: maybe make routes instead of the indices
     return (
         <Box sx={{width: '100%'}}>
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
@@ -101,8 +107,8 @@ export default function HomePage({userType}) {
             </TabPanel>
             <TabPanel value={TabValue} index={0}>
                 {uid && <DisplayUsersRes uid={uid}
-                                 header={"My Reservations"}
-                                 //moveToNewReservation={moveToNewReservation}
+                                         header={"My Reservations"}
+                    //moveToNewReservation={moveToNewReservation}
                 />}
             </TabPanel>
             <TabPanel value={TabValue} index={2}>

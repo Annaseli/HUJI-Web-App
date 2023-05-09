@@ -17,13 +17,11 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import ApproveUsers from './pages/Admin/ApproveUsers';
 import ManageUsers from './pages/Admin/ManageUsers';
 import AddRooms from "./pages/rooms/AddRooms";
-import Articles from './pages/articles/Articles';
 import ContactUs from './pages/contactUs/ContactUs';
 import NavBar from './components/NavBar';
 import checkUserType from "./pages/Admin/checkUserType";
 import {useCollection} from "./hooks/useCollection";
 import AddAboutUs from "./pages/centerContent/AddAboutUs";
-import AddArticle from "./pages/centerContent/AddArticle";
 import EditRoomsSettings from "./pages/Admin/EditRoomsSettings";
 import UsageReport from "./pages/Admin/UsageReport";
 import ReportProblem from "./pages/ReportProblem/ReportProblem";
@@ -74,6 +72,7 @@ export default function App() {
 
         async function checkAdmin() {
             try {
+                console.log("user.uid", user.uid)
                 const res = await checkUserType(user.uid)
                 setUserType(res)
                 setIsAdmin(res === "Admin")
@@ -126,10 +125,6 @@ export default function App() {
                             element={user ? <AboutUs/> : <Navigate to="/logIn"/>}
                         />
                         <Route
-                            path="/articles"
-                            element={user ? <Articles/> : <Navigate to="/logIn"/>}
-                        />
-                        <Route
                             path="/contactUs"
                             element={user ? <ContactUs/> : <Navigate to="/logIn"/>}
                         />
@@ -155,12 +150,15 @@ export default function App() {
                         />
                         <Route
                             path="/addRooms"
+                            // element={
+                            //     user
+                            //         ? isAdmin
+                            //         ? <AddRooms/>
+                            //         : <Navigate to="/"/>
+                            //         : <Navigate to="/logIn"/>
+                            // }
                             element={
-                                user
-                                    ? isAdmin
-                                    ? <AddRooms/>
-                                    : <Navigate to="/"/>
-                                    : <Navigate to="/logIn"/>
+                                <AddRooms/>
                             }
                         />
                         <Route
@@ -184,26 +182,13 @@ export default function App() {
                             }
                         />
                         <Route
-                            path="/addArticle"
+                            path="/editRoomsSettings"
                             element={
                                 user
                                     ? isAdmin
-                                    ? <AddArticle/>
+                                    ? <EditRoomsSettings/>
                                     : <Navigate to="/"/>
                                     : <Navigate to="/logIn"/>
-                            }
-                        />
-                        <Route
-                            path="/editRoomsSettings"
-                            // element={
-                            //     user
-                            //         ? isAdmin
-                            //         ? <EditRoomsSettings/>
-                            //         : <Navigate to="/"/>
-                            //         : <Navigate to="/logIn"/>
-                            // }
-                            element={
-                                <EditRoomsSettings/>
                             }
                         />
                         <Route
