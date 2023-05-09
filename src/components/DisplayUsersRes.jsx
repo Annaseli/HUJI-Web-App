@@ -147,6 +147,7 @@ export default function DisplayUsersRes({ uid, header }) {
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
+                keyGetter={(row) => row.id}
                 // checkboxSelection
                 disableSelectionOnClick
                 // disableColumnFilter
