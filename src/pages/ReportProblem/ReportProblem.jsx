@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {TextField, Button, Typography, Box} from '@material-ui/core';
+import {TextField, Typography, Box} from '@material-ui/core';
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {addDoc, collection} from "firebase/firestore";
 import {db} from "../../firebase/config";
-
+import Button from "../../components/Button.jsx";
 const useStyles = makeStyles((theme) => ({
 
     formReport: {
@@ -91,8 +91,8 @@ export default function ReportProblem() {
 
                     <Button
                         type="submit"
-                        variant="contained"
-                        color="primary"
+                        // variant="contained"
+                        // color="primary"
                         className={classes.submitButton}
                         disabled={isLoading}
                         style={{backgroundColor: '#211d42'}}

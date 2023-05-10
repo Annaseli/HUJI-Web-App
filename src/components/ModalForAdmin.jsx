@@ -12,7 +12,8 @@ import {
     MenuItem, InputLabel
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import {Button} from '@material-ui/core';
+
+import Button from './Button.jsx';
 import styled from 'styled-components';
 import "./modalForAdminStyles.css"
 import {collection, doc, getDocs, query, updateDoc, where} from "firebase/firestore";
@@ -208,10 +209,10 @@ function ModalForAdmin(props) {
                 <Typography variant="h6">{title}</Typography>
             </div>
             <div className="btn">
-                <Button onClick={() => handleClickOpen(false)}> view setting </Button>
-                <IconButton onClick={() => handleClickOpen(true)}>
-                    <EditIcon/>
-                </IconButton>
+                <Button onClick={() => handleClickOpen(true)}> Edit Setting </Button>
+                {/*<IconButton onClick={() => handleClickOpen(true)}>*/}
+                {/*    <EditIcon/>*/}
+                {/*</IconButton>*/}
             </div>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>

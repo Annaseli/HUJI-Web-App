@@ -3,6 +3,7 @@ import { useCollection } from "../../hooks/useCollection";
 import "./EditRoomsSettings.css";
 import ModalForAdmin from "../../components/ModalForAdmin";
 import { useState } from "react";
+import React from "react";
 
 export default function EditRoomsSettings() {
     const [isCancelled, setIsCancelled] = useState(false)
@@ -35,7 +36,7 @@ export default function EditRoomsSettings() {
     };
 
     return (
-        <div>
+        <React.Fragment>
             <div style={{textAlign: "center", fontWeight: "bold", fontSize: "1.5rem", marginBottom: "1rem" }}>
                 Change Rooms Settings
             </div>
@@ -46,6 +47,6 @@ export default function EditRoomsSettings() {
             </div>
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
-        </div>
+        </React.Fragment>
     );
 }

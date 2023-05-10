@@ -1,11 +1,11 @@
 import { useState } from "react";
-import {Button, Select, MenuItem, TextField} from "@material-ui/core";
+import { Select, MenuItem, TextField} from "@material-ui/core";
 import exportFromJSON from "export-from-json";
 import GetAllReservations from "./GetAllReservations";
 import { useCollection } from "../../hooks/useCollection";
 
 import './UsageReport.css';
-
+import Button from '../../components/Button.jsx'
 
 
 export default function UsageReport() {
@@ -40,21 +40,9 @@ export default function UsageReport() {
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
                 <label htmlFor="year-select" >Year:</label>
                 <Select
-                    menuPortalTarget={document.body} menuPosition={'fixed'}
                     id="year-select"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
-                    MenuProps={{
-                        anchorOrigin: {
-                            vertical: "bottom",
-                            horizontal: "left",
-                        },
-                        transformOrigin: {
-                            vertical: "top",
-                            horizontal: "left",
-                        },
-                        getContentAnchorEl: null,
-                    }}
                 >
                     {years.map((year) => (
                         <MenuItem key={year} value={year}>
@@ -67,14 +55,6 @@ export default function UsageReport() {
                     id="month-select"
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    MenuProps={{
-
-                        anchorOrigin: {
-                            vertical: "bottom",
-                            horizontal: "left",
-                        },
-                        getContentAnchorEl: null,
-                    }}
                 >
                     {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
                         <MenuItem key={month} value={month}>
@@ -84,9 +64,9 @@ export default function UsageReport() {
                 </Select>
             </div>
             <Button
-                variant="contained"
-                color="primary"
-                style={{ backgroundColor: "#211d42", color: "white" }}
+                // variant="contained"
+                color="white"
+                // style={{ backgroundColor: "#211d42", color: "white" }}
                 onClick={handleDownload}
             >
                 {isPending ? "Loading..." : "Download CSV"}

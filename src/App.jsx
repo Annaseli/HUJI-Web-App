@@ -107,7 +107,7 @@ export default function App() {
             <ThemeProvider theme={THEME}>
                 <BrowserRouter>
                     <NavBar isAdmin={isAdmin}/>
-                    <Routes>
+                        <Routes>
                         <Route
                             path="/"
                             element={user ? <HomePage userType={userType}/> : <Navigate to="/logIn"/>}
@@ -179,7 +179,11 @@ export default function App() {
                         <Route
                             path="/reportProblem"
                             element={
-                                <ReportProblem/>
+                                user
+                                    ? isAdmin
+                                    ? <ReportProblem/>
+                                    : <ReportProblem/>
+                                    : <ReportProblem/>
                             }
                         />
                         <Route
