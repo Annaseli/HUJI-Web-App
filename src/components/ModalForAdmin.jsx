@@ -12,12 +12,12 @@ import {
     MenuItem, InputLabel
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { Button } from '@material-ui/core';
+import {Button} from '@material-ui/core';
 import styled from 'styled-components';
 import "./modalForAdminStyles.css"
-import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../firebase/config";
-import { useCollection } from "../hooks/useCollection";
+import {collection, doc, getDocs, query, updateDoc, where} from "firebase/firestore";
+import {db} from "../firebase/config";
+import {useCollection} from "../hooks/useCollection";
 // const useStyles = makeStyles((theme) => ({
 //     title: {
 //         textAlign: 'center',
@@ -55,13 +55,13 @@ function ModalForAdmin(props) {
     const [isCancelled, setIsCancelled] = useState(false);
     const [roomNum, setRoomNum] = useState(props.roomNum);
     const [title, setTitle] = useState(props.roomTitle);
-    const [userType, setUserType] = useState("");
-    const [location, setLocation] = useState("");
-    const [capacity, setCapacity] = useState("");
-    const [checkInCode, setCheckInCode] = useState("");
+    const [location, setLocation] = useState(props.location);
+    const [capacity, setCapacity] = useState(props.capacity);
+    const [checkInCode, setCheckInCode] = useState(props.checkInCode);
     const [allRoomsData, setAllRoomsData] = useState({});
-    const { docs: userTypeDocs, err2 } = useCollection("TypeOfUser")
-    const { docs: roomsDocs, err1 } = useCollection("Rooms")
+    const {docs: userTypeDocs, err2} = useCollection("TypeOfUser")
+    const [userType, setUserType] = useState("");
+    const {docs: roomsDocs, err1} = useCollection("Rooms")
 
     useEffect(() => {
         async function fetchData() {
@@ -80,6 +80,8 @@ function ModalForAdmin(props) {
                     roomsDocs[roomIdx]["userTypeList"] = userTypeList
                     setAllRoomsData(roomsDocs)
                 })
+
+                setUserType(getMinPrivilege(allRoomsData[roomNum - 1]["userTypeList"]))
 
                 // let userTypeList = []
                 // userTypeDocs && userTypeDocs.forEach((doc) => {
@@ -109,6 +111,7 @@ function ModalForAdmin(props) {
                 }
             }
         }
+
         // fetch the data only when editing == 0
         !editing && fetchData();
         return () => setIsCancelled(true);
@@ -116,6 +119,7 @@ function ModalForAdmin(props) {
 
     const handleClickOpen = async (editing) => {
         console.log("view settings")
+        // console.log(room)
         allRoomsData && console.log("allRoomsData", allRoomsData)
         // TODO - front : get the specific room data by: allRoomsData[roomNum - 1]
         //  for example roomNum 1 will be in allRoomsData[0] and show this room's details
@@ -132,13 +136,22 @@ function ModalForAdmin(props) {
         setEditing(true);
     };
 
+    const getMinPrivilege = (userTypeList) => {
+        if (userTypeList.includes("Member")) {
+            return "Member"
+        }
+        if (userTypeList.includes("Team")) {
+            return "Team"
+        }
+        return "Admin"
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(roomNum, userType, capacity, title, checkInCode, location)
         const paddedRoomNum = roomNum.padStart(2, '0')
         const collRef = collection(db, "Rooms")
         const queryDocRef = query(collRef, where("roomNum", "==", roomNum));
-        const querySnap =  await getDocs(queryDocRef)
+        const querySnap = await getDocs(queryDocRef)
         const queryDoc = querySnap.docs[0]
         const data = queryDoc.data();
         const docRef = doc(collRef, queryDoc.id);
@@ -146,8 +159,8 @@ function ModalForAdmin(props) {
                 ["capacity"]: capacity || data["capacity"],
                 ["checkIn"]: checkInCode || data["checkIn"],
                 ["location"]: location || data["location"]
-        },
-        {merge:true})
+            },
+            {merge: true})
 
         let hierarchicalUserTypes = ["Admin"]
         if (userType === "Team") {
@@ -164,7 +177,7 @@ function ModalForAdmin(props) {
             console.log("userType", userType)
             const collRef = collection(db, "TypeOfUser")
             const queryDocRef = query(collRef, where("userType", "==", userType));
-            const querySnap =  await getDocs(queryDocRef)
+            const querySnap = await getDocs(queryDocRef)
             const queryDoc = querySnap.docs[0]
             const data = queryDoc.data()
             console.log("querySnap", querySnap)
@@ -183,8 +196,8 @@ function ModalForAdmin(props) {
             const docRef = doc(collRef, queryDoc.id);
             await updateDoc(docRef, {
                     ["roomsAvailable"]: newRoomsAvailable
-            },
-            {merge:true})
+                },
+                {merge: true})
         }
         handleClose();
     };
@@ -195,12 +208,12 @@ function ModalForAdmin(props) {
                 <Typography variant="h6">{title}</Typography>
             </div>
             <div className="btn">
-            <Button onClick={() => handleClickOpen(false)}> view setting </Button>
-            <IconButton onClick={() => handleClickOpen(true)}>
-                <EditIcon />
-            </IconButton>
+                <Button onClick={() => handleClickOpen(false)}> view setting </Button>
+                <IconButton onClick={() => handleClickOpen(true)}>
+                    <EditIcon/>
+                </IconButton>
             </div>
-            <Dialog open={open} onClose={handleClose} >
+            <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>
                     {editing ? 'Edit Room' : 'View Room Details'}
                 </DialogTitle>
@@ -208,7 +221,7 @@ function ModalForAdmin(props) {
                     <DialogContentText>
                         Fill in the information about the room.
                     </DialogContentText>
-                    <form onSubmit={handleSubmit} className="form" >
+                    <form onSubmit={handleSubmit} className="form">
                         <TextField
                             label="Room Number"
                             value={roomNum}
@@ -218,40 +231,49 @@ function ModalForAdmin(props) {
                             label="Title"
                             value={title}
                             disabled={true}
-abou                        />
+                        />
 
                         <TextField
                             label="Capacity"
+                            disabled={!editing}
+
                             value={capacity}
                             onChange={(e) => setCapacity(e.target.value)}
                         />
                         <TextField
                             label="Location"
                             value={location}
+                            disabled={!editing}
+
                             onChange={(e) => setLocation(e.target.value)}
                         />
                         <TextField
                             label="Check in Code"
+                            disabled={!editing}
+
                             value={checkInCode}
                             onChange={(e) => setCheckInCode(e.target.value)}
                         />
                         {!editing ? (<TextField
-                            label="User Type"
+                            label="User Type (Min Privilege)"
                             value={userType}
+                            disabled={!editing}
+
                             onChange={(e) => setUserType(e.target.value)}
                         />) : (<>
                             <InputLabel id="user-type-label">User Type</InputLabel>
 
                             <Select
-                            labelId="user-type-label"
-                            id="user-type"
-                            value={userType}
-                            onChange={(e) => setUserType(e.target.value)}
-                        >
-                            <MenuItem value="Admin">Admin</MenuItem>
-                            <MenuItem value="Team">Team</MenuItem>
-                            <MenuItem value="Member">Member</MenuItem>
-                        </Select>
+                                labelId="user-type-label"
+                                disabled={!editing}
+                                id="user-type"
+                                value={userType}
+                                onChange={(e) => setUserType(e.target.value)}
+                            >
+                                <MenuItem value="Admin">Admin</MenuItem>
+                                <MenuItem value="Team">Team</MenuItem>
+                                <MenuItem value="Member">Member</MenuItem>
+                            </Select>
                         </>)
                         }
                         {editing && (
@@ -274,6 +296,7 @@ abou                        />
                     </form>
                 </DialogContent>
             </Dialog>
+
         </div>
     );
 }
