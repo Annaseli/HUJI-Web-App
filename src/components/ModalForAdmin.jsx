@@ -212,13 +212,13 @@ function ModalForAdmin(props) {
                         <TextField
                             label="Room Number"
                             value={roomNum}
-                            onChange={(e) => setRoomNum(e.target.value)}
+                            disabled={true}
                         />
                         <TextField
                             label="Title"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
+                            disabled={true}
+abou                        />
 
                         <TextField
                             label="Capacity"

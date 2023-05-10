@@ -23,7 +23,7 @@ export default function EditRoomsSettings() {
                 <ModalForAdmin
                     key={room.roomNum}
                     roomNum={room.roomNum}
-                    roomTitle={"Room Num." + room.roomNum}
+                    roomTitle={"Room Num: " + room.roomNum}
                 >
                     {room.roomNum}
                 </ModalForAdmin>
