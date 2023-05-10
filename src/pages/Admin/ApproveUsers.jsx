@@ -22,12 +22,14 @@ export default function ApproveUsers() {
     //         setError(err)
     //     }
     // }
+
     useEffect(() => {
         setIsPending(true)
-        const createUsers = allUsers && allUsers.map(userDoc => ({
-            id: userDoc.id,
-            email: userDoc.email,
-            name: userDoc.name,
+        const createUsers = allUsers && allUsers.map((userDoc, index) => ({
+            id: index + 1,
+            uid: userDoc.uid,
+            name: userDoc.displayName,
+            email: userDoc.email
         }));
         setUsers(createUsers);
         if(!isCancelled) {
@@ -41,17 +43,27 @@ export default function ApproveUsers() {
         setIsPending(true)
         // todo add try catch and if (!isCancelled)
         selectedRows.forEach(async (row) => {
-            console.log(row)
-            // const email = users[row - 1].email
-            // const userType = users[row - 1].userType
-            // const name = users[row - 1].name
-            //const uid = users[row - 1].uid
+            const email = users[row - 1].email
+            const userType = users[row - 1].userType
+            const name = users[row - 1].name
+            const uid = users[row - 1].uid
 
+            // remove the user from the PendingUsers collection
+            try {
+                await deleteDoc(doc(collection(db, "PendingUsers"), email));
+                console.log("Document deleted successfully from PendingUsers");
+            } catch (err) {
+                console.error("Error deleting document:", err);
+                setError(err.message || "unknown error occurred")
+            }
 
-            // console.log(email)
-            // console.log(userType)
-            // console.log(name)
-            //console.log(uid)
+            // add the user to "Users" collection
+            await setDoc(doc(collection(db, "Users") , uid), {
+                userType,
+                email,
+                name,
+                userReservations: {}
+            })
 
             // enable the user from Authentication
             // TODO: after deploy do this:
@@ -65,16 +77,6 @@ export default function ApproveUsers() {
             //     setError(error.message)
             // }
 
-            // add the user to "Users" collection
-            // await setDoc(doc(collection(db, "Users") , uid), {
-            //     userType,
-            //     email,
-            //     name: displayName,
-            //     userReservations: {}
-            // })
-
-
-            // updateUser(users[row - 1].id,users[row - 1].rule)
         })
     };
 
@@ -83,28 +85,24 @@ export default function ApproveUsers() {
         setIsPending(true)
         // todo add try catch and if (!iscancelled)
         selectedRows.forEach(async (row) => {
-            console.log(row)
-            // const email = users[row - 1].email
-            // const userType = users[row - 1].userType
-            //
-            // console.log("email", email)
-            // console.log("userType", userType)
+            const email = users[row - 1].email
+            const uid = users[row - 1].uid
 
             // remove the user from the PendingUsers collection
-            // try {
-            //     await deleteDoc(doc(collection(db, "PendingUsers"), email));
-            //     console.log("Document deleted successfully from PendingUsers");
-            // } catch (err) {
-            //     console.error("Error deleting document:", err);
-            //     setError(err.message || "unknown error occurred")
-            // }
+            try {
+                await deleteDoc(doc(collection(db, "PendingUsers"), email));
+                console.log("Document deleted successfully from PendingUsers");
+            } catch (err) {
+                console.error("Error deleting document:", err);
+                setError(err.message || "unknown error occurred")
+            }
 
             // delete the user from firebase authentication
             // TODO: after deploy do this:
             // const functions = getFunctions();
             // const deleteUser = httpsCallable(functions, 'deleteUser');
             // try {
-            //     const result = await deleteUser({ uid: user.uid })
+            //     const result = await deleteUser({ uid: uid })
             //     console.log(result.data); // 'Successfully deleted user'
             // } catch(error) {
             //     console.log('Error deleting user:', error);
@@ -114,7 +112,6 @@ export default function ApproveUsers() {
     }
 
     const handleSelectionChange = (newSelection) => {
-        console.log(newSelection)
         setSelectedRows(newSelection);
     };
     const handleUserTypeChange = (event, row) => {
@@ -127,6 +124,7 @@ export default function ApproveUsers() {
 
     const columns = [
         {field: "id", headerName: "ID", width: 90},
+        {field: "uid", headerName: "Uid", width: 200},
         {field: "name", headerName: "Name", width: 130},
         {field: "email", headerName: "Email", width: 200},
         {

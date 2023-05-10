@@ -12,7 +12,7 @@ import { collection, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function ManageUsers({ allUsers }) {
-    const [users, setUsers] = useState([]);
+    //const [users, setUsers] = useState([]);
     //const [selectedRows, setSelectedRows] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -20,30 +20,30 @@ export default function ManageUsers({ allUsers }) {
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
 
-    useEffect(() => {
-        setIsPending(true)
-        const createUsers = allUsers.map(userDoc => ({
-            id: userDoc.id,
-            email: userDoc.email,
-            name: userDoc.name,
-            userType: userDoc.userType
-        }));
-        setUsers(createUsers);
-        if(!isCancelled) {
-            setIsPending(false)
-        }
-    }, [allUsers]);
+    // useEffect(() => {
+    //     setIsPending(true)
+    //     const createUsers = allUsers.map(userDoc => ({
+    //         id: userDoc.id,
+    //         email: userDoc.email,
+    //         name: userDoc.name,
+    //         userType: userDoc.userType
+    //     }));
+    //     setUsers(createUsers);
+    //     if(!isCancelled) {
+    //         setIsPending(false)
+    //     }
+    // }, [allUsers]);
 
     useEffect(() => {
         setIsPending(true)
-        users && setFilteredUsers(users.filter((user) =>
+        allUsers && setFilteredUsers(allUsers.filter((user) =>
             user.name.toLowerCase().includes(searchTerm.toLowerCase())
         ));
         if(!isCancelled) {
             setIsPending(false)
         }
         return () => setIsCancelled(true)
-    }, [users]);
+    }, [allUsers]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -78,16 +78,17 @@ export default function ManageUsers({ allUsers }) {
 
     const handleDelete = async (id) => {
         if (window.confirm(`Are you sure you want to delete user id: ${id}?`)) {
-            setUsers(users.filter((u) => u.id !== id))
-            //setSelectedRows([]);
+            allUsers.filter((u) => u.id !== id)
             setError(null)
             setIsPending(true)
+
             // delete user from the Users collection
             try {
                 await deleteDoc(doc(collection(db, "Users"), id));
                 if (!isCancelled) {
                     setError(null)
                     setIsPending(false)
+                    console.log("user deleted successfuly")
                 }
 
             } catch (error) {
