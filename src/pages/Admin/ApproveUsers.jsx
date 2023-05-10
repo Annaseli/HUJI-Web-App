@@ -138,7 +138,8 @@ export default function ApproveUsers() {
                         <InputLabel id={`userType-select-label-${row.id}`}>User Type</InputLabel>
                         <Select
                             labelId={`userType-select-label-${row.id}`}
-                            value={row.userType || ''}
+                            value={row.userType || 'Member'}
+                            // defaultValue={"Member"}
                             onChange={(event) => handleUserTypeChange(event, row)}
                         >
                             <MenuItem value="Member">Member</MenuItem>

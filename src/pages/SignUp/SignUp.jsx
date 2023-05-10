@@ -198,8 +198,8 @@ export default function SignUp() {
                     <DialogContentText>{errorMsg}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseErrorDialog} color="primary">
-                        Close
+                    <Button onClick={handleCloseErrorDialog}>
+                        Let's Try Again
                     </Button>
                 </DialogActions>
             </Dialog>

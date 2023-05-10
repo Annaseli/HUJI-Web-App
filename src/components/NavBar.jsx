@@ -22,7 +22,7 @@ import checkUserType from '../pages/Admin/checkUserType';
 import {getAuth} from "firebase/auth";
 
 const pages = ["Reservations", "About HUJI-INNOVATE", "Report A Problem",];
-const settingsOption = ["Profile", "My Reservations", "Contact Us", "LogOut"];
+const settingsOption = ["My Reservations", "LogOut"];
 const adminSettingOption = ["My Reservations", "All Users Reservations", "Approve New Users",
     "Manage Users", "Usage Report", "Edit Rooms Settings", "User Problems", "LogOut"];
 
