@@ -86,7 +86,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
 
     const [startTimesOptions, setStartTimesOptions] = useState([
         {label: "", value: ""},
-        {label: "", value: ""},
+        {label: " ", value: " "},
         {label: "8:00", value: 8},
         {label: "9:00", value: 9},
         {label: "10:00", value: 10},
@@ -214,8 +214,6 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                                 ))}
                             </select>
                             <div style={{display: 'flex', flexDirection: 'column'}}>
-
-
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Box sx={{marginTop: '15px', marginBottom: '15px'}}>
                                     <label htmlFor="startDate">Date</label>
@@ -256,8 +254,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                                     value={startHour}
                                 >
                                     {startTimesOptions.map((time) => (
-                                        <option key={time.value} value={time.value
-                                        }>
+                                        <option key={time.value} value={time.value}>
                                             {time.label}
                                         </option>
                                     ))}
