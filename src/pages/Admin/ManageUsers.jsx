@@ -115,14 +115,14 @@ export default function ManageUsers({ allUsers }) {
     return (
         <div style={{height: 400, width: '100%'}}>
             <SemiTitle>Manege Users </SemiTitle>
-            <TextField
-                label="Search by name"
-                variant="outlined"
-                size="small"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                style={{marginBottom: 16}}
-            />
+            {/*<TextField*/}
+            {/*    label="Search by name"*/}
+            {/*    variant="outlined"*/}
+            {/*    size="small"*/}
+            {/*    value={searchTerm}*/}
+            {/*    onChange={handleSearchChange}*/}
+            {/*    style={{marginBottom: 16}}*/}
+            {/*/>*/}
             {!isPending && <DataGrid
                 rows={filteredUsers}
                 //rows={users}

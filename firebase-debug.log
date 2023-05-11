@@ -1,0 +1,52 @@
+[debug] [2023-05-11T11:12:28.635Z] ----------------------------------------------------------------------
+[debug] [2023-05-11T11:12:28.638Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\anna_\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2023-05-11T11:12:28.638Z] CLI Version:   12.0.0
+[debug] [2023-05-11T11:12:28.638Z] Platform:      win32
+[debug] [2023-05-11T11:12:28.639Z] Node Version:  v16.20.0
+[debug] [2023-05-11T11:12:28.647Z] Time:          Thu May 11 2023 14:12:28 GMT+0300 (Israel Daylight Time)
+[debug] [2023-05-11T11:12:28.647Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-05-11T11:12:28.650Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2023-05-11T11:12:28.744Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-05-11T11:12:28.745Z] > authorizing via signed-in user (huji.innovate.app@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\anna_\AHI\AHI-Room-Scheduler
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[debug] [2023-05-11T11:12:29.193Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2023-05-11T11:12:29.193Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2023-05-11T11:12:58.922Z] Using project from CLI flag: huji-innovate-app-7419c
+[debug] [2023-05-11T11:12:58.923Z] > refreshing access token with scopes: []
+[debug] [2023-05-11T11:12:58.924Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2023-05-11T11:12:58.924Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-05-11T11:12:59.271Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2023-05-11T11:12:59.272Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-05-11T11:12:59.294Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/huji-innovate-app-7419c [none]
+[debug] [2023-05-11T11:12:59.832Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/huji-innovate-app-7419c 200
+[debug] [2023-05-11T11:12:59.833Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/huji-innovate-app-7419c {"projectId":"huji-innovate-app-7419c","projectNumber":"211654656345","displayName":"HUJI Innovate App","name":"projects/huji-innovate-app-7419c","resources":{"hostingSite":"huji-innovate-app-7419c","storageBucket":"huji-innovate-app-7419c.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_e5f1d6c0-51d4-4fd6-aee2-c19fb2965f9a"}
+[info] i  Using project huji-innovate-app-7419c (HUJI Innovate App) 
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 

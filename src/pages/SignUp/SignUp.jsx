@@ -38,7 +38,8 @@ export default function SignUp({ setShowWaitingForApproval }) {
         firstName && lastName && (displayName = firstName + ' ' + lastName)
         await signUp(email, confirmedPassword, displayName)
         console.log(error)
-        if (error && error !== "No such email in ConfirmedUsers collection!" || error !== "No such email in ConfirmedUsers collection!\n") {
+        if (error && error !== "No such email in ConfirmedUsers collection!" ||
+            error !== "No such email in ConfirmedUsers collection!\n") {
             setErrorMsg(error)
             setErrorDialogOpen(true)
         }
@@ -120,7 +121,6 @@ export default function SignUp({ setShowWaitingForApproval }) {
         if (!validateEmail()) return false
         if (!validatePassword()) return false
         return validatePasswordMatch();
-
     };
 
     return (

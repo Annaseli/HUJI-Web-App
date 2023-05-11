@@ -180,11 +180,7 @@ export default function App() {
                         <Route
                             path="/reportProblem"
                             element={
-                                user
-                                    ? isAdmin
-                                    ? <ReportProblem/>
-                                    : <ReportProblem/>
-                                    : <ReportProblem/>
+                                <ReportProblem/>
                             }
                         />
                         <Route
@@ -200,7 +196,11 @@ export default function App() {
                         <Route
                             path="/usageReport"
                             element={
-                                <UsageReport/>
+                                user
+                                    ? isAdmin
+                                        ? <UsageReport/>
+                                        : <Navigate to="/"/>
+                                    : <Navigate to="/logIn"/>
                             }
                         />
                         <Route

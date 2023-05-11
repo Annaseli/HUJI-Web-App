@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword, getAuth } from "firebase/auth"
 
 export const useLogIn = () => {
     const [isCancelled, setIsCancelled] = useState(false)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState("")
     const [isPending, setIsPending] = useState(false)
 
     const logIn = async (email, password) => {
