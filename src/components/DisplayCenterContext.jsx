@@ -12,13 +12,13 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#F7F7F7",
         borderRadius: "10px",
         boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.16)",
-        width: "100%",
-        maxWidth: "100%",
+        width: "93%",
+        maxWidth: "93%",
         // justifyContent: "flex-start",
         // alignItems: "flex-start",
     },
     heading: {
-        color: "#0072C6",
+        color: '#211D42',
         fontWeight: "bold",
         marginBottom: theme.spacing(4),
         // textAlign: "center",
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
         lineHeight: "1.5",
         textAlign: "justify",
-
+        width: "100%"
     },
     sectionTitle: {
         marginTop: theme.spacing(3),
@@ -45,9 +45,6 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "flex-start",
         alignItems: "flex-start",
     },
-
-
-
 }));
 
 export default function DisplayCenterContext({contentType, title}) {

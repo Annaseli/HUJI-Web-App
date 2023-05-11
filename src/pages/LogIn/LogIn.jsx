@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Link } from "react-router-dom"
 import { Divider } from "@mui/material"
 
@@ -18,6 +18,7 @@ const styledDivider = {
 export default function LogIn() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [showComponent, setShowComponent] = useState(false)
     const { logIn, error, isPending } = useLogIn()
 
     const handleSubmit = async (event) => {
@@ -25,39 +26,46 @@ export default function LogIn() {
         await logIn(email, password)
     }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <SemiTitle>LOGIN PAGE</SemiTitle>
-      <div className="form">
-        <StyledTextField
-            id=""
-            label="Email Address"
-            required
-            size="small"
-            variant="filled"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-        />
-        <StyledTextField
-            className="input"
-            id="filled-basic"
-            label="Password"
-            type="password"
-            required
-            size="small"
-            variant="filled"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-        />
-        <Link component="button" to="/forgotPassword">Forgot Password?</Link>
-      </div>
-      <div className="submit">
-      {!isPending && <Button>Log In</Button>}
-      {isPending && <p>loading...</p>}
-      {error && <p>{error}</p>}
-      <Divider sx={styledDivider}/>
-      <Link to="/signUp"><Button color={"#211d42"} background={"#ffffff"} border={"#211D42"}>Sign Up</Button></Link>
-      </div>
-    </form>
-  );
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowComponent(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    return ( showComponent ?
+        (<form onSubmit={handleSubmit}>
+            <SemiTitle>LOGIN PAGE</SemiTitle>
+            <div className="form">
+              <StyledTextField
+                  id=""
+                  label="Email Address"
+                  required
+                  size="small"
+                  variant="filled"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+              />
+              <StyledTextField
+                 className="input"
+                 id="filled-basic"
+                 label="Password"
+                 type="password"
+                 required
+                 size="small"
+                 variant="filled"
+                 onChange={(e) => setPassword(e.target.value)}
+                 value={password}
+              />
+              <Link component="button" to="/forgotPassword">Forgot Password?</Link>
+            </div>
+            <div className="submit">
+            {!isPending && <Button>Log In</Button>}
+            {isPending && <p>loading...</p>}
+            {error && <p>{error}</p>}
+            <Divider sx={styledDivider}/>
+            <Link to="/signUp"><Button color={"#211d42"} background={"#ffffff"} border={"#211D42"}>Sign Up</Button></Link>
+            </div>
+        </form>) : null
+    );
 }

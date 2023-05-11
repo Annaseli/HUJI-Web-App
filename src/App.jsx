@@ -45,6 +45,7 @@ export default function App() {
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false)
     const [userType, setUserType] = useState("")
+    const [showWaitingForApproval, setShowWaitingForApproval] = useState(false)
     const {docs: allUsers, error: err} = useCollection("Users")
     // if (!isCancelled) {
     //     setIsPending(false)
@@ -204,7 +205,12 @@ export default function App() {
                         />
                         <Route
                             path="/logIn"
-                            element={user ? <Navigate to="/"/> : <LogIn/>}
+                            element={user
+                                ? <Navigate to="/"/>
+                                : showWaitingForApproval
+                                    ? <WaitForApproval showWaitingForApproval={showWaitingForApproval}
+                                                     setShowWaitingForApproval={setShowWaitingForApproval}/>
+                                    : <LogIn/>}
                         />
                         <Route
                             path="/forgotPassword"
@@ -212,11 +218,11 @@ export default function App() {
                         />
                         <Route
                             path="/signUp"
-                            element={user ? <Navigate to="/"/> : <SignUp/>}
+                            element={user ? <Navigate to="/"/> : <SignUp setShowWaitingForApproval={setShowWaitingForApproval}/>}
                         />
                         <Route
                             path="/waitingForApproval"
-                            element={ <WaitForApproval/>}
+                            element={ <WaitForApproval/> }
                         />
                     </Routes>
                 </BrowserRouter>

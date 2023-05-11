@@ -14,6 +14,7 @@ import { getAuth } from "firebase/auth";
 import createAnEmptyCollection from "../NewReservation/createAnEmptyCollection";
 import {collection, doc, getDoc} from "firebase/firestore";
 import {db} from "../../firebase/config";
+import {useNavigate} from "react-router-dom";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -41,13 +42,15 @@ function a11yProps(index) {
     };
 }
 
-export default function HomePage({userType}) {
-    console.log("HomePage")
+export default function HomePage({ userType }) {
+    const [isVisible, setIsVisible] = useState(false);
     const [TabValue, setValue] = useState(0);
     //const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     const { docs: rooms, error: err } = useCollection("Rooms")
+    const auth = getAuth()
+    const navigate = useNavigate()
     // if (!isCancelled) {
     //     setIsPending(false)
     //     if (err) {
@@ -55,7 +58,7 @@ export default function HomePage({userType}) {
     //     }
     // }
 
-    const uid = getAuth().currentUser.uid
+    const uid = auth.currentUser ? auth.currentUser.uid : navigate("/logIn")
     async function create() {
         const curDate = new Date()
         const year = `${curDate.getFullYear()}`
@@ -88,8 +91,16 @@ export default function HomePage({userType}) {
         setValue(1);
     }
 
-    return (
-        <Box sx={{width: '100%'}}>
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            setIsVisible(true);
+        }, 1000);
+
+        return () => clearTimeout(delay);
+    }, []);
+
+    return (isVisible ?
+        (<Box sx={{width: '100%'}}>
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                 <Tabs value={TabValue} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="My Reservations" {...a11yProps(1)} />
@@ -116,7 +127,7 @@ export default function HomePage({userType}) {
             </TabPanel>
             {isPending && <p>loading...</p>}
             {error && <p>{ error }</p>}
-        </Box>
+        </Box>) : null
     );
 }
 

@@ -77,7 +77,7 @@ export default function CheckIn({uid}) {
                 // TODO - front show this message to the user
                 console.log("Have no reservations or checkedIn too early or too late")
                 setSuccess(false)
-                setError("Have no reservations or checkedIn too early or too late")
+                setError("You have no reservations or checkedIn too early or too late")
                 return
             }
 
@@ -93,20 +93,20 @@ export default function CheckIn({uid}) {
                                 {"checkedIn": true, "checkInTimeStamp": new Date()}
                         }, {merge: true});
                     }
-                    // TODO - front show this message to the user
                     console.log("rooms code match")
                     setSuccess(true)
+                    setCheckInCode("")
                     break
                 } else {
-                    // TODO - front show this message to the user
-                    console.log("rooms code do not match")
-                    setError("rooms code do not match. Have no reservations or checked in too early/late")
-
+                    console.log("Rooms code do not match")
+                    setError("Rooms code do not match or you have no reservations fot this period of " +
+                        "time or you checked in too early or too late")
                     setSuccess(false)
                 }
 
                 if (!isCancelled) {
                     setIsPending(false)
+                    setCheckInCode("")
                 }
             }
 
@@ -114,6 +114,7 @@ export default function CheckIn({uid}) {
             if (!isCancelled) {
                 setError(error.message || "unknown message occurred")
                 setIsPending(false)
+                setCheckInCode("")
             }
         }
     }

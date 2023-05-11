@@ -35,11 +35,13 @@ export default function ForgotPassword() {
             if (!isCancelled) {
                 setError(null)
                 setIsPending(false)
+                setEmail("")
             }
         } catch (error) {
             if (!isCancelled) {
                 setError(error.message)
                 setIsPending(false)
+                setEmail("")
             }
         }
     }

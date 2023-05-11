@@ -19,6 +19,7 @@ export default function DisplayUsersRes({ uid, header }) {
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false)
+    const [showComponent, setShowComponent] = useState(false)
     const emptyReservationMsg = "You have no reservation"
     const {userRes, userReservations, noData, err} = useGetUsersRes(uid)
     // if (!isCancelled) {
@@ -134,8 +135,15 @@ export default function DisplayUsersRes({ uid, header }) {
         )
     }
 
-    return (
-        <Box sx={{height: 400, width: '100%'}}>
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowComponent(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    return ( showComponent ?
+        (<Box sx={{height: 400, width: '100%'}}>
             {header && <SemiTitle>{header}</SemiTitle>}
             {userReservations && !noData &&
             <DataGrid
@@ -152,6 +160,6 @@ export default function DisplayUsersRes({ uid, header }) {
             {noData && header && header !== "All Reservations" && emptyReservationMessage()}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
-        </Box>
+        </Box>) : null
     );
 }

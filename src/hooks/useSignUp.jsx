@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react"
-import { getFunctions, httpsCallable } from "firebase/functions";
 
 // firebase imports
+import { getFunctions, httpsCallable } from "firebase/functions";
 import { db } from "../firebase/config"
-import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth"
+import {createUserWithEmailAndPassword, getAuth, signOut, updateProfile} from "firebase/auth"
 import {collection, doc, setDoc, getDoc, deleteDoc, addDoc} from "firebase/firestore"
+import { useNavigate } from 'react-router-dom';
 
-// TODO - use the useFirestore functions instead for the try catch for await funcs
-export const useSignUp = () => {
+export const useSignUp = (setShowWaitingForApproval) => {
     console.log("useSignUp");
+    const navigate = useNavigate();
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
@@ -17,8 +18,10 @@ export const useSignUp = () => {
         setError(null)
         setIsPending(true)
         try {
+            const auth =  getAuth();
+
             // sign the user up to firebase
-            const res = await createUserWithEmailAndPassword(getAuth(), email, password)
+            const res = await createUserWithEmailAndPassword(auth, email, password)
             const user = res.user
 
             // add display name to user
@@ -37,6 +40,7 @@ export const useSignUp = () => {
 
                 // if the user exists in ConfirmedUsers - delete this user from the ConfirmedUsers collection
                 await deleteDoc(docRef);
+
             } else {
                 console.log("No such email in ConfirmedUsers collection!");
 
@@ -58,13 +62,15 @@ export const useSignUp = () => {
                     email,
                     displayName
                 })
+                setShowWaitingForApproval(true)
+                await signOut(auth)
+                console.log("done signOut ");
             }
 
             if (!isCancelled) {
                 setError(null)
                 setIsPending(false)
             }
-
         }
         catch(error) {
             if (!isCancelled) {

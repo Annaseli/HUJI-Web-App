@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {Link} from "react-router-dom"
-import {useNavigate} from 'react-router';
+import { useNavigate } from 'react-router';
 
 // pages & custom hooks
 import {useLogOut} from '../hooks/useLogOut'
@@ -126,8 +126,6 @@ export default function NavBar({isAdmin}) {
                                         <Link to="/">{page}</Link></Typography>}
                                     {page === "About HUJI-INNOVATE" && <Typography textAlign="center">
                                         <Link to="/aboutUs">{page}</Link></Typography>}
-                                    {page === "HUJI-Articles" && <Link to="/articles">
-                                        <Typography textAlign="center">{page}</Typography> </Link>}
                                 </MenuItem>
                             ))}
                         </Menu>

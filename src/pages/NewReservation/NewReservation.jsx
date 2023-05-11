@@ -67,11 +67,11 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
         {label: "8 people", value: 8},
         {label: "9 people", value: 9},
         {label: "10 people", value: 10},
-        {label: "10 people", value: 11},
-        {label: "10 people", value: 12},
-        {label: "10 people", value: 13},
-        {label: "10 people", value: 14},
-        {label: "10 people", value: 15}
+        {label: "11 people", value: 11},
+        {label: "12 people", value: 12},
+        {label: "13 people", value: 13},
+        {label: "14 people", value: 14},
+        {label: "15 people", value: 15}
     ]);
 
     const [durationsOptions, setDurationOptions] = useState([
@@ -85,6 +85,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     ]);
 
     const [startTimesOptions, setStartTimesOptions] = useState([
+        {label: "", value: ""},
         {label: "", value: ""},
         {label: "8:00", value: 8},
         {label: "9:00", value: 9},
