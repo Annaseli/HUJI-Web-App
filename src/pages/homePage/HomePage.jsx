@@ -94,7 +94,7 @@ export default function HomePage({ userType }) {
     useEffect(() => {
         const delay = setTimeout(() => {
             setIsVisible(true);
-        }, 1000);
+        }, 2000);
 
         return () => clearTimeout(delay);
     }, []);

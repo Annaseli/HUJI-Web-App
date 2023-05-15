@@ -17,9 +17,9 @@ const styledDivider = {
 }
 
 export default function LogIn() {
+    const [isVisible, setIsVisible] = useState(false);
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [showComponent, setShowComponent] = useState(false)
     const { logIn, error, isPending } = useLogIn()
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
@@ -43,8 +43,6 @@ export default function LogIn() {
     };
 
     const validateEmail = () => {
-
-        let error = "";
         const value = email
         if (!value) {
             setErrorMsg("Email is required");
@@ -79,17 +77,14 @@ export default function LogIn() {
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowComponent(true);
-        }, 1000);
-        return () => clearTimeout(timer);
+        const delay = setTimeout(() => {
+            setIsVisible(true);
+        }, 2000);
+
+        return () => clearTimeout(delay);
     }, []);
 
-    // if (validateInvalidUsernameOrPassword()) {
-    //     setErrorDialogOpen(true) && console.log("error", errorMsg)
-    //     return
-    // }
-    return ( showComponent ?
+    return ( isVisible ?
         (<form onSubmit={handleSubmit}>
             <SemiTitle>LOGIN PAGE</SemiTitle>
             <div className="form">

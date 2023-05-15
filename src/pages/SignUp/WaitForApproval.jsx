@@ -12,7 +12,7 @@ export default function WaitForApproval({ showWaitingForApproval, setShowWaiting
         const timer = setTimeout(() => {
             setShowWaitingForApproval(false);
             navigate("/logIn")
-        }, 1000);
+        }, 2000);
         return () => clearTimeout(timer);
     }, []);
 

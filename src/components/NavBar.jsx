@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -27,6 +27,7 @@ const adminSettingOption = ["My Reservations", "All Users Reservations", "Approv
     "Manage Users", "Usage Report", "Edit Rooms Settings", "User Problems", "LogOut"];
 
 export default function NavBar({isAdmin}) {
+    const [isVisible, setIsVisible] = useState(false);
     const {logOut, error, isPending} = useLogOut()
     const user = getAuth().currentUser
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -68,9 +69,16 @@ export default function NavBar({isAdmin}) {
         "Usage Report": "/UsageReport"
     };
     const navigate = useNavigate();
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            setIsVisible(true);
+        }, 2000);
 
-    return (
-        <AppBar position="static" sx={{backgroundColor: '#211D42'}}>
+        return () => clearTimeout(delay);
+    }, []);
+
+    return ( isVisible &&
+       (<AppBar position="static" sx={{backgroundColor: '#211D42'}}>
             <Container maxWidth="lg">
                 <Toolbar disableGutters>
                     <Typography
@@ -203,6 +211,6 @@ export default function NavBar({isAdmin}) {
             </Container>
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
-        </AppBar>
+        </AppBar>)
     );
 }

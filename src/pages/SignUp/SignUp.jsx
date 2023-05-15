@@ -22,7 +22,7 @@ export default function SignUp({ setShowWaitingForApproval }) {
     let displayName = ""
     let confirmedPassword = ""
     const navigate = useNavigate();
-    const {signUp, error, isPending} = useSignUp(setShowWaitingForApproval)
+    const {signUp, isPending} = useSignUp(setShowWaitingForApproval)
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const handleSubmit = async (event) => {
@@ -37,12 +37,12 @@ export default function SignUp({ setShowWaitingForApproval }) {
         password1 && password2 && (password1 === password2) && (confirmedPassword = password1)
         firstName && lastName && (displayName = firstName + ' ' + lastName)
         await signUp(email, confirmedPassword, displayName)
-        console.log(error)
-        if (error && error !== "No such email in ConfirmedUsers collection!" ||
-            error !== "No such email in ConfirmedUsers collection!\n") {
-            setErrorMsg(error)
-            setErrorDialogOpen(true)
-        }
+        // console.log(error)
+        // if (error && error !== "No such email in ConfirmedUsers collection!" ||
+        //     error !== "No such email in ConfirmedUsers collection!\n") {
+        //     setErrorMsg(error)
+        //     setErrorDialogOpen(true)
+        // }
         // navigate to waitingForApproval
         // if (error === "No such email in ConfirmedUsers collection!" || error === "No such email in ConfirmedUsers collection!\n") {
         //     // sleep 1 sec
@@ -53,17 +53,11 @@ export default function SignUp({ setShowWaitingForApproval }) {
         // }
 
     }
-    const handleOpenErrorDialog = () => {
-        setErrorDialogOpen(true);
-    };
-
     const handleCloseErrorDialog = () => {
         setErrorDialogOpen(false);
     };
 
     const validateEmail = () => {
-
-        let error = "";
         const value = email
         if (!value) {
             setErrorMsg("Email is required");
@@ -99,7 +93,6 @@ export default function SignUp({ setShowWaitingForApproval }) {
     const validateLastName = () => {
         console.log(lastName, "last")
         if (!lastName) {
-            console.log("errrrrr")
             setErrorMsg("Last name is required");
             return false
         }
@@ -191,7 +184,7 @@ export default function SignUp({ setShowWaitingForApproval }) {
                 </div>
                 {!isPending && <Button>Sign Up</Button>}
                 {isPending && <p>loading...</p>}
-                {error && <p>{error}</p>}
+                {/*{error && <p>{error}</p>}*/}
                 <p>Already a member? <Link to="/logIn" component="button">Log In</Link></p>
             </Box>
             <Dialog open={errorDialogOpen} onClose={handleCloseErrorDialog}>
