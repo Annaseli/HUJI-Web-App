@@ -13,7 +13,7 @@ import getDocRefFromReservations from "../pages/NewReservation/getDocRefFromRese
 import './EmptyReservationMessage.css';
 import { SemiTitle } from "./Title";
 import useGetUsersRes from "../hooks/useGetUsersRes";
-
+import AddToCalendar from "./AddToCalendar";
 export default function DisplayUsersRes({ uid, header }) {
     console.log("DisplayUsersRes")
     const [error, setError] = useState(null);
@@ -22,6 +22,9 @@ export default function DisplayUsersRes({ uid, header }) {
     const [showComponent, setShowComponent] = useState(false)
     const emptyReservationMsg = "You have no reservation"
     const {userRes, userReservations, noData, err} = useGetUsersRes(uid)
+    const [selectedRows, setSelectedRows] = useState([0]);
+    const [addToCalenderFlag, setAddToCalenderFlag] = useState(false);
+
     // if (!isCancelled) {
     //     setIsPending(false)
     //     if (err){
@@ -120,10 +123,33 @@ export default function DisplayUsersRes({ uid, header }) {
         window.location.reload(true)
         }
     }
+    const handleSelectionChange = (resId) => {
+        setSelectedRows(resId);
+        console.log(resId,"resId")
+        // const roomNum = userReservations[resId]["roomNum"]
+        // const year = userReservations[resId]["year"]
+        // const month = userReservations[resId]["month"]
+        // const day = userReservations[resId]["day"]
+        // const startHour = userReservations[resId]["startHour"]
+        // const duration = userReservations[resId]["duration"]
+        // log
+        console.log("aa","userRes")
+        console.log(userRes,"userRes")
+        console.log("abc", selectedRows)
+    };
+
 
     useEffect(() => {
+        if (userRes && userRes.length > 0 && !addToCalenderFlag) {
+            const highestIdElement = userRes.reduce((prev, current) => {
+                return prev.id > current.id ? prev : current;
+            });
+            setSelectedRows([highestIdElement.id]);
+            setAddToCalenderFlag(true)
+            console.log([highestIdElement],"highestIdElement.id")
+        }
         return () => setIsCancelled(true);
-    }, []);
+    }, );
 
     function emptyReservationMessage() {
         return (
@@ -153,13 +179,44 @@ export default function DisplayUsersRes({ uid, header }) {
                 rowsPerPageOptions={[5]}
                 keyGetter={(row) => row.id}
                 // checkboxSelection
-                disableSelectionOnClick
+                MultiSelect="False"
+                FullRowSelect="Single"
+                rowSelectionModel={selectedRows}
+                // disableSelectionOnClick
                 // disableColumnFilter
+                onSelectionModelChange={handleSelectionChange}
+                onRowSelectionModelChange={handleSelectionChange}
                 experimentalFeatures={{newEditingApi: true}}
+                initialState={{
+                    sorting: {
+                        sortModel: [{ field: 'id', sort: 'desc' }],
+                    },
+                }}
             />}
+
+            {/*<button onClick={() => {*/}
+
+            {/*} disabled={selectedRows.length !== 1}>*/}
+                {selectedRows.length === 1 &&  addToCalenderFlag && <AddToCalendar
+                    startHour={userReservations[selectedRows[0]]["startHour"]}
+                    duration={userReservations[selectedRows[0]]["duration"]}
+                    roomNum={userReservations[selectedRows[0]]["roomNum"]}
+                    year={userReservations[selectedRows[0]]["year"]}
+                    month={userReservations[selectedRows[0]]["month"]}
+                    day={userReservations[selectedRows[0]]["day"]}
+                    resId={selectedRows[0]}
+                />
+
+                }
+                You can click on row To add it To your calender
+            {/*</button>*/}
+
             {noData && header && header !== "All Reservations" && emptyReservationMessage()}
             {isPending && <p>loading...</p>}
             {error && <p>{error}</p>}
+
+
         </Box>) : null
+
     );
 }

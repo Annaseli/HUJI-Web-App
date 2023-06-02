@@ -103,6 +103,10 @@ export default function BasicModal({ title, date, startHour, endHour, peopleNum,
             {isConfirm &&
               <ConfirmationMessage
               roomNum = {roomNum}
+              date = {date}
+              startHour = {startHour}
+              endHour = {endHour}
+
               />
             }
             {isPending && <p>loading...</p>}
