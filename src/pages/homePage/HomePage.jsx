@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 // components & pages & custom hooks
 import DisplayUsersRes from "../../components/DisplayUsersRes";
 import NewReservation from '../NewReservation/NewReservation';
+import NewReservationMobile from '../NewReservation/NewReservationMobile';
 import { useCollection } from "../../hooks/useCollection";
 import CheckIn from "../CheckIn/CheckIn";
 
@@ -109,12 +110,19 @@ export default function HomePage({ userType }) {
                 </Tabs>
             </Box>
             <TabPanel value={TabValue} index={1}>
-                {uid && <NewReservation
-                    uid={uid}
-                    userType={userType}
-                    moveToMyReservation={moveToMyReservation}
-                    rooms={rooms}
-                />}
+                {uid && window.innerWidth <= 768
+                    ? <NewReservationMobile
+                        uid={uid}
+                        userType={userType}
+                        moveToMyReservation={moveToMyReservation}
+                        rooms={rooms}
+                    />
+                    : <NewReservation
+                        uid={uid}
+                        userType={userType}
+                        moveToMyReservation={moveToMyReservation}
+                        rooms={rooms}
+                    />}
             </TabPanel>
             <TabPanel value={TabValue} index={0}>
                 {uid && <DisplayUsersRes uid={uid}
