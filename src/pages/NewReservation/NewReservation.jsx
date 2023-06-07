@@ -157,6 +157,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                     endHour={parseInt(startHour) + parseInt(duration) + ":00" }
                     peopleNum={peopleNum}
                     duration={duration}
+                    roomTitle={room.roomTitle}
                     roomNum={room.roomNum}
                     uid={uid}
                     available={isRoomAvailable(room.roomNum)}

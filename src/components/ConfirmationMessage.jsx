@@ -11,7 +11,7 @@ export default function ConfirmationMessage(props) {
         <div className="confirmation-message">
             <CheckCircleIcon sx={{fontSize: '6rem', color: '#15ce49'}}/>
             <Typography variant="subtitle1" sx={{fontWeight: 'bold', mt: 1}}>
-                {`Your reservation for room ${props.roomNum} is confirmed!`}</Typography>
+                {`Your reservation for room ${props.roomTitle} is confirmed!`}</Typography>
         </div>
 
 

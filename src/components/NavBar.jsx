@@ -96,7 +96,7 @@ export default function NavBar({isAdmin}) {
                             textDecoration: 'none',
                         }}
                     >
-                        HUJI-Inoovate
+                        HUJI-Innovate
                     </Typography>
 
                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>

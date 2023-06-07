@@ -4,7 +4,7 @@ import getDocRefFromReservations from "./getDocRefFromReservations";
 import { db } from "../../firebase/config";
 import { doc, updateDoc, setDoc, collection } from "firebase/firestore";
 
-export default function createReservation(uid, capacity, duration, date, startHour, endHour, roomNum) {
+export default function createReservation(uid, capacity, duration, date, startHour, endHour, roomNum, roomTitle) {
     console.log("createReservation")
     const dayObject = new Date(date)
     const year = `${dayObject.getFullYear()}`
@@ -31,7 +31,8 @@ export default function createReservation(uid, capacity, duration, date, startHo
                     endHour: endHourPadded,
                     peopleNum: capacity,
                     checkedIn: false,
-                    checkInTimeStamp: null
+                    checkInTimeStamp: null,
+                    roomTitle
                 }
             }
             await updateDoc(docRef, updateMap)
@@ -47,6 +48,7 @@ export default function createReservation(uid, capacity, duration, date, startHo
                 day,
                 duration,
                 roomNum,
+                roomTitle,
                 startHour: startHourPadded + ":00",
                 endHour: endHourPadded,
                 peopleNum: capacity

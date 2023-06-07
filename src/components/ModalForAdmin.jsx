@@ -55,7 +55,7 @@ function ModalForAdmin(props) {
     const [isPending, setIsPending] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false);
     const [roomNum, setRoomNum] = useState(props.roomNum);
-    const [title, setTitle] = useState(props.roomTitle);
+    const [roomTitle, setRoomTitle] = useState(props.roomTitle);
     const [location, setLocation] = useState(props.location);
     const [capacity, setCapacity] = useState(props.capacity);
     const [checkInCode, setCheckInCode] = useState(props.checkInCode);
@@ -148,7 +148,7 @@ function ModalForAdmin(props) {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(roomNum, userType, capacity, title, checkInCode, location)
+        console.log(roomNum, userType, capacity, roomTitle, checkInCode, location)
         const paddedRoomNum = roomNum.padStart(2, '0')
         const collRef = collection(db, "Rooms")
         const queryDocRef = query(collRef, where("roomNum", "==", roomNum));
@@ -157,6 +157,7 @@ function ModalForAdmin(props) {
         const data = queryDoc.data();
         const docRef = doc(collRef, queryDoc.id);
         await updateDoc(docRef, {
+                ["roomTitle"]: roomTitle || data["roomTitle"],
                 ["capacity"]: capacity || data["capacity"],
                 ["checkIn"]: checkInCode || data["checkIn"],
                 ["location"]: location || data["location"]
@@ -206,7 +207,7 @@ function ModalForAdmin(props) {
     return (
         <div>
             <div className="title">
-                <Typography variant="h6">{title}</Typography>
+                <Typography variant="h6">{roomTitle}</Typography>
             </div>
             <div className="btn">
                 <Button onClick={() => handleClickOpen(true)}> Edit Setting </Button>
@@ -230,14 +231,13 @@ function ModalForAdmin(props) {
                         />
                         <TextField
                             label="Title"
-                            value={title}
-                            disabled={true}
+                            value={roomTitle}
+                            disabled={!editing}
+                            onChange={(e) => setRoomTitle(e.target.value)}
                         />
-
                         <TextField
                             label="Capacity"
                             disabled={!editing}
-
                             value={capacity}
                             onChange={(e) => setCapacity(e.target.value)}
                         />
@@ -245,13 +245,11 @@ function ModalForAdmin(props) {
                             label="Location"
                             value={location}
                             disabled={!editing}
-
                             onChange={(e) => setLocation(e.target.value)}
                         />
                         <TextField
                             label="Check in Code"
                             disabled={!editing}
-
                             value={checkInCode}
                             onChange={(e) => setCheckInCode(e.target.value)}
                         />
@@ -259,7 +257,6 @@ function ModalForAdmin(props) {
                             label="User Type (Min Privilege)"
                             value={userType}
                             disabled={!editing}
-
                             onChange={(e) => setUserType(e.target.value)}
                         />) : (<>
                             <InputLabel id="user-type-label">User Type</InputLabel>

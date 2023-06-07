@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { db } from "../firebase/config"
 import {createUserWithEmailAndPassword, getAuth, signOut, updateProfile} from "firebase/auth"
-import {collection, doc, setDoc, getDoc, deleteDoc, addDoc} from "firebase/firestore"
+import {collection, doc, setDoc, getDoc, deleteDoc} from "firebase/firestore"
 import { useNavigate } from 'react-router-dom';
 
 export const useSignUp = (setShowWaitingForApproval) => {
@@ -47,12 +47,14 @@ export const useSignUp = (setShowWaitingForApproval) => {
                 // disable the user from Authentication
                 // TODO: after deploy do this: also check that the user can't see any page
                 // const functions = getFunctions();
-                // const enableDisableUser = httpsCallable(functions, 'enableDisableUser');
+                // const enableDisable = httpsCallable(functions, "enableDisable");
+                // console.log("before try");
                 // try {
-                //     const result = await enableDisableUser({ uid: user.uid, disable: true })
-                //     console.log(result.data); // 'Successfully updated user'
+                //     console.log("after try");
+                //     const result = await enableDisable({ uid: user.uid, disable: true })
+                //     console.log("result.data", result); // 'Successfully updated user'
                 // } catch(error) {
-                //     console.log('Error updating user:', error);
+                //     console.log("Error updating user:", error);
                 //     setError(error.message)
                 // }
 

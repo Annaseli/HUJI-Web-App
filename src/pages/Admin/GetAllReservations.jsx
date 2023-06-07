@@ -30,15 +30,16 @@ export default async function GetAllReservations(year, month, rooms) {
                 if (roomDoc[paddedHour]["resId"]) {
                     allReservations.push({
                         resId: roomDoc[paddedHour]["resId"],
-                        date: new Date(roomDoc[paddedHour]["year"] + '-' + roomDoc[paddedHour]["month"] + '-' +
-                            roomDoc[paddedHour]["day"]) || '',
+                        year: roomDoc[paddedHour]["year"] || '',
+                        month: roomDoc[paddedHour]["month"] || '',
+                        day: roomDoc[paddedHour]["day"] || '',
                         duration: roomDoc[paddedHour]["duration"] || '',
                         startHour: roomDoc[paddedHour]["startHour"] || '',
                         endHour: roomDoc[paddedHour]["endHour"] || '',
                         uid: roomDoc[paddedHour]["uid"] || '',
                         numOfPeople: roomDoc[paddedHour]["peopleNum"] || '',
-                        roomNum: roomNum,
-                        checkedIn: roomDoc[paddedHour]["checkedIn"] || '',
+                        roomTitle: roomDoc[paddedHour]["roomTitle"] || '',
+                        checkedIn: roomDoc[paddedHour]["checkedIn"] || 'false',
                         checkInTimeStamp: roomDoc[paddedHour]["checkInTimeStamp"] ?
                             roomDoc[paddedHour]["checkInTimeStamp"].toString() : ''
                     })
@@ -46,6 +47,5 @@ export default async function GetAllReservations(year, month, rooms) {
             }
         }
     }
-    console.log("allReservations1", allReservations);
     return allReservations
 }

@@ -25,7 +25,7 @@ const style = {
     p: 4,
 };
 
-export default function BasicModal({ title, date, startHour, endHour, peopleNum, duration, roomNum, uid, available,
+export default function BasicModal({ title, date, startHour, endHour, peopleNum, duration, roomTitle, roomNum, uid, available,
                                        moveToMyReservation }) {
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
@@ -47,7 +47,7 @@ export default function BasicModal({ title, date, startHour, endHour, peopleNum,
         setError(null)
         setIsPending(true)
         try {
-            await createReservation(uid, peopleNum, duration, date, startHour, endHour, roomNum)
+            await createReservation(uid, peopleNum, duration, date, startHour, endHour, roomNum, roomTitle)
             if (!isCancelled) {
                 setError(null)
                 setIsPending(false)
@@ -90,6 +90,7 @@ export default function BasicModal({ title, date, startHour, endHour, peopleNum,
                         Reservation Information
                     </Typography>
                     <Typography id="modal-modal-description" sx={{m: 3, mt: 2, display: 'grid', gap: 2}}>
+                        <span>Room: {roomTitle}</span>
                         <span>Date: {date}</span>
                         <span>Start Time: {startHour + ":00"}</span>
                         <span>End Time: {endHour}</span>
@@ -102,11 +103,10 @@ export default function BasicModal({ title, date, startHour, endHour, peopleNum,
             </div>}
             {isConfirm &&
               <ConfirmationMessage
-              roomNum = {roomNum}
+              roomTitle = {roomTitle}
               date = {date}
               startHour = {startHour}
               endHour = {endHour}
-
               />
             }
             {isPending && <p>loading...</p>}

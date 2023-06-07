@@ -8,6 +8,12 @@ export default function AllReservations({allUsers}) {
             {(allUsers).map(user => (
                 <div key={user.id}>
                     {<DisplayUsersRes uid={user.id} header={""} />}
+                    <br /> {/* HTML line break */}
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                 </div>
             ))}
         </>

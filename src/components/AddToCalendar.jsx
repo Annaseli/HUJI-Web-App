@@ -12,12 +12,11 @@ export default function AddToCalendar(props) {
     console.log(endHHours)
     // console.log("endTime", endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
 
-
     return (
         <AddToCalendarButton
-            name={"Huji Event" + props.roomNum}
+            name={"Reservation for Room: " + props.roomTitle}
             options={['Google', 'Apple', 'iCal']}
-            location="location"
+            location="HUJI innovate center"
             // startDate="2023-05-22"
             startDate={startDate_}
             endDate={startDate_}

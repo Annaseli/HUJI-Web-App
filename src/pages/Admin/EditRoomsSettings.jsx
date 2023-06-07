@@ -24,7 +24,7 @@ export default function EditRoomsSettings() {
                 <ModalForAdmin
                     key={room.roomNum}
                     roomNum={room.roomNum}
-                    roomTitle={"Room Num: " + room.roomNum}
+                    roomTitle={room.roomTitle}
                     capacity={room.capacity}
                     location={room.location}
                     checkInCode={room.checkIn}

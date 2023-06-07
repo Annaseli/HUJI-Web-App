@@ -25,10 +25,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ReportProblem() {
+export default function AddRooms() {
     console.log("Add Rooms")
     const classes = useStyles();
     const [roomNum, setRoomNum] = useState("")
+    const [roomTitle, setRoomTitle] = useState("")
     const [capacity, setCapacity] = useState("")
     const [location, setLocation] = useState("")
     const [checkIn, setCheckIn] = useState("")
@@ -41,6 +42,7 @@ export default function ReportProblem() {
         await addDoc(collection(db, "Rooms"), {
             // check for invalid data
             roomNum,
+            roomTitle,
             capacity,
             location,
             checkIn
@@ -49,6 +51,7 @@ export default function ReportProblem() {
         setIsLoading(false);
         setSuccess(true)
         setRoomNum("");
+        setRoomTitle("");
         setCapacity("");
         setLocation("");
         setCheckIn("");
@@ -74,6 +77,14 @@ export default function ReportProblem() {
                         variant="outlined"
                         value={roomNum}
                         onChange={(event) => setRoomNum(event.target.value)}
+                        required
+                    />
+                    <TextField
+                        label="RoomTitle"
+                        type="text"
+                        variant="outlined"
+                        value={roomTitle}
+                        onChange={(event) => setRoomTitle(event.target.value)}
                         required
                     />
                     <TextField

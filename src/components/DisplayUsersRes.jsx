@@ -86,6 +86,7 @@ export default function DisplayUsersRes({ uid, header }) {
             setIsPending(true)
             try {
                 const roomNum = userReservations[resId]["roomNum"]
+                const roomTitle = userReservations[resId]["roomTitle"]
                 const year = userReservations[resId]["year"]
                 const month = userReservations[resId]["month"]
                 const day = userReservations[resId]["day"]
@@ -201,6 +202,7 @@ export default function DisplayUsersRes({ uid, header }) {
                     startHour={userReservations[selectedRows[0]]["startHour"]}
                     duration={userReservations[selectedRows[0]]["duration"]}
                     roomNum={userReservations[selectedRows[0]]["roomNum"]}
+                    roomTitle={userReservations[selectedRows[0]]["roomTitle"]}
                     year={userReservations[selectedRows[0]]["year"]}
                     month={userReservations[selectedRows[0]]["month"]}
                     day={userReservations[selectedRows[0]]["day"]}
@@ -208,7 +210,7 @@ export default function DisplayUsersRes({ uid, header }) {
                 />
 
                 }
-                You can click on row To add it To your calender
+                To add a reservation to your calendar, simply click on the row.
             {/*</button>*/}
 
             {noData && header && header !== "All Reservations" && emptyReservationMessage()}

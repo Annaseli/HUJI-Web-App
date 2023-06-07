@@ -39,7 +39,8 @@ export default function useGetUsersRes(uid) {
             userRes.push({
                 id: res,
                 uid: uid,
-                room: userReservations[res]["roomNum"],
+                //roomNum: userReservations[res]["roomNum"],
+                room: userReservations[res]["roomTitle"],
                 date: new Date(userReservations[res]["year"] + '-' + userReservations[res]["month"] + '-'
                     + userReservations[res]["day"]),
                 startHour: userReservations[res]["startHour"],

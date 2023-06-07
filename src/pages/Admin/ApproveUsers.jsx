@@ -8,6 +8,7 @@ import { SemiTitle } from "../../components/Title";
 import { useCollection } from "../../hooks/useCollection";
 import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
 import {db} from "../../firebase/config";
+import {getFunctions, httpsCallable} from "firebase/functions";
 
 export default function ApproveUsers() {
     const [users, setUsers] = useState([]);
@@ -65,13 +66,13 @@ export default function ApproveUsers() {
                 userReservations: {}
             })
 
+            // TODO: check why isn't working
             // enable the user from Authentication
-            // TODO: after deploy do this:
             // const functions = getFunctions();
             // const enableDisableUser = httpsCallable(functions, 'enableDisableUser');
             // try {
-            //     const result = await enableDisableUser({ uid: user.uid, disable: false })
-            //     console.log(result.data); // 'Successfully updated user'
+            //     const result = await enableDisableUser({ uid: uid, disable: false })
+            //     console.log("result.data", result.data); // 'Successfully updated user'
             // } catch(error) {
             //     console.log('Error updating user:', error);
             //     setError(error.message)
@@ -97,15 +98,17 @@ export default function ApproveUsers() {
                 setError(err.message || "unknown error occurred")
             }
 
+            // TODO: check why isn't working
             // delete the user from firebase authentication
-            // TODO: after deploy do this:
             // const functions = getFunctions();
-            // const deleteUser = httpsCallable(functions, 'deleteUser');
+            // console.log("before try");
+            // const deleteUser = httpsCallable(functions, "deleteUser");
             // try {
+            //     console.log("after try");
             //     const result = await deleteUser({ uid: uid })
-            //     console.log(result.data); // 'Successfully deleted user'
+            //     console.log("result.data", result.data); // 'Successfully deleted user'
             // } catch(error) {
-            //     console.log('Error deleting user:', error);
+            //     console.log("Error deleting user:", error);
             //     setError(error.message)
             // }
         })

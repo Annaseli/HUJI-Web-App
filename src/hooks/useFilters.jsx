@@ -20,8 +20,6 @@ export default function useFilters(userType, uid, resetFields, peopleNum, durati
                 console.log("roomsAvailableByUserType", roomsAvailableByUserType)
                 setRoomsAvailableAfterFilter(roomsAvailableByUserType);
                 if (!isCancelled) {
-
-
                     setError(null)
                     setIsPending(false)
                 }
