@@ -268,13 +268,13 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
                                     </Button>
                                 )}
 
-                                <Button
+                                {activeStep !== steps.length - 1 && <Button
                                     variant="contained"
                                     onClick={handleNext}
                                     sx={{mt: 3, ml: 1}}
                                 >
                                     {activeStep === steps.length - 1 ? 'Book A room' : 'Next'}
-                                </Button>
+                                </Button>}
                             </Box>
                         </React.Fragment>
                     )}

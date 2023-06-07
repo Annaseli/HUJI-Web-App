@@ -77,7 +77,7 @@ export default function BasicModal({ title, date, startHour, endHour, peopleNum,
             {!isConfirm &&
             <div>
             <Room onClick={ available ? handleOpen : handleOpenNotAvailable }
-                  available={available}>{title}
+                  available={available}>{roomTitle}
             </Room>
             <Modal
                 open={open}
