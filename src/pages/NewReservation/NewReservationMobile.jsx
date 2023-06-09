@@ -45,7 +45,7 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     const [moveMonth, setMoveMonth] = useState(false);
     const [peopleNum, setPeopleNum] = useState("");
     const [duration, setDuration] = useState("");
-    const [startHour, setStartHour] = useState("8:00");
+    const [startHour, setStartHour] = useState("");
     const [datesNotAvailable, setDatesNotAvailable] = useState([]);
     const [hoursAvailable, setHoursAvailable] = useState([]);
     const [resetFields, setResetFields] = useState(false)
@@ -224,6 +224,11 @@ export default function NewReservation({ uid, userType, moveToMyReservation, roo
     const [activeStep, setActiveStep] = React.useState(0);
 
     const handleNext = () => {
+        if (activeStep === 0 && (startHour === "" || duration === "" || peopleNum === "" || date === "") ) {
+            alert("Please Fill All Fields")
+            return
+        }
+        console.log(activeStep,"step")
         setActiveStep(activeStep + 1);
     };
 
