@@ -60,27 +60,29 @@ export default function HomePage({ userType }) {
     // }
 
     const uid = auth.currentUser ? auth.currentUser.uid : navigate("/logIn")
-    async function create() {
+    async function initFourthMonthFromCurMonth() {
         const curDate = new Date()
-        const year = `${curDate.getFullYear()}`
-        const month = curDate.getMonth() + 1
-        // create empty reservations year+month docs in Reservation for 3 month in advance
-        for (let m = month; m < month + 3; m++) {
-            const monthStr = `${m}`.padStart(2, '0')
-            const checkDoc = doc(collection(db, "Reservations"),
-                year + monthStr)
-            const docSnap = await getDoc(checkDoc)
-            if (!docSnap.exists()) {
-                setIsPending(true)
-                //console.log(`creates ${year}${monthStr} doc in Reservations`)
-                rooms && await createAnEmptyCollection(year, monthStr, rooms)
-                setIsPending(false)
-            } else {
-                //console.log(`doesn't create ${year}${monthStr} doc in Reservations`)
-            }
+        let year = `${curDate.getFullYear()}`
+        const month = ((curDate.getMonth() + 3) % 12) + 1
+        if (curDate.getMonth() + 4 > 12) {
+            year = `${curDate.getFullYear() + 1}`
+        }
+        // initFourthMonthFromCurMonth empty reservations year+month docs in Reservation for the next 4'th month
+        // from now relying on that the next 3 months are already initialized.
+        const monthStr = `${month}`.padStart(2, '0')
+        const checkDoc = doc(collection(db, "Reservations"),
+            year + monthStr)
+        const docSnap = await getDoc(checkDoc)
+        if (!docSnap.exists()) {
+            setIsPending(true)
+            //console.log(`creates ${year}${monthStr} doc in Reservations`)
+            rooms && await createAnEmptyCollection(year, monthStr, rooms)
+            setIsPending(false)
+        } else {
+            //console.log(`doesn't initFourthMonthFromCurMonth ${year}${monthStr} doc in Reservations`)
         }
     }
-    create()
+    initFourthMonthFromCurMonth()
 
     const handleChange = (event, newValue) => {
         setValue(newValue);

@@ -16,9 +16,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import Button from './Button.jsx';
 import styled from 'styled-components';
 import "./modalForAdminStyles.css"
-import {collection, doc, getDocs, query, updateDoc, where} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, query, updateDoc, where} from "firebase/firestore";
 import {db} from "../firebase/config";
 import {useCollection} from "../hooks/useCollection";
+import createAnEmptyCollection from "../pages/NewReservation/createAnEmptyCollection";
+import getDocRefFromReservations from "../pages/NewReservation/getDocRefFromReservations";
 // const useStyles = makeStyles((theme) => ({
 //     title: {
 //         textAlign: 'center',
@@ -122,7 +124,7 @@ function ModalForAdmin(props) {
         console.log("view settings")
         // console.log(room)
         allRoomsData && console.log("allRoomsData", allRoomsData)
-        // TODO - front : get the specific room data by: allRoomsData[roomNum - 1]
+        // front : get the specific room data by: allRoomsData[roomNum - 1]
         //  for example roomNum 1 will be in allRoomsData[0] and show this room's details
         setOpen(true);
         setEditing(editing);
@@ -146,24 +148,45 @@ function ModalForAdmin(props) {
         }
         return "Admin"
     }
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(roomNum, userType, capacity, roomTitle, checkInCode, location)
-        const paddedRoomNum = roomNum.padStart(2, '0')
-        const collRef = collection(db, "Rooms")
-        const queryDocRef = query(collRef, where("roomNum", "==", roomNum));
-        const querySnap = await getDocs(queryDocRef)
-        const queryDoc = querySnap.docs[0]
-        const data = queryDoc.data();
-        const docRef = doc(collRef, queryDoc.id);
-        await updateDoc(docRef, {
-                ["roomTitle"]: roomTitle || data["roomTitle"],
-                ["capacity"]: capacity || data["capacity"],
-                ["checkIn"]: checkInCode || data["checkIn"],
-                ["location"]: location || data["location"]
-            },
-            {merge: true})
 
+    const updateReservationsColl = async (roomNum, capacity) => {
+        const curDate = new Date()
+        let year = curDate.getFullYear()
+        let month = curDate.getMonth()
+        while (true) {
+            const monthStr = `${month + 1}`.padStart(2, '0')
+            const yearStr = `${year}`
+            const checkDoc = doc(collection(db, "Reservations"),
+                yearStr + monthStr)
+            const docSnap = await getDoc(checkDoc)
+            // if the yarMonth doc exists, update in each day and each room the new capacity
+            if (docSnap.exists()) {
+                for (let day = 1; day < 32; day++) {
+                    const paddedDay = `${day}`.padStart(2, '0')
+                    const fullDate = yearStr + '-' + monthStr + '-' + `${paddedDay}`
+                    const dateObject = new Date(fullDate)
+                    const numOfDayInMonth = new Date(year, month + 1, 0).getDate();
+                    // if it's friday or saturday or there are less than 31 days in the month do not check availability for this date
+                    if (dateObject.getDay() === 5 || dateObject.getDay() === 6 || day > numOfDayInMonth) {
+                        continue
+                    }
+                    const { docRef } = await getDocRefFromReservations(yearStr, monthStr, paddedDay, roomNum)
+                    await updateDoc(docRef, {"roomCapacity": capacity}, {merge:true})
+                }
+                if (month + 1 > 11) {
+                    year++
+                }
+                month = (month + 1) % 12
+
+            } else {
+                break;
+            }
+
+        }
+
+    }
+
+    const updateUserTypeColl = async (roomNum, userType) => {
         let hierarchicalUserTypes = ["Admin"]
         if (userType === "Team") {
             hierarchicalUserTypes.push("Team")
@@ -201,6 +224,32 @@ function ModalForAdmin(props) {
                 },
                 {merge: true})
         }
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(roomNum, userType, capacity, roomTitle, checkInCode, location)
+        const paddedRoomNum = roomNum.padStart(2, '0')
+        const collRef = collection(db, "Rooms")
+        const queryDocRef = query(collRef, where("roomNum", "==", roomNum));
+        const querySnap = await getDocs(queryDocRef)
+        const queryDoc = querySnap.docs[0]
+        const data = queryDoc.data();
+        const docRef = doc(collRef, queryDoc.id);
+        await updateDoc(docRef, {
+                ["roomTitle"]: roomTitle || data["roomTitle"],
+                ["capacity"]: capacity || data["capacity"],
+                ["checkIn"]: checkInCode || data["checkIn"],
+                ["location"]: location || data["location"]
+            },
+            {merge: true})
+
+        if (capacity) {
+            await updateReservationsColl(roomNum, capacity)
+        }
+
+        await updateUserTypeColl(roomNum, userType)
+
         handleClose();
     };
 
