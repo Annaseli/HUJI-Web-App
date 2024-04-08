@@ -7,7 +7,7 @@ Full-Stack Website Development from Requirements to Production
 
 Website URL: https://huji-innovate-app-7419c.firebaseapp.com
 
-Website Demo Video: https://clipchamp.com/watch/06yAEBWXvDA
+Website Demo Video: https://www.youtube.com/watch?v=LUqdNqmH3g4
 
 ------------------------------------------------------------
 
